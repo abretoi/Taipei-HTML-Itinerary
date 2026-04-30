@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taipei Family Trip Guide — May 2026</title>
+<style>
+  /* ── Reset & base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand: #1D9E75;
+    --brand-dark: #166d52;
+    --bg: #ffffff;
+    --bg2: #f7f7f5;
+    --bg3: #efefec;
+    --border: #e4e4e0;
+    --border2: #d8d8d3;
+    --text: #1a1a1a;
+    --text2: #555550;
+    --text3: #888882;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 4px rgba(0,0,0,.07);
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    /* CSS var aliases so embedded widget CSS still works */
+    --font-sans: var(--font);
+    --color-text-primary: var(--text);
+    --color-text-secondary: var(--text2);
+    --color-background-primary: var(--bg);
+    --color-background-secondary: var(--bg2);
+    --color-border-tertiary: var(--border);
+    --color-border-secondary: var(--border2);
+    --border-radius-md: var(--radius-sm);
+    --border-radius-lg: var(--radius);
+  }
+
+  body { font-family: var(--font); background: var(--bg2); color: var(--text); min-height: 100vh; }
+
+  /* ── App shell ── */
+  .app-header {
+    background: var(--brand);
+    color: #fff;
+    padding: 18px 20px 14px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+  .app-header-inner { max-width: 960px; margin: 0 auto; }
+  .app-title { font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
+  .app-subtitle { font-size: 12px; opacity: .82; margin-top: 2px; }
+
+  /* ── Main nav ── */
+  .main-nav {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .main-nav::-webkit-scrollbar { display: none; }
+  .main-nav-inner {
+    display: flex;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 4px;
+    gap: 2px;
+    white-space: nowrap;
+  }
+  .nav-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 11px 14px;
+    border: none; background: none;
+    font-family: var(--font); font-size: 13px; font-weight: 500;
+    color: var(--text2); cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .nav-btn .nav-icon { font-size: 15px; }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+  /* ── Page containers ── */
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-inner { max-width: 960px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  /* ── Section header ── */
+  .section-header { margin-bottom: 18px; }
+  .section-header h2 { font-size: 20px; font-weight: 600; color: var(--text); }
+  .section-header p { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+  /* ── Shared tab system used inside each section ── */
+  .tab-row { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 14px; }
+  .tab {
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    border: 0.5px solid var(--border2);
+    font-size: 11px; font-weight: 500; cursor: pointer;
+    background: var(--bg); color: var(--text2);
+    transition: all .15s; white-space: nowrap;
+  }
+  .tab.on { color: #fff; }
+  .tab:hover:not(.on) { background: var(--bg2); }
+  .panel { display: none; }
+  .panel.on { display: block; }
+
+  /* ── Cards ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 10px; }
+  .card {
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 14px;
+    box-shadow: var(--shadow);
+  }
+
+  /* ── Section note ── */
+  .section-note {
+    background: var(--bg2); border-radius: var(--radius-sm);
+    padding: 9px 13px; margin-bottom: 13px;
+    font-size: 12px; color: var(--text2); line-height: 1.6;
+  }
+  .section-note b { color: var(--text); }
+
+  /* ── Itinerary specific ── */
+  .day-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 14px; }
+  .day-tab {
+    padding: 5px 13px;
+    border-radius: var(--radius-sm);
+    border: 0.5px solid var(--border2);
+    font-size: 12px; cursor: pointer;
+    background: var(--bg); color: var(--text2);
+    transition: all .15s; white-space: nowrap;
+  }
+  .day-tab.active { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 500; }
+  .day-card-wrap { display: none; }
+  .day-card-wrap.visible { display: block; }
+  .day-card {
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+    box-shadow: var(--shadow);
+  }
+  .day-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .day-sub { font-size: 12px; color: var(--text2); margin-bottom: 16px; }
+  .block { display: flex; gap: 10px; margin-bottom: 14px; align-items: flex-start; }
+  .block:last-of-type { margin-bottom: 0; }
+  .time-col { min-width: 72px; padding-top: 2px; }
+  .time { font-size: 11px; font-weight: 500; color: var(--text3); letter-spacing: .03em; }
+  .dot-line { display: flex; flex-direction: column; align-items: center; padding-top: 5px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); flex-shrink: 0; }
+  .vline { width: 1px; background: var(--border); flex: 1; margin-top: 3px; min-height: 28px; }
+  .block-content { flex: 1; }
+  .block-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; line-height: 1.4; }
+  .block-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .block-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+  .btag { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 500; }
+  .btag-food { background:#E1F5EE; color:#085041; }
+  .btag-shop { background:#EEEDFE; color:#3C3489; }
+  .btag-sight { background:#E6F1FB; color:#0C447C; }
+  .btag-night { background:#FBEAF0; color:#72243E; }
+  .btag-iconic { background:#FAECE7; color:#712B13; }
+  .btag-free { background:#EAF3DE; color:#27500A; }
+  .tip-box {
+    background: var(--bg2); border-left: 3px solid var(--brand);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 9px 12px; margin-top: 14px;
+    font-size: 12px; color: var(--text2); line-height: 1.6;
+  }
+  .tip-box b { color: var(--text); font-weight: 500; }
+
+  /* ── Buckets grid ── */
+  .bucket-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px,1fr)); gap: 10px; }
+  .bucket {
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 14px;
+    box-shadow: var(--shadow);
+  }
+  .bucket-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+    margin-bottom: 8px; padding-bottom: 6px; border-bottom: 0.5px solid var(--border);
+  }
+  .bucket ul { list-style: none; }
+  .bucket li { font-size: 12px; color: var(--text2); padding: 3px 0; border-bottom: 0.5px solid var(--border); line-height: 1.45; }
+  .bucket li:last-child { border-bottom: none; }
+  .bucket li b { color: var(--text); font-weight: 500; }
+  .bucket li span { font-size: 11px; }
+
+  /* pill tags */
+  .pill { font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 500; }
+  .p-food { background:#E1F5EE; color:#085041; }
+  .p-shop { background:#EEEDFE; color:#3C3489; }
+  .p-sight { background:#E6F1FB; color:#0C447C; }
+  .p-night { background:#FBEAF0; color:#72243E; }
+  .p-iconic { background:#FAECE7; color:#712B13; }
+  .p-free { background:#EAF3DE; color:#27500A; }
+  .p-trip { background:#FAEEDA; color:#633806; }
+  .dpills { display: flex; flex-wrap: wrap; gap: 3px; }
+
+  /* ── Day summary cards ── */
+  .day-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px,1fr)); gap: 10px; }
+  .dcard { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 13px; box-shadow: var(--shadow); }
+  .dnum { font-size: 10px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
+  .dtitle { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+  .dsummary { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 8px; }
+
+  /* ── Restaurant cards ── */
+  .rest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 10px; }
+  .rcard { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+  .rcard-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 5px; }
+  .rname { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.3; flex: 1; }
+  .badges { display: flex; flex-wrap: wrap; gap: 3px; flex-shrink: 0; }
+  .badge { font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 20px; white-space: nowrap; }
+  .b-star3 { background:#FAEEDA; color:#633806; }
+  .b-star2 { background:#EAF3DE; color:#27500A; }
+  .b-star1 { background:#E1F5EE; color:#085041; }
+  .b-bib { background:#E6F1FB; color:#0C447C; }
+  .b-iconic { background:#FAECE7; color:#712B13; }
+  .b-book { background:#FBEAF0; color:#72243E; }
+  .cuisine { font-size: 11px; color: var(--text2); margin-bottom: 5px; font-weight: 500; }
+  .rdesc { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 6px; }
+  .order, .price-range { font-size: 11px; color: var(--text2); margin-top: 3px; }
+  .order b, .price-range b { color: var(--text); font-weight: 500; }
+
+  /* ── Shopping cards ── */
+  .item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 10px; }
+  .item-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+  .item-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
+  .item-name { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; flex: 1; }
+  .price-tag { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+  .p-budget { background:#EAF3DE; color:#27500A; }
+  .p-mid { background:#E6F1FB; color:#0C447C; }
+  .p-splurge { background:#FAEEDA; color:#633806; }
+  .item-desc { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 6px; }
+  .item-where { font-size: 11px; color: var(--text2); font-style: italic; }
+  .item-where b { font-style: normal; color: var(--text); font-weight: 500; }
+
+  /* ── App cards ── */
+  .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 10px; }
+  .app-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+  .app-header-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .app-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .app-name { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.3; }
+  .app-badge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 20px; font-weight: 500; margin-top: 3px; }
+  .b-must { background:#E1F5EE; color:#085041; }
+  .b-nice { background:#EAF3DE; color:#27500A; }
+  .app-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+  /* ── Checklist ── */
+  .check-list { display: flex; flex-direction: column; gap: 6px; }
+  .check-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 10px 12px; background: var(--bg);
+    border: 0.5px solid var(--border); border-radius: var(--radius-sm);
+    cursor: pointer; transition: background .1s;
+  }
+  .check-item:hover { background: var(--bg2); }
+  .check-item.done { background: var(--bg2); }
+  .check-item.done .item-name { text-decoration: line-through; color: var(--text2); }
+  .checkbox {
+    width: 18px; height: 18px; border-radius: 4px;
+    border: 1.5px solid var(--border2); flex-shrink: 0; margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg); transition: all .1s;
+  }
+  .check-item.done .checkbox { background: var(--brand); border-color: var(--brand); }
+  .check-item.done .checkbox::after { content: "✓"; color: #fff; font-size: 11px; font-weight: 700; }
+  .item-body { flex: 1; }
+  .item-name { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.35; margin-bottom: 2px; }
+  .item-detail { font-size: 11px; color: var(--text2); line-height: 1.55; }
+  .urgent-tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 1px 6px; border-radius: 20px; margin-left: 6px; vertical-align: middle; }
+  .u-urgent { background:#FAECE7; color:#712B13; }
+  .u-asap { background:#FAEEDA; color:#633806; }
+  .u-before { background:#EAF3DE; color:#27500A; }
+  .u-day { background:#E6F1FB; color:#0C447C; }
+  .progress-bar { height: 5px; background: var(--border); border-radius: 3px; margin-bottom: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--brand); border-radius: 3px; transition: width .3s; }
+  .progress-label { font-size: 11px; color: var(--text2); text-align: right; margin-bottom: 12px; }
+
+  /* Weather cards */
+  .weather-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 8px; margin-bottom: 14px; }
+  .wcard { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; text-align: center; box-shadow: var(--shadow); }
+  .wcard-icon { font-size: 20px; margin-bottom: 4px; }
+  .wcard-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--text3); }
+  .wcard-val { font-size: 13px; font-weight: 500; color: var(--text); margin-top: 2px; }
+  .wcard-sub { font-size: 11px; color: var(--text2); }
+
+  /* Packing list */
+  .pack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 10px; }
+  .pack-section { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+  .pack-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 8px; padding-bottom: 6px; border-bottom: 0.5px solid var(--border); }
+  .pack-item { display: flex; gap: 8px; align-items: flex-start; padding: 4px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; }
+  .pack-item:last-child { border-bottom: none; }
+  .pack-item.done .pname { text-decoration: line-through; color: var(--text2); }
+  .pack-item.done .pcheck { background: var(--brand); border-color: var(--brand); }
+  .pack-item.done .pcheck::after { content: "✓"; color: #fff; font-size: 9px; font-weight: 700; }
+  .pcheck { width: 14px; height: 14px; border-radius: 3px; border: 1.5px solid var(--border2); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+  .pname { font-size: 12px; color: var(--text2); line-height: 1.4; flex: 1; }
+  .pname b { color: var(--text); font-weight: 500; }
+
+  /* Responsive tweaks */
+
+  .utility-actions{margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .utility-btn{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.16);color:white;border-radius:999px;padding:9px 14px;font-weight:800;font-size:12px;letter-spacing:.01em;cursor:pointer;backdrop-filter:blur(8px);}
+  .utility-btn:hover{background:rgba(255,255,255,.24);transform:translateY(-1px);}
+  a.place-link,a.name-link{color:inherit;text-decoration:none;border-bottom:1px solid rgba(12,68,124,.22);}
+  a.place-link:hover,a.name-link:hover{color:#0C447C;border-bottom-color:#0C447C;}
+  .link-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
+  .open-link{display:inline-flex;align-items:center;gap:5px;text-decoration:none;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#0C447C;background:#E6F1FB;border:1px solid #C7DDF3;border-radius:999px;padding:6px 9px;}
+  .open-link:hover{background:#D8EAFB;}
+  .share-note{font-size:11px;color:rgba(255,255,255,.78);margin-top:8px;}
+
+  @media (max-width: 480px) {
+    .page-inner { padding: 14px 12px 32px; }
+    .day-grid, .card-grid, .rest-grid, .item-grid, .app-grid, .bucket-grid { grid-template-columns: 1fr 1fr; }
+    .rest-grid, .bucket-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-header-inner">
+    <div class="app-title">🇹🇼 Taipei Family Trip — May 2026</div>
+    <div class="app-subtitle">10 travelers · May 10–17 · Park Taipei Hotel</div>
+    <div class="utility-actions">
+      <button class="utility-btn" onclick="copyShareLink()">🔗 Copy share link</button>
+      <button class="utility-btn" onclick="downloadThisGuide()">⬇️ Download HTML</button>
+      <button class="utility-btn" onclick="window.print()">🖨️ Print / PDF</button>
+    </div>
+    <div class="share-note">Single-file web app: upload this HTML to Netlify, GitHub Pages, Vercel, or any static website host to share with family.</div>
+  </div>
+</div>
+
+<nav class="main-nav">
+  <div class="main-nav-inner">
+    <button class="nav-btn active" onclick="showPage('itinerary',this)"><span class="nav-icon">📅</span>Itinerary</button>
+    <button class="nav-btn" onclick="showPage('explore',this)"><span class="nav-icon">🗺️</span>Explore</button>
+    <button class="nav-btn" onclick="showPage('restaurants',this)"><span class="nav-icon">🍜</span>Restaurants</button>
+    <button class="nav-btn" onclick="showPage('shopping',this)"><span class="nav-icon">🛍️</span>Shopping</button>
+    <button class="nav-btn" onclick="showPage('apps',this)"><span class="nav-icon">📱</span>Apps</button>
+    <button class="nav-btn" onclick="showPage('checklist',this)"><span class="nav-icon">✅</span>Trip Prep</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════
+     PAGE 1 — ITINERARY
+══════════════════════════════════════════════ -->
+<div class="page active" id="page-itinerary">
+<div class="page-inner">
+
+  <div class="section-header">
+    <h2>Trip itinerary</h2>
+    <p>Relaxed pace · 2 structured activities per day max · plenty of free time</p>
+  </div>
+
+  <!-- Sub-nav: Summary / Detailed / Buckets -->
+  <div class="tab-row" id="itin-nav">
+    <button class="tab on" style="background:#1D9E75;border-color:#1D9E75;" onclick="showItinTab('summary',this,'#1D9E75')">Day summaries</button>
+    <button class="tab" onclick="showItinTab('detailed',this,'#534AB7')">Detailed day-by-day</button>
+    <button class="tab" onclick="showItinTab('buckets',this,'#185FA5')">By category</button>
+  </div>
+
+  <!-- DAY SUMMARIES -->
+  <div class="panel on" id="itin-summary">
+    <div class="day-grid" id="summary-grid"></div>
+  </div>
+
+  <!-- DETAILED -->
+  <div class="panel" id="itin-detailed">
+    <div class="day-tabs" id="detail-tabs"></div>
+    <div id="detail-cards"></div>
+  </div>
+
+  <!-- BUCKETS -->
+  <div class="panel" id="itin-buckets">
+    <div class="bucket-grid" id="bucket-grid"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PAGE 2 — EXPLORE
+══════════════════════════════════════════════ -->
+<div class="page" id="page-explore">
+<div class="page-inner">
+  <div class="section-header">
+    <h2>Explore Taipei</h2>
+    <p>Places to go · top things to do · day trips · off-the-beaten-path · family-friendly notes</p>
+  </div>
+  <div class="tab-row" id="explore-tabs"></div>
+  <div id="explore-panels"></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PAGE 3 — RESTAURANTS
+══════════════════════════════════════════════ -->
+<div class="page" id="page-restaurants">
+<div class="page-inner">
+  <div class="section-header">
+    <h2>Restaurant guide</h2>
+    <p>Iconic locals · Michelin · Hot pot · Night market dishes · Special occasions</p>
+  </div>
+  <div class="tab-row" id="rest-tabs"></div>
+  <div id="rest-panels"></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PAGE 4 — SHOPPING
+══════════════════════════════════════════════ -->
+<div class="page" id="page-shopping">
+<div class="page-inner">
+  <div class="section-header">
+    <h2>Shopping & souvenir guide</h2>
+    <p>Budget to splurge · Food · Iconic Taiwan · Luxury · Beauty · Where to shop</p>
+  </div>
+  <div class="tab-row" id="shop-tabs"></div>
+  <div id="shop-panels"></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PAGE 5 — APPS
+══════════════════════════════════════════════ -->
+<div class="page" id="page-apps">
+<div class="page-inner">
+  <div class="section-header">
+    <h2>Must-download apps</h2>
+    <p>Set up before you leave · Organized by purpose</p>
+  </div>
+  <div class="tab-row" id="app-tabs"></div>
+  <div id="app-panels"></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PAGE 6 — TRIP PREP CHECKLIST
+══════════════════════════════════════════════ -->
+<div class="page" id="page-checklist">
+<div class="page-inner">
+  <div class="section-header">
+    <h2>Trip prep checklist</h2>
+    <p>May 9–17, 2026 · Tap any item to check it off</p>
+  </div>
+  <div class="tab-row" id="prep-tabs"></div>
+  <div id="prep-panels"></div>
+</div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════════ */
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+function showItinTab(id, btn, color) {
+  document.querySelectorAll('#itin-summary,#itin-detailed,#itin-buckets').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('#itin-nav .tab').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.borderColor='';t.style.color='';});
+  document.getElementById('itin-'+id).classList.add('on');
+  btn.classList.add('on');
+  btn.style.background=color; btn.style.borderColor=color; btn.style.color='#fff';
+}
+function makeTabSystem(tabsId, panelsId, cats, idPrefix, tabColors) {
+  const tabsEl = document.getElementById(tabsId);
+  const panelsEl = document.getElementById(panelsId);
+  cats.forEach((cat, i) => {
+    const col = Array.isArray(tabColors) ? tabColors[i] : (tabColors[cat.label] || '#1D9E75');
+    const tab = document.createElement('button');
+    tab.className = 'tab' + (i===0?' on':'');
+    tab.textContent = cat.label;
+    if(i===0){tab.style.background=col;tab.style.borderColor=col;}
+    tab.onclick = () => {
+      tabsEl.querySelectorAll('.tab').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.borderColor='';});
+      panelsEl.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+      tab.classList.add('on'); tab.style.background=col; tab.style.borderColor=col;
+      document.getElementById(idPrefix+i).classList.add('on');
+    };
+    tabsEl.appendChild(tab);
+    const panel = document.createElement('div');
+    panel.className = 'panel'+(i===0?' on':'');
+    panel.id = idPrefix+i;
+    panel.innerHTML = cat.html;
+    panelsEl.appendChild(panel);
+  });
+}
+
+
+
+const SPECIAL_LINKS = {
+  'Taipei 101':'https://www.taipei-101.com.tw/en/',
+  'Elephant Mountain':'https://www.travel.taipei/en/attraction/details/1120',
+  'Chiang Kai-shek Memorial Hall':'https://www.cksmh.gov.tw/en/',
+  'National Palace Museum':'https://www.npm.gov.tw/?l=2',
+  'Huashan 1914 Creative Park':'https://www.huashan1914.com/w/huashan1914_en/index',
+  'Longshan Temple':'https://www.lungshan.org.tw/en/index.php',
+  'Maokong Gondola':'https://english.gondola.taipei/',
+  'Taipei Zoo':'https://english.zoo.gov.taipei/',
+  'Pokémon Center Taipei':'https://tw.portal-pokemon.com/topics/store/taipei_pokemon_center.html',
+  'Din Tai Fung (鼎泰豐)':'https://www.dintaifung.com.tw/eng/',
+  'Din Tai Fung':'https://www.dintaifung.com.tw/eng/',
+  'A Joy (饗 A Joy)':'https://www.ajoy.com.tw/',
+  'A Joy at Taipei 101 (86F)':'https://www.ajoy.com.tw/',
+  'Le Palais (頤宮)':'https://www.palaisdechinehotel.com/en-us/restaurant/Le-Palais',
+  'Taïrroir (態芮)':'https://www.tairroir.com/',
+  "L'Atelier de Joël Robuchon":'https://www.robuchon.com.tw/',
+  'Mume':'https://www.mume.tw/',
+  'Mountain and Sea House (山海楼)':'https://www.mountain-n-seahouse.com/en/',
+  'Orange Shabu Shabu (橘色涮涮鍋)':'https://www.orange-shabu.com.tw/',
+  'Modern Toilet Restaurant (便所主題餐廳)':'https://www.moderntoilet.com.tw/',
+  'Klook':'https://www.klook.com/',
+  'Holafly (eSIM)':'https://esim.holafly.com/esim-taiwan/',
+  'Wise':'https://wise.com/us/travel-money/',
+  'Booking.com':'https://www.booking.com/',
+  'Google Maps':'https://www.google.com/maps',
+  'Go! Taipei Metro':'https://english.metro.taipei/',
+  'Uber':'https://www.uber.com/tw/en/',
+  'Tripool':'https://www.tripool.app/en',
+  'FindTaxi':'https://findtaxi.io/',
+  'LINE':'https://line.me/en/',
+  'Google Translate':'https://translate.google.com/',
+  'Naver Papago':'https://papago.naver.com/',
+  'UberEats':'https://www.ubereats.com/tw-en',
+  'FoodPanda':'https://www.foodpanda.com.tw/en/',
+  'Taiwan Weather (CWB)':'https://www.cwa.gov.tw/eng/',
+  'LINE Pay':'https://linepay.line.me/',
+  'Apple Pay / Google Pay':'https://support.apple.com/apple-pay',
+  'Yongkang Beef Noodles':'https://www.yongkang-beefnoodle.com.tw/',
+  'Yongkang Beef Noodles (永康牛肉麵)':'https://www.yongkang-beefnoodle.com.tw/',
+  'Jin Feng Braised Pork Rice':'https://www.tripadvisor.com/Restaurant_Review-g13808671-d6146130-Reviews-Jin_Feng_Lu_Rou_Fan-Zhongzheng_District_Taipei.html',
+  'Jin Feng Braised Pork Rice (金峰魯肉飯)':'https://www.tripadvisor.com/Restaurant_Review-g13808671-d6146130-Reviews-Jin_Feng_Lu_Rou_Fan-Zhongzheng_District_Taipei.html',
+  'Ay-Chung Flour Rice Noodles':'https://www.tripadvisor.com/Restaurant_Review-g13806951-d309649-Reviews-Ay_Chung_Flour_Rice_Noodle_Wanhua-Wanhua_Taipei.html',
+  'Ay-Chung Flour Rice Noodles (阿宗麵線)':'https://www.tripadvisor.com/Restaurant_Review-g13806951-d309649-Reviews-Ay_Chung_Flour_Rice_Noodle_Wanhua-Wanhua_Taipei.html',
+  'Fuhang Soy Milk':'https://www.tripadvisor.com/Restaurant_Review-g13808671-d1026628-Reviews-Fu_Hang_Dou_Jiang-Zhongzheng_District_Taipei.html',
+  'Fuhang Soy Milk (阜杭豆漿)':'https://www.tripadvisor.com/Restaurant_Review-g13808671-d1026628-Reviews-Fu_Hang_Dou_Jiang-Zhongzheng_District_Taipei.html',
+  'Raohe Night Market':'https://www.travel.taipei/en/attraction/details/1705',
+  'Ningxia Night Market':'https://www.travel.taipei/en/attraction/details/1692',
+  'Addiction Aquatic Development':'https://www.addiction.com.tw/',
+  'Shin Yeh Taiwanese Cuisine':'https://www.shinyeh.com.tw/content/en/index.aspx',
+  'Toasteria Café':'https://www.toasteria.com/',
+  'Salt & Stone':'https://www.saltandstone.com.tw/',
+  'RAW':'https://www.raw.com.tw/',
+  'Logy':'https://www.logy.tw/',
+  'Impromptu by Paul Lee':'https://www.impromptu.com.tw/',
+  'Longtail':'https://www.longtail.com.tw/',
+  'YouBike 2.0':'https://en.youbike.com.tw/region/main/',
+  'Taipei Metro Go':'https://english.metro.taipei/',
+  'Taiwan Railway e-booking':'https://www.railway.gov.tw/tra-tip-web/tip?lang=EN_US',
+  'Google Lens':'https://lens.google/',
+  'Klook':'https://www.klook.com/en-US/',
+  'Trip.com':'https://www.trip.com/',
+  'Wanderlog':'https://wanderlog.com/',
+  'Google Photos':'https://photos.google.com/',
+  'WhatsApp':'https://www.whatsapp.com/',
+  'Airalo':'https://www.airalo.com/taiwan-esim',
+  'LINE Pay Taiwan':'https://linepay.line.me/'
+
+};
+function stripHtml(v){ return String(v||'').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').trim(); }
+function baseName(v){ return stripHtml(v).replace(/^\d+\.\s*/,'').replace(/\s+[—-].*$/,'').replace(/\s*\([^)]*\)\s*/g,' ').replace(/\s+/g,' ').trim(); }
+function mapSearchUrl(label){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(baseName(label) + ' Taipei Taiwan'); }
+function webSearchUrl(label){ return 'https://www.google.com/search?q=' + encodeURIComponent(baseName(label) + ' Taipei Taiwan'); }
+function getLink(label, fallback='map'){
+  const raw = stripHtml(label); const base = baseName(raw);
+  return SPECIAL_LINKS[raw] || SPECIAL_LINKS[base] || (fallback==='web' ? webSearchUrl(raw) : mapSearchUrl(raw));
+}
+function linkify(label, cls='place-link', fallback='map'){
+  const safe = stripHtml(label);
+  return `<a class="${cls}" href="${getLink(safe,fallback)}" target="_blank" rel="noopener noreferrer">${safe}</a>`;
+}
+function openLink(label, text='Open map'){
+  return `<div class="link-row"><a class="open-link" href="${getLink(label)}" target="_blank" rel="noopener noreferrer">↗ ${text}</a></div>`;
+}
+function openWebLink(label, text='Open link'){
+  return `<div class="link-row"><a class="open-link" href="${getLink(label,'web')}" target="_blank" rel="noopener noreferrer">↗ ${text}</a></div>`;
+}
+const APP_STORE_LINKS = {
+  'Google Maps':'https://apps.apple.com/us/app/google-maps/id585027354',
+  'Uber':'https://apps.apple.com/us/app/uber-request-a-ride/id368677368',
+  'YouBike 2.0':'https://apps.apple.com/tw/app/youbike-2-0/id1482885196',
+  'Taipei Metro Go':'https://apps.apple.com/tw/app/taipei-metro-go/id561315119',
+  'Taiwan Railway e-booking':'https://apps.apple.com/tw/app/taiwan-railway-e-booking/id401716230',
+  'Google Translate':'https://apps.apple.com/us/app/google-translate/id414706506',
+  'Google Lens':'https://apps.apple.com/us/app/google/id284815942',
+  'LINE':'https://apps.apple.com/us/app/line/id443904275',
+  'LINE Pay Taiwan':'https://apps.apple.com/tw/app/line-pay/id1449817412',
+  'Klook':'https://apps.apple.com/us/app/klook-travel-hotels-leisure/id961850126',
+  'Trip.com':'https://apps.apple.com/us/app/trip-com-book-flights-hotels/id681752345',
+  'Wanderlog':'https://apps.apple.com/us/app/wanderlog-travel-planner/id1476732439',
+  'Google Photos':'https://apps.apple.com/us/app/google-photos/id962194608',
+  'WhatsApp':'https://apps.apple.com/us/app/whatsapp-messenger/id310633997',
+  'Airalo':'https://apps.apple.com/us/app/airalo-esim-travel-internet/id1475911720'
+};
+const GOOGLE_PLAY_LINKS = {
+  'Google Maps':'https://play.google.com/store/apps/details?id=com.google.android.apps.maps',
+  'Uber':'https://play.google.com/store/apps/details?id=com.ubercab',
+  'YouBike 2.0':'https://play.google.com/store/apps/details?id=tw.com.youbike.taipei',
+  'Taipei Metro Go':'https://play.google.com/store/apps/details?id=tw.com.trtc.is.android05',
+  'Taiwan Railway e-booking':'https://play.google.com/store/apps/details?id=tw.gov.railway.twtraffic',
+  'Google Translate':'https://play.google.com/store/apps/details?id=com.google.android.apps.translate',
+  'Google Lens':'https://play.google.com/store/apps/details?id=com.google.ar.lens',
+  'LINE':'https://play.google.com/store/apps/details?id=jp.naver.line.android',
+  'LINE Pay Taiwan':'https://play.google.com/store/apps/details?id=com.linecorp.linepay',
+  'Klook':'https://play.google.com/store/apps/details?id=com.klook',
+  'Trip.com':'https://play.google.com/store/apps/details?id=ctrip.english',
+  'Wanderlog':'https://play.google.com/store/apps/details?id=com.wanderlog.android',
+  'Google Photos':'https://play.google.com/store/apps/details?id=com.google.android.apps.photos',
+  'WhatsApp':'https://play.google.com/store/apps/details?id=com.whatsapp',
+  'Airalo':'https://play.google.com/store/apps/details?id=com.mobillium.airalo'
+};
+function appStoreButtons(name){
+  const ios = APP_STORE_LINKS[name];
+  const android = GOOGLE_PLAY_LINKS[name];
+  const site = getLink(name,'web');
+  return `<div class="link-row">${ios ? `<a class="open-link" href="${ios}" target="_blank" rel="noopener noreferrer"> App Store</a>` : ''}${android ? `<a class="open-link" href="${android}" target="_blank" rel="noopener noreferrer">▶ Google Play</a>` : ''}<a class="open-link" href="${site}" target="_blank" rel="noopener noreferrer">↗ Website</a></div>`;
+}
+
+function copyShareLink(){
+  const url=window.location.href;
+  if(navigator.share){ navigator.share({title:document.title,text:'Taipei Family Trip Guide',url}).catch(()=>{}); return; }
+  navigator.clipboard?.writeText(url).then(()=>alert('Share link copied. Upload the HTML to a static host first if this is still a local file.'));
+}
+function downloadThisGuide(){
+  const blob=new Blob(['<!DOCTYPE html>\n'+document.documentElement.outerHTML],{type:'text/html'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='taipei_family_trip_guide_interactive.html';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ════════════════════════════════════════════════
+   DATA — EXPLORE TAIPEI
+════════════════════════════════════════════════ */
+const exploreCats = [
+  { label:'📍 Neighborhoods', color:'#0C447C', note:'Use this as a quick “where should we wander?” guide while keeping the itinerary intact.', items:[
+      {name:'Ximending',tag:'Youth + street food',desc:'Pedestrianized “Harajuku of Taipei” energy: fashion, accessories, street snacks, rainbow road, nightlife, and bright lights.'},
+      {name:'Dihua Street',tag:'Old Taipei',desc:'Historic preserved shophouse street for Chinese herbs, spices, dried foods, tea, textiles, architecture, and traditional gifts.'},
+      {name:'Yongkang Street',tag:'Food street',desc:'One of the easiest Taipei food streets for a family crawl: beef noodles, scallion pancakes, desserts, cafés, and milk tea.'},
+      {name:'Zhongshan',tag:'Shopping + cafés',desc:'Central, polished shopping district with boutiques, department stores, cafés, and easy MRT access.'},
+      {name:'Xinyi',tag:'Fancy shopping',desc:'Taipei 101, Breeze, Shinkong Mitsukoshi, luxury malls, Pokémon Center Taipei, rooftop bars, and a modern city feel.'},
+      {name:'Da’an',tag:'Easy base',desc:'Green, central, food-heavy district close to Yongkang Street, parks, cafés, and comfortable MRT movement.'}
+    ]},
+  { label:'⭐ Top things to do', color:'#633806', note:'Highest-priority Taipei experiences to keep on the family shortlist.', items:[
+      {name:'Elephant Mountain',tag:'Easy hike',desc:'Very manageable paved viewpoint hike; about 20 minutes up for the classic Taipei 101 skyline view.'},
+      {name:'Taipei 101',tag:'Icon',desc:'Observation deck, damper, skyline views, luxury shopping, and Din Tai Fung nearby.'},
+      {name:'Chiang Kai-shek Memorial Hall',tag:'Ceremony',desc:'Grand plaza with a guard-changing ceremony that feels similar in spirit to Buckingham Palace-style ceremonial viewing.'},
+      {name:'228 Peace Memorial Park',tag:'Nearby CKS',desc:'Easy add-on near the memorial area for a quiet shaded walk and Taiwan history context.'},
+      {name:'National Palace Museum',tag:'World-class museum',desc:'One of Taipei’s biggest cultural heavy-hitters; best for a more relaxed half-day museum block.'},
+      {name:'Huashan 1914 Creative Park',tag:'Pop-ups + design',desc:'Creative compound with exhibitions, pop-up stores, cafés, restaurants, and live music.'},
+      {name:'Longshan Temple',tag:'Temple',desc:'One of Taipei’s most important and beautiful temples; atmospheric and easy to combine with old Taipei neighborhoods.'},
+      {name:'Traditional teahouse',tag:'Gongfu tea',desc:'First-timers can usually ask the host to demonstrate gongfu-style brewing.'},
+      {name:'Themed 7-Elevens',tag:'Only in Taiwan',desc:'Worth popping into when nearby; themed convenience stores can be surprisingly fun and photogenic.'},
+      {name:'Taipei souvenir stamps',tag:'Free collectible',desc:'Most attractions and transit spots have their own stamp and ink set — bring or buy a small stamp book.'},
+      {name:'Themed metro card',tag:'EasyCard souvenir',desc:'Look for special EasyCards at convenience stores or Wan Nian Building, 4F, No. 70 Xining Rd, Wanhua District.'}
+    ]},
+  { label:'🌿 Off-beaten path', color:'#27500A', note:'Optional swaps when the group wants something local, quirky, or scenic.', items:[
+      {name:'Shrimp fishing',tag:'Catch + cook',desc:'Indoor/outdoor shrimp ponds where you fish and cook what you catch — very Taiwan, very memorable.'},
+      {name:'Maokong Gondola',tag:'Views + tea',desc:'2.5-mile cable-car route with mountain and city views, including glass-floored Crystal Cabins.'},
+      {name:'Taiwan fortune teller',tag:'Local culture',desc:'Fun, low-pressure cultural stop if the group wants something playful and different.'},
+      {name:'Yongle Fabric Market',tag:'Textiles',desc:'Great add-on near Dihua Street for fabrics, trims, and a more local shopping angle.'},
+      {name:'Tamsui sunset',tag:'Riverfront',desc:'One of the best sunset walks near Taipei, with waterfront stalls and an easy MRT ride.'}
+    ]},
+  { label:'🚆 Day trips ranked', color:'#854F0B', note:'Ranked by your stated interest level, with Jiufen as the highest-priority outside-Taipei trip.', items:[
+      {name:'1. Jiufen Old Street',tag:'Highest priority',desc:'Mountaintop village with lantern-lined staircases, atmospheric alleys, Amei Teahouse views, and strong Spirited Away associations.'},
+      {name:'2. Shifen Waterfall + Sky Lanterns',tag:'Combineable',desc:'Popular with Jiufen, but combining both can make the day feel longer and more tiring for a family group.'},
+      {name:'3. Beitou Hot Spring Village',tag:'Easy MRT',desc:'Hot spring options from older bathhouses to modern resorts; low-friction and restorative.'},
+      {name:'4. Keelung Miaokou Night Market',tag:'Seafood',desc:'Seafood-heavy night market in a port city; best if the group wants seafood and a dedicated evening outing.'},
+      {name:'5. Houtong Cat Village',tag:'Cats',desc:'Cute add-on in the northeast if animal lovers want an easier, novelty-focused stop.'},
+      {name:'6. Shenkeng Stinky Tofu Village',tag:'Food niche',desc:'A stronger food-adventure option for anyone curious about Taiwan’s most polarizing snack.'},
+      {name:'7. Northern Hills temples',tag:'Scenic temples',desc:'Wuji Tianyuan Temple, Yuan Dao Guanyin Temple, and Fufudingshan Shell & Coral Temple for temple-focused explorers.'}
+    ]},
+  { label:'🧻 Practical Taiwan notes', color:'#712B13', note:'Small but important comfort details for the whole family.', items:[
+      {name:'Cash is still important',tag:'Night markets',desc:'Taiwan is card-friendly in malls and chains, but many night-market stalls, taxis, small shops, and local vendors still prefer cash.'},
+      {name:'Carry pocket tissues',tag:'Bathrooms',desc:'Toilet paper is not always provided in public restrooms. Keep tissues in everyone’s day bag.'},
+      {name:'Use small NT bills',tag:'Street food',desc:'Night markets and small vendors are easier with NT$100 and NT$500 bills instead of large notes.'},
+      {name:'Bring a stamp book',tag:'Souvenir trail',desc:'Souvenir stamps are a fun low-cost way to turn each attraction into a collectible family trail.'}
+    ]}
+];
+const exploreCatsMapped = exploreCats.map(cat=>({ label:cat.label, color:cat.color, html:`<div class="section-note">${cat.note}</div><div class="item-grid">${cat.items.map(item=>`<div class="item-card"><div class="item-top"><div class="item-name">${linkify(item.name,'name-link')}</div><span class="price-tag p-mid">${item.tag}</span></div><div class="item-desc">${item.desc}</div>${openLink(item.name)}</div>`).join('')}</div>` }));
+makeTabSystem('explore-tabs','explore-panels',exploreCatsMapped,'ep',exploreCats.map(c=>c.color));
+
+/* ════════════════════════════════════════════════
+   DATA — ITINERARY
+════════════════════════════════════════════════ */
+const itinDays = [
+  {
+    date:'May 10 · Sat', title:'Arrival & settle in', sub:'No agenda — just arrive, eat, and breathe',
+    summary:'Land at 8pm, check into Park Taipei Hotel, take a gentle stroll to Ningxia Night Market for first bites — braised pork, scallion pancakes, first bubble tea. Early night to beat jet lag.',
+    pills:['food','iconic','free'],
+    blocks:[
+      {time:'8:00 PM',title:'Check into Park Taipei Hotel',desc:'Drop bags, freshen up, get everyone oriented. No rush — you have a full week ahead.',tags:['sight']},
+      {time:'9:00 PM',title:'Ningxia Night Market — first taste of Taiwan',desc:'One of Taipei\'s most relaxed, manageable night markets. Braised pork belly rice, scallion pancakes, oyster vermicelli, stinky tofu. Pick up your first bubble tea.',tags:['food','iconic']},
+      {time:'10:30 PM',title:'Early night — rest up',desc:'Jet lag is real. Get a good sleep and start fresh tomorrow.',tags:['free']}
+    ],
+    tip:'Bring cash to the night market — small NT bills. Grab your first bubble tea: Chi Cha San Chen or Milksha are both excellent.'
+  },
+  {
+    date:'May 11 · Sun', title:'Iconic Taipei day', sub:'Elephant Mountain · Taipei 101 · Xinyi shopping · Din Tai Fung',
+    summary:'Slow breakfast, easy Elephant Mountain hike for the 101 view, Taipei 101 observation deck, Din Tai Fung lunch, then a free afternoon of Xinyi luxury shopping and Pokémon Center. Michelin dinner at Shin Yeh.',
+    pills:['sight','food','shop','iconic'],
+    blocks:[
+      {time:'8:30 AM',title:'Traditional Taiwanese breakfast',desc:'秦小姐豆漿 — soy milk, egg pancakes, scallion flatbreads. The real local experience.',tags:['food']},
+      {time:'10:00 AM',title:'Elephant Mountain hike',desc:'Easy 20-minute paved hike with iconic Taipei 101 skyline views. Manageable for everyone.',tags:['sight','iconic']},
+      {time:'12:00 PM',title:'Taipei 101 observation deck',desc:'World\'s fastest elevator to the 89th floor. Book group skip-the-line tickets on Klook in advance.',tags:['sight','iconic']},
+      {time:'2:00 PM',title:'Din Tai Fung lunch',desc:'World\'s most famous xiaolongbao. Order soup dumplings, shrimp fried rice, red bean buns. Reserve ahead for groups.',tags:['food','iconic']},
+      {time:'4:00 PM',title:'Free time: Xinyi luxury shopping + Pokémon Center',desc:'Breeze Center, Shinkong Mitsukoshi, Taipei 101 mall, themed 7-Eleven stops, and Pokémon Center Taipei. Shop at your own pace — split up or stay together.',tags:['shop','free']},
+      {time:'7:30 PM',title:'Dinner: Shin Yeh Taiwanese Signature',desc:'Michelin Bib Gourmand Taiwanese banquet restaurant. Three-cup chicken, oyster omelet, pineapple shrimp.',tags:['food']}
+    ],
+    tip:'After dinner, the Xinyi area is beautiful lit up at night. Opera Bar (15F, Ambassador Hotel) is a lovely group nightcap.'
+  },
+  {
+    date:'May 12 · Mon', title:'Culture morning, leisure afternoon', sub:'Temples · Dihua Street · Free afternoon',
+    summary:'Longshan Temple, Dihua Street browsing and pineapple cake shopping, Yongkang Street lunch crawl, then a completely free afternoon — rest, wander, or explore. Evening stroll to CKS Memorial at dusk.',
+    pills:['sight','food','shop','free'],
+    blocks:[
+      {time:'9:30 AM',title:'Longshan Temple',desc:'Taipei\'s most beautiful and atmospheric temple — incense smoke, intricate carvings, lotus ponds. Arrive relaxed, take your time.',tags:['sight','iconic']},
+      {time:'11:00 AM',title:'Dihua Street',desc:'Taipei\'s oldest preserved street. Teas, spices, herbs, textiles. Best place to buy pineapple cakes — Chia Te is the top pick.',tags:['sight','shop','iconic']},
+      {time:'1:00 PM',title:'Lunch: Yongkang Street food crawl',desc:'Taiwan\'s best food street. Beef noodles, bubble tea, cafes and dessert shops. Made for wandering.',tags:['food']},
+      {time:'3:00 PM',title:'Free afternoon — National Palace Museum or Huashan 1914 option',desc:'Choose rest, a café, National Palace Museum for a bigger cultural block, or Huashan 1914 Creative Park for exhibitions, pop-ups, restaurants, and live music.',tags:['free','sight']},
+      {time:'6:00 PM',title:'228 Peace Memorial Park',desc:'Short, shaded walk near CKS Memorial with Taiwan history context — an easy add-on before the plaza.',tags:['sight']},
+      {time:'7:00 PM',title:'CKS Memorial — evening stroll',desc:'Grand plaza and illuminated memorial at dusk. Far less crowded in the evening. Changing of the guard runs hourly during the day if the group wants the Buckingham Palace-style ceremony.',tags:['sight','iconic']},
+      {time:'8:30 PM',title:'Dinner: casual Daan or Yongkang area',desc:'Explore a local restaurant at your own pace — no reservation needed.',tags:['food']}
+    ],
+    tip:'Buy a stamp book at Longshan Temple or Dihua Street gift shop — you\'ll collect stamps all week across every attraction.'
+  },
+  {
+    date:'May 13 · Tue', title:'Jiufen day trip', sub:'The Spirited Away village — go at your own pace',
+    summary:'Private van to the Spirited Away mountaintop village. Wander freely, eat from stalls, linger at the iconic Amei Teahouse for a gongfu tea ceremony. No rushing — leave when ready. Optional Raohe Night Market on return.',
+    pills:['trip','sight','food','iconic'],
+    blocks:[
+      {time:'9:00 AM',title:'Depart for Jiufen by private van',desc:'Charter a 10-person van — about 1.5 hours from Taipei. Book via Klook or Tripool.',tags:['sight']},
+      {time:'11:00 AM',title:'Arrive in Jiufen — wander freely',desc:'Red lantern-lined staircases, misty ocean views, alleyways that inspired Spirited Away. Taro balls, fish balls, stinky tofu from stalls.',tags:['sight','food']},
+      {time:'1:00 PM',title:'Amei Teahouse — gongfu tea ceremony',desc:'The iconic teahouse overlooking the valley and sea. Host walks the group through gongfu-style brewing. Book well ahead.',tags:['food','iconic']},
+      {time:'3:30 PM',title:'Continue exploring or rest at the teahouse',desc:'Stay as long as the group is happy. No clock — leave when ready.',tags:['free']},
+      {time:'6:00 PM',title:'Return to Taipei',desc:'Back at hotel by 6:00–6:30 PM.',tags:['sight']},
+      {time:'8:00 PM',title:'Optional: Raohe Night Market',desc:'Famous pepper pork bun at the temple entrance. Totally optional — skip if tired.',tags:['food']}
+    ],
+    tip:'Skip Shifen on this trip — combining lanterns + Jiufen in one day is exhausting. Jiufen alone, done slowly, is far better.'
+  },
+  {
+    date:'May 14 · Wed', title:'Full shopping day', sub:'Wufenpu · Ximending · Donki — all at leisure',
+    summary:'Slow start, then Wufenpu wholesale fashion district, brown sugar boba, Ximending fashion wandering and Ga Ji Dai bag shopping, Donki for gifts and snacks, casual dinner at Huaxi Night Market.',
+    pills:['shop','food','iconic','free'],
+    blocks:[
+      {time:'10:00 AM',title:'Slow start — hotel breakfast or café',desc:'Sleep in. This is a shopping and leisure day with nothing cultural required.',tags:['free']},
+      {time:'11:30 AM',title:'Wufenpu wholesale fashion district',desc:'Hundreds of stalls with trendy, affordable clothing. The aunts\' paradise. Bring cash, wear comfortable shoes, plan 2+ hours.',tags:['shop']},
+      {time:'2:00 PM',title:'Lunch + brown sugar boba milk tea',desc:'Xing Fu Tang boba in Ximending — caramelized pearls cooked fresh in front of you.',tags:['food','iconic']},
+      {time:'3:00 PM',title:'Ximending — wander at leisure',desc:'Traffic-free fashion district. Pick up the iconic Ga Ji Dai striped bag — "Taiwan LV." Very cheap, very iconic.',tags:['shop','iconic']},
+      {time:'5:00 PM',title:'Donki (Don Quijote)',desc:'Japan\'s everything-store. Snacks, cosmetics, gadgets, quirky gifts. At least an hour here.',tags:['shop']},
+      {time:'7:30 PM',title:'Dinner: Huaxi Street Night Market',desc:'Old-school market with fresh seafood and classic street food. Casual end to a big shopping day.',tags:['food']}
+    ],
+    tip:'Snow King Ice Cream near Ximending has 70+ wild flavors — pig\'s blood, rose lychee, pineapple cake flavor.'
+  },
+  {
+    date:'May 15 · Thu', title:'Hot springs & leisure', sub:'Beitou morning · Free afternoon · Shilin Night Market',
+    summary:'Restorative morning at Beitou Hot Spring Village (30 min by MRT), relaxed lunch, then a completely free afternoon. Evening Shilin Night Market for Taiwan\'s most famous street food spread.',
+    pills:['sight','food','iconic','free'],
+    blocks:[
+      {time:'9:30 AM',title:'Beitou Hot Spring Village',desc:'Take the MRT (30 min) to world-class sulfur springs. Colonial-era public baths or luxurious resort — your choice. A slow, restorative morning.',tags:['sight','iconic']},
+      {time:'12:30 PM',title:'Lunch in Beitou, return to city',desc:'Relaxed lunch in the village before heading back.',tags:['food']},
+      {time:'2:30 PM',title:'Free afternoon — completely open',desc:'Hotel rest, spa, more shopping, café, or nothing at all. Intentional downtime.',tags:['free']},
+      {time:'7:30 PM',title:'Shilin Night Market dinner',desc:'Taiwan\'s most famous night market. Oyster omelets, giant fried chicken, bubble tea, stinky tofu. Come hungry, no agenda.',tags:['food','iconic']}
+    ],
+    tip:'Millennium Hot Springs in Beitou is the affordable authentic public bath. For privacy and luxury, book a private room at a hot spring hotel in advance.'
+  },
+  {
+    date:'May 16 · Fri', title:'Last full day — savor it', sub:'Final shopping · Tamsui sunset · Farewell dinner',
+    summary:'Zhongshan luxury shopping morning, beef noodle lunch at Liu Shandong, final souvenir sweep at Taipei Station Underground Mall (pineapple cakes, Kuai Kuai puffs), Tamsui sunset walk, farewell banquet dinner, final drinks at Ounce or Opera Bar.',
+    pills:['shop','food','sight','night','iconic'],
+    blocks:[
+      {time:'10:00 AM',title:'Zhongshan district — final luxury shopping',desc:'Miramar Mall, boutiques, international brands, local designers. Relaxed final morning.',tags:['shop']},
+      {time:'1:00 PM',title:'Lunch: Liu Shandong Beef Noodles',desc:'The best beef noodles in Taipei since the 1950s. Rich bone broth, braised beef, silky noodles.',tags:['food','iconic']},
+      {time:'2:30 PM',title:'Final souvenir sweep',desc:'Taipei Station Underground Mall — nearly 200 stores. Pineapple cakes (Chia Te), Kuai Kuai corn puffs (good-luck snack), last gifts.',tags:['shop','iconic']},
+      {time:'4:30 PM',title:'Tamsui riverfront — sunset walk',desc:'Short MRT ride to Taipei\'s best sunset. Waterfront stalls, fresh air, beautiful send-off.',tags:['sight']},
+      {time:'7:30 PM',title:'Farewell dinner — go all out',desc:'Book a private room: Shin Yeh for Taiwanese banquet, A Joy at Taipei 101 for the view, or a full luxury spread at Le Palais.',tags:['food']},
+      {time:'9:30 PM',title:'Final drinks: Ounce or Opera Bar',desc:'Ounce is English-speaking and warm. Opera has the views. Both welcome groups.',tags:['night']}
+    ],
+    tip:'Pack bags tonight. Flight is May 17 at 9:30 AM — aim to leave Park Taipei Hotel by 7:00 AM.'
+  }
+];
+
+const buckets = [
+  {label:'Shopping', color:'#3C3489', items:[
+    {b:'Xinyi district',s:'— Breeze, Shinkong, luxury'},
+    {b:'Zhongshan',s:'— boutiques, Miramar Mall'},
+    {b:'Ximending',s:'— fashion, street, accessories'},
+    {b:'Wufenpu',s:'— wholesale fashion, aunts\' paradise'},
+    {b:'Dihua Street',s:'— teas, textiles, gifts, pineapple cakes'},
+    {b:'Donki',s:'— snacks, cosmetics, quirky gifts'},
+    {b:'Taipei Station Mall',s:'— 200 stores, final sweep'},
+    {b:'Pokémon Center Taipei',s:'— Xinyi'},
+    {b:'Jianguo Jade Market',s:'— Sat/Sun only, antiques'}
+  ]},
+  {label:'Food', color:'#085041', items:[
+    {b:'Din Tai Fung',s:'— world-famous xiaolongbao, book ahead'},
+    {b:'Liu Shandong',s:'— best beef noodles in Taipei'},
+    {b:'Shin Yeh Taiwanese',s:'— affordable Michelin'},
+    {b:'Wang\'s Broth',s:'— braised pork belly rice'},
+    {b:'Lan Jia Gua Bao',s:'— award-winning Taiwanese burger'},
+    {b:'Yongkang Street',s:'— Taiwan\'s top food street'},
+    {b:'Chi Cha San Chen / Milksha',s:'— top bubble tea'},
+    {b:'Xing Fu Tang',s:'— brown sugar boba, Ximending'},
+    {b:'Snow King Ice Cream',s:'— 70+ wild flavors'},
+    {b:'Chia Te / Sunnyhills',s:'— best pineapple cakes'},
+    {b:'Amei Teahouse, Jiufen',s:'— book ahead'}
+  ]},
+  {label:'Bars', color:'#72243E', items:[
+    {b:'Ounce',s:'— English-speaking, NY-style, group-friendly'},
+    {b:'Opera Bar',s:'— 15th floor city views'},
+    {b:'Nisei',s:'— Japanese-American speakeasy'},
+    {b:'Needle',s:'— live music Tuesdays'},
+    {b:'9birds',s:'— intimate, HK-themed, bowl shots'},
+    {b:'Bar Between',s:'— Japanese classics + fruit cocktails'},
+    {b:'Uno',s:'— mezcal & tequila focused'},
+    {b:'Imbibe',s:'— Taiwanese flavor cocktails'}
+  ]},
+  {label:'Places to go', color:'#0C447C', items:[
+    {b:'Xinyi',s:'— luxury shopping, Taipei 101 area'},
+    {b:'Ximending',s:'— fashion, youth culture, rainbow road'},
+    {b:'Zhongshan',s:'— upscale, Miramar, trendiest neighborhood'},
+    {b:'Yongkang Street',s:'— Taiwan\'s best food street'},
+    {b:'Dihua Street',s:'— oldest street, preserved shophouses'},
+    {b:'Beitou',s:'— hot spring village, 30 min by MRT'},
+    {b:'Tamsui',s:'— riverside sunset, waterfront stalls'},
+    {b:'Jiufen',s:'— mountaintop village, day trip'}
+  ]},
+  {label:'Top things to do', color:'#633806', items:[
+    {b:'Elephant Mountain hike',s:'— 20 min, iconic 101 view'},
+    {b:'Taipei 101 deck',s:'— book group tickets in advance'},
+    {b:'CKS Memorial at dusk',s:'— grand plaza, guard ceremony'},
+    {b:'Longshan Temple',s:'— most beautiful in Taipei'},
+    {b:'Beitou hot springs',s:'— world-class sulfur springs'},
+    {b:'Amei Teahouse',s:'— gongfu tea ceremony, Jiufen'},
+    {b:'Wander Jiufen',s:'— no agenda, just explore'},
+    {b:'Shrimp fishing',s:'— catch, grill & eat, uniquely Taiwanese'},
+    {b:'Souvenir stamp trail',s:'— free, every attraction'},
+    {b:'Tamsui sunset walk',s:'— best sunset in Taipei'}
+  ]},
+  {label:'Night markets', color:'#712B13', items:[
+    {b:'Ningxia',s:'— arrival night, relaxed, near hotel'},
+    {b:'Shilin',s:'— most famous in Taiwan'},
+    {b:'Raohe Street',s:'— traditional, famous pepper pork bun'},
+    {b:'Huaxi Street',s:'— old-school, seafood'},
+    {b:'Nanmen Market',s:'— indoor, air-conditioned, near CKS'},
+    {b:'Shida Night Market',s:'— smaller student-neighborhood market'}
+  ]},
+  {label:'Day trips', color:'#27500A', items:[
+    {b:'Jiufen Old Street',s:'— Spirited Away village — on itinerary'},
+    {b:'Beitou',s:'— hot springs, easy MRT — on itinerary'},
+    {b:'Tamsui',s:'— riverside sunset — on itinerary'},
+    {b:'Shifen',s:'— sky lanterns + waterfall, optional add-on'},
+    {b:'Houtong',s:'— cat village, near Jiufen route'},
+    {b:'Shenkeng',s:'— stinky tofu village'},
+    {b:'Keelung Miaokou',s:'— seafood night market'},
+    {b:'Northern Hills temples',s:'— Tianyuan, Guanyin, Shell & Coral'}
+  ]},
+  {label:'Iconic Taiwan ✦', color:'#993C1D', items:[
+    {b:'Bubble tea',s:'— invented here, drink it everywhere'},
+    {b:'Stinky tofu',s:'— try at a night market'},
+    {b:'Pineapple cake',s:'— #1 food souvenir, buy at Chia Te'},
+    {b:'Ga Ji Dai striped bag',s:'— "Taiwan LV"'},
+    {b:'3D / character EasyCard',s:'— collectible transit card'},
+    {b:'Souvenir stamp book',s:'— start at CKS gift shop'},
+    {b:'Tong Yi caramel pudding',s:'— 7-Eleven fridge'},
+    {b:'Kuai Kuai corn puffs',s:'— Taiwan\'s good-luck snack'},
+    {b:'Din Tai Fung xiaolongbao',s:'— eat at the source'},
+    {b:'Gongfu tea ceremony',s:'— Amei Teahouse, Jiufen'},
+    {b:'Themed 7-Eleven',s:'— a Taipei institution'}
+  ]}
+];
+
+/* Build day summaries */
+const summaryGrid = document.getElementById('summary-grid');
+itinDays.forEach(d => {
+  const pillHtml = d.pills.map(p=>`<span class="pill p-${p}">${{food:'Food',shop:'Shopping',sight:'Sightseeing',night:'Nightlife',iconic:'Iconic',free:'Leisure',trip:'Day trip'}[p]}</span>`).join('');
+  summaryGrid.innerHTML += `<div class="dcard"><div class="dnum">${d.date}</div><div class="dtitle">${d.title}</div><div class="dsummary">${d.summary}</div><div class="dpills">${pillHtml}</div></div>`;
+});
+
+/* Build detailed */
+const detailTabs = document.getElementById('detail-tabs');
+const detailCards = document.getElementById('detail-cards');
+const tagLabel = {food:'Food',shop:'Shopping',sight:'Sightseeing',night:'Nightlife',iconic:'Iconic Taiwan',free:'Leisure'};
+itinDays.forEach((d, i) => {
+  const tab = document.createElement('button');
+  tab.className = 'day-tab' + (i===0?' active':'');
+  tab.textContent = d.date.split(' · ')[0];
+  tab.onclick = () => {
+    detailTabs.querySelectorAll('.day-tab').forEach(t=>t.classList.remove('active'));
+    detailCards.querySelectorAll('.day-card-wrap').forEach(c=>c.classList.remove('visible'));
+    tab.classList.add('active');
+    document.getElementById('dc'+i).classList.add('visible');
+  };
+  detailTabs.appendChild(tab);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'day-card-wrap' + (i===0?' visible':'');
+  wrap.id = 'dc'+i;
+  let bHtml = '';
+  d.blocks.forEach((b, bi) => {
+    const isLast = bi===d.blocks.length-1;
+    const tags = b.tags.map(t=>`<span class="btag btag-${t}">${tagLabel[t]||t}</span>`).join('');
+    bHtml += `<div class="block"><div class="time-col"><div class="time">${b.time}</div></div><div class="dot-line"><div class="dot"></div>${isLast?'':`<div class="vline"></div>`}</div><div class="block-content"><div class="block-title">${linkify(b.title,'name-link')}</div><div class="block-desc">${b.desc}</div><div class="block-tags">${tags}</div></div></div>`;
+  });
+  wrap.innerHTML = `<div class="day-card"><div class="day-title">${d.title}</div><div class="day-sub">${d.sub}</div>${bHtml}${d.tip?`<div class="tip-box"><b>Pro tip:</b> ${d.tip}</div>`:''}</div>`;
+  detailCards.appendChild(wrap);
+});
+
+/* Build buckets */
+const bucketGrid = document.getElementById('bucket-grid');
+buckets.forEach(b => {
+  const items = b.items.map(i=>`<li><b>${linkify(i.b,'name-link')}</b> <span>${i.s}</span></li>`).join('');
+  bucketGrid.innerHTML += `<div class="bucket"><div class="bucket-label" style="color:${b.color}">${b.label}</div><ul>${items}</ul></div>`;
+});
+
+/* ════════════════════════════════════════════════
+   DATA — RESTAURANTS
+════════════════════════════════════════════════ */
+const restCats = [
+  { label:'🥟 Must-eat iconic', color:'#1D9E75',
+    note:'Non-negotiable restaurants for any first visit to Taipei.',
+    items:[
+      {name:'Din Tai Fung (鼎泰豐)', cuisine:'Xiaolongbao / Shanghainese', badges:['iconic','book'], desc:'The most famous restaurant in Taiwan. Each soup dumpling is made with exactly 18 folds on-site.', order:'Xiaolongbao, shrimp fried rice, red bean buns', price:'NT$400–800/person'},
+      {name:'Liu Shandong Beef Noodles (劉山東)', cuisine:'Taiwanese beef noodle soup', badges:['iconic'], desc:'Hidden back alley near Taipei Main Station since the 1950s. Widely considered the best beef noodle soup in Taipei.', order:'Braised beef noodle soup, tendon noodles, pickled vegetables', price:'NT$150–250/person'},
+      {name:'Shin Yeh (欣葉台菜)', cuisine:'Classic Taiwanese banquet', badges:['iconic','bib'], desc:'Taipei\'s most beloved traditional Taiwanese restaurant with Michelin Bib Gourmand recognition. Spinning round tables, perfect for a group of 10.', order:'Three-cup chicken, oyster omelet, pineapple shrimp, braised pork belly', price:'NT$500–900/person'},
+      {name:'Wang\'s Broth (王品)', cuisine:'Braised pork belly rice', badges:['iconic'], desc:'Renowned for lu rou fan — Taiwan\'s national comfort dish. Braised pork belly over rice with soft-boiled egg.', order:'Lu rou fan, braised egg, side soup', price:'NT$100–200/person'},
+      {name:'Lan Jia Gua Bao (藍家割包)', cuisine:'Taiwanese gua bao', badges:['iconic'], desc:'Award-winning Taiwanese burger — steamed bun with braised pork belly, pickled mustard greens, peanut powder.', order:'Classic gua bao, fatty or lean pork option', price:'NT$60–80 per bun'}
+    ]
+  },
+  { label:'⭐ Michelin — 3 stars', color:'#854F0B',
+    note:'Taipei\'s 3-star restaurants. Book months ahead. Special-occasion splurges only.',
+    items:[
+      {name:'Le Palais (頤宮)', cuisine:'Cantonese fine dining', badges:['star3','book'], desc:'Holding 3 Michelin stars for eight consecutive years. Famous for Cantonese roast duck carved tableside. One of the world\'s truly great Chinese restaurants.', order:'Whole Cantonese roast duck (pre-order), Cantonese seafood, double-boiled soups', price:'NT$3,000–8,000+/person'},
+      {name:'Taïrroir (態芮)', cuisine:'Taiwanese-French fusion', badges:['star3','book'], desc:'Three Michelin stars. Chef Kai Ho crafts 10-course tasting menus telling Taiwan\'s story through French culinary technique.', order:'Tasting menu only, seasonal. Taiwanese produce with French precision.', price:'NT$4,500–7,000/person'}
+    ]
+  },
+  { label:'✨ Michelin — 2 stars', color:'#534AB7',
+    note:'Taipei\'s most exciting fine dining — Japanese omakase, French tasting menus, modern Taiwanese.',
+    items:[
+      {name:'logy', cuisine:'Japanese-European omakase', badges:['star2','book'], desc:'Best Restaurant in Taiwan 2025. Ranked #22 in Asia\'s 50 Best. Seasonal Taiwanese ingredients interpreted through Japanese and European techniques.', order:'Omakase tasting menu, changes every two months.', price:'NT$5,000–8,000/person'},
+      {name:'L\'Atelier de Joël Robuchon', cuisine:'French haute cuisine', badges:['star2','book'], desc:'Opened by the most decorated chef in history. In the Bellavita luxury mall, Xinyi. 36 seats around a show kitchen counter.', order:'Foie gras quail with potato purée, seasonal French tasting menus', price:'NT$3,000–8,000/person'},
+      {name:'Molino de Urdániz', cuisine:'Modern Spanish', badges:['star2','book'], desc:'Two-Michelin-star Spanish restaurant. Creative Basque-influenced cooking. A remarkable surprise in Taipei.', order:'Tasting menu only. Spanish seafood, Basque-influenced dishes.', price:'NT$4,000–7,000/person'}
+    ]
+  },
+  { label:'🌟 Michelin — 1 star + Bib', color:'#185FA5',
+    note:'The sweet spot — serious cooking, more accessible pricing, easier reservations.',
+    items:[
+      {name:'Mume', cuisine:'Modern international / Taiwanese', badges:['star1','book'], desc:'One of Taipei\'s most beloved 1-star restaurants. Seasonal tasting menus with Taiwanese ingredients and international technique. Warm, relaxed atmosphere.', order:'5 or 7-course tasting menu. Fermented, botanical dishes rooted in Taiwan.', price:'NT$2,200–3,500/person'},
+      {name:'A Joy (饗 A Joy)', cuisine:'Taiwanese elevated buffet', badges:['bib','book'], desc:'86th floor of Taipei 101 — over 300 dishes with floor-to-ceiling city views. The most scenic dining room in the city. Perfect for a group farewell dinner.', order:'Truffle xiaolongbao, Peking duck three ways, teppanyaki lobster', price:'NT$1,800–2,500/person'},
+      {name:'Mountain and Sea House (山海楼)', cuisine:'Refined Taiwanese', badges:['star1','book'], desc:'Michelin Green Star. Committed to preserving traditional Taiwanese cuisine. Elegant townhouse, small farms and fisheries sourcing.', order:'Braised abalone, three-cup chicken, slow-cooked pork knuckle', price:'NT$1,800–3,500/person'},
+      {name:'James Kitchen (大隱酒食)', cuisine:'Home-style Taiwanese', badges:['bib'], desc:'Michelin Bib Gourmand. Feels like eating in a Taiwanese family home. On Yongkang Street — perfect for the food crawl.', order:'Pickled radish omelet, oyster rolls, flying fish roe sausages', price:'NT$350–700/person'}
+    ]
+  },
+  { label:'🍲 Hot pot & groups', color:'#712B13',
+    note:'Hot pot is Taiwan\'s great communal dining ritual — perfect for a group of 10.',
+    items:[
+      {name:'Orange Shabu Shabu (橘色涮涮鍋)', cuisine:'Japanese-style hot pot', badges:['iconic'], desc:'Taipei\'s most popular shabu shabu chain. Individual broth pots, premium meats and seafood. Book ahead for groups.', order:'Premium beef set, seafood combo, mushroom broth base', price:'NT$600–1,200/person'},
+      {name:'Xin Dian Hotpot (辛殿麻辣鍋)', cuisine:'Sichuan spicy hot pot', badges:['iconic','book'], desc:'Mala (spicy numbing) Sichuan hot pot. Rich, intense broth with premium ingredients. Often queues — reserve ahead.', order:'Mala broth, premium beef slices, fresh seafood, tofu skins', price:'NT$600–1,000/person'},
+      {name:'Modern Toilet Restaurant (便所主題餐廳)', cuisine:'Themed hot pot', badges:['iconic'], desc:'Hot pot in miniature toilet bowls at toilet-shaped tables. Completely absurd. Completely fun. The whole family will talk about it for years.', order:'Hot pot set, chocolate sundae in a mini toilet bowl', price:'NT$300–500/person'}
+    ]
+  },
+  { label:'🌅 Splurge & farewell', color:'#27500A',
+    note:'For the farewell dinner or a truly special occasion — the most memorable dining in Taipei.',
+    items:[
+      {name:'A Joy at Taipei 101 (86F)', cuisine:'Taiwanese elevated buffet', badges:['book'], desc:'300+ dishes on the 86th floor with floor-to-ceiling city views. The most spectacular dining room backdrop in Taiwan. Perfect for the group farewell.', order:'Truffle xiaolongbao, abalone, Peking duck, lobster teppanyaki', price:'NT$1,800–2,500/person'},
+      {name:'Le Palais (頤宮)', cuisine:'Cantonese / 3 Michelin stars', badges:['star3','book'], desc:'Eight consecutive years of 3 Michelin stars. The most prestigious Chinese restaurant in Taiwan. For a truly world-class evening.', order:'Whole Cantonese roast duck, lobster preparations, double-boiled soups', price:'NT$4,000–8,000+/person'},
+      {name:'N°168 Prime Steakhouse', cuisine:'Premium steakhouse', badges:['bib','book'], desc:'Grand Victoria Hotel. Two wood-fired ovens, USDA Black Angus beef, the "godfather of Taiwanese steakhouses" at the helm.', order:'Black Angus top cap steak set, wood-fired specials', price:'NT$1,500–3,000/person'}
+    ]
+  },
+  { label:'🌙 Night market dishes', color:'#993C1D',
+    note:'Not restaurants — these are the iconic dishes to seek at Taipei\'s night markets.',
+    items:[
+      {name:'Pepper pork bun (胡椒餅) — Raohe', cuisine:'Night market street food', badges:['iconic'], desc:'Baked in a clay oven at the Raohe entrance stall. The most famous single snack in any Taipei night market.', order:'One bun = NT$55. Queue is part of the experience.', price:'NT$55'},
+      {name:'Giant fried chicken cutlet (豪大大雞排)', cuisine:'Night market classic', badges:['iconic'], desc:'Bigger than your face. Battered, fried, dusted with basil. Taiwan\'s most iconic night market snack.', order:'One cutlet. Basil dusting is mandatory.', price:'NT$80–100'},
+      {name:'Oyster omelet (蚵仔煎)', cuisine:'Night market classic', badges:['iconic'], desc:'Fresh oysters in starchy egg pancake with sweet chili sauce. A founding pillar of Taiwanese night market cuisine.', order:'One portion. Best at Shilin or Raohe.', price:'NT$60–120'},
+      {name:'Stinky tofu (臭豆腐)', cuisine:'Night market classic', badges:['iconic'], desc:'Fermented, fried, served with kimchi. The most divisive food in Taiwan — but deeply satisfying once you\'re past the smell.', order:'Fried version is more approachable. One portion.', price:'NT$50–80'},
+      {name:'Bubble tea (珍珠奶茶)', cuisine:'Taiwanese drink', badges:['iconic'], desc:'Taiwan invented it. Chi Cha San Chen, Milksha, and TP Tea are the best brands in Taipei.', order:'Classic milk tea + pearls. Ask for 50% sugar, less ice.', price:'NT$60–120'}
+    ]
+  },
+  { label:'🧋 Snacks, tea & sweets', color:'#185FA5', note:'Fast hits to weave into open blocks, shopping time, and night market wandering.', items:[
+      {name:'Chi Cha San Chen',cuisine:'Milk tea',badges:['iconic'],desc:'One of the most famous tea-forward milk tea chains; good first stop for high-quality Taiwanese tea drinks.',order:'Dong Ding oolong milk tea or classic milk tea',price:'NT$80–150'},
+      {name:'Oolong Tea Project',cuisine:'Milk tea',badges:['iconic'],desc:'Tea-focused drinks with more grown-up flavor profiles than basic bubble tea chains.',order:'Oolong milk tea or seasonal tea latte',price:'NT$80–160'},
+      {name:'Milksha',cuisine:'Milk tea',badges:['iconic'],desc:'Popular chain known for fresh milk tea and brown sugar drinks.',order:'Fresh milk tea with pearls',price:'NT$70–140'},
+      {name:'TP Tea',cuisine:'Milk tea',badges:['iconic'],desc:'Chun Shui Tang family chain; reliable tea drinks across Taipei.',order:'Tieguanyin milk tea or classic pearl milk tea',price:'NT$70–150'},
+      {name:'Crispy Milk Donuts',cuisine:'Street dessert',badges:['iconic'],desc:'Instagram-famous fried milk donuts — simple, hot, and crowd-pleasing.',order:'Original crispy milk donut',price:'NT$40–100'},
+      {name:'Snow King Ice Cream',cuisine:'Ice cream',badges:['iconic'],desc:'Old-school Taipei ice cream shop with wild flavors like tea, tropical fruit, and savory oddities.',order:'Ask for samples and share several scoops',price:'NT$100–250'},
+      {name:'Tian Jin Scallion Pancakes',cuisine:'Street snack',badges:['iconic'],desc:'Beloved Yongkang-area scallion pancake stop; a perfect snack while walking.',order:'Egg scallion pancake',price:'NT$40–100'},
+      {name:'Taiwan Coffee Project',cuisine:'Coffee + gifts',badges:[],desc:'Coffee and tea chocolate-bar style souvenirs; good for easy bring-home gifts.',order:'Coffee, tea chocolate bars, or packaged gifts',price:'NT$150–600'}
+    ]},
+  { label:'🍸 Taiwanese bars', color:'#72243E', note:'Late-night options ranging from English-friendly cocktails to speakeasy-style Taiwanese flavor bars.', items:[
+      {name:'Ounce',cuisine:'NY-style cocktails',badges:['book'],desc:'Whole team speaks English, strong hospitality, and a comfortable first cocktail bar for visitors.',order:'Dealer’s choice cocktail',price:'NT$400–700'},
+      {name:'Nisei',cuisine:'Japanese-American speakeasy',badges:['book'],desc:'Speakeasy exploring Taiwanese history through a Japanese-American lens.',order:'Signature menu flight or seasonal cocktail',price:'NT$400–800'},
+      {name:'Needle',cuisine:'Cocktails + live music',badges:[],desc:'Fun bartender energy; live music every Tuesday if the timing works.',order:'Ask Chili or Miya for a recommendation',price:'NT$350–700'},
+      {name:'Uno',cuisine:'Mezcal / tequila',badges:[],desc:'Dedicated agave bar — the right pick for mezcal and tequila fans.',order:'Mezcal cocktail or tasting pour',price:'NT$350–800'},
+      {name:'9birds',cuisine:'HK-themed intimate bar',badges:[],desc:'Small Hong Kong-themed bar; watch out for the bowl shots.',order:'House cocktail or bowl shot',price:'NT$350–700'},
+      {name:'Opera',cuisine:'Hotel view bar',badges:['iconic'],desc:'Good drinks with a good city view from the 15th floor of a hotel.',order:'Nightcap with skyline view',price:'NT$400–800'},
+      {name:'Bar Between',cuisine:'Japanese classics + fruit cocktails',badges:['book'],desc:'Excellent Japanese classic and fresh fruit cocktails. Be respectful; formerly members-only.',order:'Fresh fruit cocktail',price:'NT$400–800'},
+      {name:'Imbibe',cuisine:'Taiwanese flavor cocktails',badges:[],desc:'Good range of cocktails exploring local Taiwanese ingredients and flavors.',order:'Taiwanese flavor signature cocktail',price:'NT$350–700'},
+      {name:'Daybreak',cuisine:'Politics / events bar',badges:[],desc:'Only open Fridays, Saturdays, or events; interesting for Taiwan/global politics and youth activist community energy.',order:'Check schedule before going',price:'NT$300–700'}
+    ]}
+
+];
+
+const badgeConf = {
+  star3:{cls:'b-star3',txt:'⭐⭐⭐ Michelin'},star2:{cls:'b-star2',txt:'⭐⭐ Michelin'},
+  star1:{cls:'b-star1',txt:'⭐ Michelin'},bib:{cls:'b-bib',txt:'Bib Gourmand'},
+  iconic:{cls:'b-iconic',txt:'Iconic'},book:{cls:'b-book',txt:'Book ahead'}
+};
+const restCatsMapped = restCats.map(cat => ({
+  label: cat.label,
+  color: cat.color,
+  html: `<div class="section-note">${cat.note}</div><div class="rest-grid">${cat.items.map(item=>{
+    const bh=(item.badges||[]).map(b=>badgeConf[b]?`<span class="badge ${badgeConf[b].cls}">${badgeConf[b].txt}</span>`:'').join('');
+    return `<div class="rcard"><div class="rcard-top"><div class="rname">${linkify(item.name,'name-link')}</div><div class="badges">${bh}</div></div><div class="cuisine">${item.cuisine}</div><div class="rdesc">${item.desc}</div><div class="order"><b>Order:</b> ${item.order}</div><div class="price-range"><b>Price:</b> ${item.price}</div>${openLink(item.name)}</div>`;
+  }).join('')}</div>`
+}));
+makeTabSystem('rest-tabs','rest-panels',restCatsMapped,'rp',restCats.map(c=>c.color));
+
+/* ════════════════════════════════════════════════
+   DATA — SHOPPING
+════════════════════════════════════════════════ */
+const shopCats = [
+  { label:'🍡 Food & edible', color:'#1D9E75', note:'Shelf-stable, customs-friendly, uniquely Taiwanese — perfect gifts to bring home.',
+    items:[
+      {name:'Pineapple cake (鳳梨酥)',price:'budget',pdesc:'NT$370–700/box',desc:'Taiwan\'s #1 food souvenir. Buttery pastry filled with pineapple jam. Chia Te and Sunnyhills are the best brands.',where:'Chia Te Bakery (Dihua St), Sunnyhills (Zhongshan)'},
+      {name:'Taiwanese oolong / high mountain tea',price:'mid',pdesc:'NT$300–2,000',desc:'Ali Shan and Li Shan oolongs are world-class. Buy sealed, gift-boxed loose-leaf.',where:'Maokong teahouses, Dihua Street, Wang Tea'},
+      {name:'Kavalan whisky gift box',price:'splurge',pdesc:'NT$1,500–8,000+',desc:'Taiwan\'s award-winning whisky with 200+ global accolades. Cheaper in Taiwan than anywhere abroad.',where:'National Cultural & Creative Gift Center, duty-free, Breeze Center'},
+      {name:'Kuai Kuai corn puffs (乖乖)',price:'budget',pdesc:'NT$25–50',desc:'Taiwan\'s iconic good-luck green-packet snack. Placed on computers and at temples. Funny, cheap, deeply Taiwanese.',where:'Any 7-Eleven, FamilyMart, or supermarket'},
+      {name:'Tong Yi caramel egg pudding',price:'budget',pdesc:'NT$25',desc:'Cold from the 7-Eleven fridge. Taiwan\'s most iconic comfort snack — silky, sweet, nostalgic.',where:'Every 7-Eleven in Taiwan'},
+      {name:'Din Tai Fung butter cookies',price:'mid',pdesc:'NT$400–900',desc:'Branded tins of butter cookies and pineapple cakes. Perfect for the DTF devotee back home.',where:'Din Tai Fung retail counter (Xinyi & other locations)'},
+      {name:'Bubble tea DIY kit',price:'budget',pdesc:'NT$200–500',desc:'Tapioca pearls, flavored powders, syrups. Taiwan invented it — buy it here.',where:'Donki, supermarkets, Ximending shops'}
+    ]
+  },
+  { label:'🎋 Iconic Taiwan', color:'#854F0B', note:'Items that define Taiwan\'s visual and cultural identity.',
+    items:[
+      {name:'Ga Ji Dai striped bag (格子袋)',price:'budget',pdesc:'NT$50–200',desc:'Red-green-white-blue striped market bag — "Taiwan LV." Used by grandmas, farmers, and now tourists. Buy the full-size version.',where:'Ximending market stalls, Dihua Street, night markets'},
+      {name:'3D character EasyCard',price:'budget',pdesc:'NT$350–800',desc:'Miniature food models and cartoon character transit cards. Uniquely Taiwanese collectible.',where:'Xinyi MRT kiosk, some convenience stores'},
+      {name:'Taipei souvenir stamp book',price:'budget',pdesc:'NT$100–250',desc:'Buy blank and fill it with free ink stamps from every attraction, MRT station, and temple.',where:'CKS Memorial gift shop, Red House Ximending, Taipei 101'},
+      {name:'Wooderful Life music box',price:'mid',pdesc:'NT$600–3,000',desc:'Taiwan\'s most beloved wooden toy brand. Intricate hand-crafted mechanical music boxes. Made in Taiwan.',where:'Red House Ximending, Huashan 1914 Creative Park'},
+      {name:'Bugcat Capoo / Shiba Says merch',price:'budget',pdesc:'NT$100–600',desc:'Taiwan\'s beloved cartoon characters with millions of Instagram followers. Plushies, stamps, tote bags.',where:'Xinyi Bugcat 7-Eleven, MRT shops, Ximending'},
+      {name:'Taipei 101 souvenir / Damper Baby',price:'budget',pdesc:'NT$150–800',desc:'101-shaped water bottles, Damper Baby plushies — Taiwan\'s quirkiest and most unique gift.',where:'Taipei 101 observation deck gift shop'}
+    ]
+  },
+  { label:'🫖 Tea & teaware', color:'#185FA5', note:'Taiwan produces some of the world\'s finest tea. A truly memorable functional luxury gift.',
+    items:[
+      {name:'High mountain oolong (高山烏龍)',price:'mid',pdesc:'NT$500–3,000',desc:'Ali Shan and Li Shan oolongs are globally prized. Floral, buttery, complex. Buy sealed gift tins.',where:'Maokong teahouses, Dihua Street, Wang Tea'},
+      {name:'Taiwanese ceramic tea set',price:'mid',pdesc:'NT$800–8,000',desc:'Hand-thrown, hand-glazed teapots for gongfu brewing. Many signed by individual artisans.',where:'Yingge Ceramics Street (30 min from Taipei), Yongkang Street'},
+      {name:'Gongfu tea ceremony set',price:'splurge',pdesc:'NT$2,000–15,000',desc:'Complete traditional set: clay teapot, tea tray, fairness cup, aroma cups. A showpiece gift.',where:'Yingge Ceramics Street, Lin\'s Ceramics Studio'},
+      {name:'Taiwan mountain coffee beans',price:'mid',pdesc:'NT$400–1,200',desc:'Largely unknown outside Taiwan — Ali Shan mountain-grown coffee is exceptional and rare.',where:'Eslite bookstore cafes, specialty roasters, Huashan Creative Park'}
+    ]
+  },
+  { label:'💎 Luxury & jewellery', color:'#534AB7', note:'Taiwan is one of Asia\'s finest sources of nephrite jade. Jianguo Jade Market (Sat/Sun only) is unmissable.',
+    items:[
+      {name:'Jade bangle or bracelet',price:'mid',pdesc:'NT$1,000–50,000+',desc:'Taiwan produces 60% of the world\'s nephrite jade. Bangles and beaded bracelets are most popular. Buy from reputable vendors.',where:'Jianguo Jade Market (Sat/Sun, cash only), high-end jewellers in Xinyi'},
+      {name:'Franz porcelain',price:'splurge',pdesc:'NT$1,500–20,000+',desc:'Taiwan\'s premium luxury porcelain brand — vibrant 3D floral designs. Used at 5-star hotels worldwide.',where:'National Cultural & Creative Gift Center, Eslite Spectrum'},
+      {name:'National Palace Museum replica',price:'mid',pdesc:'NT$300–5,000',desc:'Museum-grade replicas: jade cabbage, jadeite chopstick holders, Song dynasty ceramics.',where:'National Palace Museum gift shop (on-site only)'},
+      {name:'Kinmen steel knife',price:'mid',pdesc:'NT$800–5,000',desc:'Hand-forged from artillery shell steel recovered from the Kinmen battles. The most unique luxury gift Taiwan produces.',where:'National Cultural & Creative Gift Center'}
+    ]
+  },
+  { label:'🥃 Premium spirits', color:'#712B13', note:'Taiwan has become one of the world\'s great whisky nations.',
+    items:[
+      {name:'Kavalan Solist series',price:'splurge',pdesc:'NT$3,500–15,000+',desc:'Top tier of Taiwan\'s award-winning distillery. Cask-strength single malts. Collected worldwide. Cheaper here than abroad.',where:'Breeze Center, National Cultural & Creative Gift Center, duty-free'},
+      {name:'Kavalan Classic / Conductor',price:'mid',pdesc:'NT$1,200–2,500',desc:'Entry and mid-tier expressions — honeyed, tropical, beautifully smooth. Excellent value.',where:'Supermarkets, duty-free, Jason\'s Market Place'},
+      {name:'Taiwan Beer gift edition',price:'budget',pdesc:'NT$150–600',desc:'The nation\'s most beloved brew. Gift tins and limited edition cans — fun, inexpensive, very Taiwanese.',where:'Convenience stores, supermarkets, night markets'}
+    ]
+  },
+  { label:'👟 Fashion & beauty', color:'#3B6D11', note:'Taiwan punches above its weight in fashion design and skincare.',
+    items:[
+      {name:'ORINGO handcrafted leather shoes',price:'splurge',pdesc:'NT$3,500–8,000',desc:'Taiwan\'s award-winning handmade leather footwear. Women\'s Chelsea boots, loafers, heels. European luxury quality at a fraction of the price.',where:'ORINGO stores (3 locations in Taipei, including Xinyi)'},
+      {name:'My Scheming sheet masks (我的心機)',price:'budget',pdesc:'NT$300–800',desc:'Taiwan\'s most beloved sheet mask brand — boxes of 10 with local ingredients. Excellent quality and value.',where:'Cosmed, Watsons, Donki, convenience stores'},
+      {name:'Dr. Wu skincare',price:'mid',pdesc:'NT$500–2,000',desc:'Taiwan\'s premium dermatologist-founded skincare line. Mandelic acid serums are cult favorites across Asia.',where:'Cosmed, Sasa, Watson\'s pharmacy chain'},
+      {name:'Yi Tiao Geng herbal patches (一條根)',price:'budget',pdesc:'NT$150–400',desc:'"Taiwan Tiger Balm" — herbal muscle relief patches from Kinmen. In every pharmacy. Popular gift.',where:'Cosmed, Watsons, pharmacies, convenience stores'}
+    ]
+  },
+  { label:'🏪 Where to shop', color:'#0C447C', note:'The right destination for the right purchase.',
+    items:[
+      {name:'Jianguo Jade Market (Sat/Sun only)',price:'mid',pdesc:'Cash only · Sat/Sun',desc:'Best place in Taipei for jade, gemstones, crystals, antiques. Budget to high-end collector pieces. Bargaining expected.',where:'Under the highway overpass, Da\'an District MRT'},
+      {name:'Dihua Street',price:'budget',pdesc:'Any day',desc:'Taipei\'s oldest preserved street. Best for teas, pineapple cakes, dried goods, textiles, traditional gifts.',where:'Near Longshan Temple, Wanhua District'},
+      {name:'Eslite Spectrum (誠品)',price:'mid',pdesc:'Any day',desc:'Taiwan\'s iconic design lifestyle mall. Curated Taiwanese designers, art books, ceramics, local brands not found elsewhere.',where:'Xinyi and Songshan Cultural Park'},
+      {name:'National Cultural & Creative Gift Center',price:'mid',pdesc:'Any day',desc:'Four floors of jade, ceramics, tea sets, Kinmen knives, Franz porcelain, Kavalan whisky. The most comprehensive cultural souvenir destination.',where:'Near Zhongzheng District (short taxi from CKS Memorial)'},
+      {name:'Xinyi luxury district',price:'splurge',pdesc:'Any day',desc:'Breeze Center and Shinkong Mitsukoshi — global luxury plus Taiwanese premium brands.',where:'Xinyi District around Taipei 101'},
+      {name:'Wufenpu wholesale fashion',price:'budget',pdesc:'Any day',desc:'Hundreds of stalls, trendy affordable clothing. Best wholesale market in Taipei. Cash preferred.',where:'Near Houshanpi MRT, Xinyi District'}
+    ]
+  },
+  { label:'🏙️ Districts & malls', color:'#993C1D', note:'Shopping zones from cheap fashion to luxury malls and tech-focused browsing.', items:[
+      {name:'Ximending',price:'budget',pdesc:'Youth + cheap goods',desc:'Bright lights, cheap accessories, street fashion, rainbow road, nightlife, and Akihabara-like energy.',where:'Ximen MRT / Wanhua District'},
+      {name:'Wufenpu Shopping District',price:'budget',pdesc:'Wholesale fashion',desc:'Well-known wholesale garment district with trendy, affordable clothes. Aunts will love this.',where:'Near Houshanpi MRT'},
+      {name:'Donki Taipei',price:'budget',pdesc:'Japan-style megastore',desc:'Similar to Japan: snacks, beauty, weird gifts, home goods, and late-night browsing.',where:'Ximending / central Taipei locations'},
+      {name:'Miramar Mall Taipei',price:'mid',pdesc:'Mall + ferris wheel',desc:'Large mall option with shopping, food, entertainment, and the iconic ferris wheel.',where:'Zhongshan / Dazhi area'},
+      {name:'Shinkong Mitsukoshi / Breeze Xinyi',price:'splurge',pdesc:'Luxury shopping',desc:'Huge upscale shopping complex around Taipei 101 with luxury brands, boutiques, food halls, and great people-watching.',where:'Xinyi District'},
+      {name:'Rongjin Gorgeous Time',price:'mid',pdesc:'Cafes + gifts',desc:'Street-mall with cool cafés, decadent dessert shops, and gorgeous gift stores.',where:'Da’an / Yongkang-adjacent'},
+      {name:'Syntrend Creative Park Mall',price:'mid',pdesc:'Tech + gaming',desc:'Trendy shopping center specializing in technology, gaming, photography, electronics, and creative goods.',where:'Zhongzheng / Guanghua tech area'},
+      {name:'Jianguo Jade + Holiday Flower Market',price:'mid',pdesc:'Sat/Sun only',desc:'Weekend-only jade, gemstones, antiques, plants, and flowers. Bring cash and bargain politely.',where:'Da’an District'},
+      {name:'Taipei Station Underground Mall',price:'budget',pdesc:'Nearly 200 stores',desc:'Largest underground street in Taiwan with sections for cheap clothing, electronics, games, snacks, and food.',where:'Taipei Main Station'}
+    ]}
+
+];
+const shopPriceClass = {budget:'p-budget',mid:'p-mid',luxury:'p-mid',splurge:'p-splurge'};
+const shopCatsMapped = shopCats.map(cat=>({
+  label:cat.label, color:cat.color,
+  html:`<div class="section-note">${cat.note}</div><div class="item-grid">${cat.items.map(item=>`<div class="item-card"><div class="item-top"><div class="item-name">${linkify(item.name,'name-link')}</div><span class="price-tag ${shopPriceClass[item.price]}">${item.pdesc}</span></div><div class="item-desc">${item.desc}</div><div class="item-where"><b>Where:</b> ${item.where}</div>${openLink(item.name)}</div>`).join('')}</div>`
+}));
+makeTabSystem('shop-tabs','shop-panels',shopCatsMapped,'sp',shopCats.map(c=>c.color));
+
+/* ════════════════════════════════════════════════
+   DATA — APPS
+════════════════════════════════════════════════ */
+const appCats = [
+  { label:'Before you go', color:'#1D9E75', note:'Set these up at home — some require account setup that\'s easier before traveling.',
+    apps:[
+      {icon:'✈',bg:'#E6F1FB',name:'Klook',badge:'must',desc:'Book skip-the-line tickets for Taipei 101, Din Tai Fung reservations, private van to Jiufen, and discounted attraction passes. The #1 travel booking app for Taiwan.'},
+      {icon:'💳',bg:'#E1F5EE',name:'Holafly (eSIM)',badge:'must',desc:'Buy and activate a Taiwan eSIM before you land so you have data the moment you step off the plane. Use code NICKKEMBEL for 5% off.'},
+      {icon:'💰',bg:'#EAF3DE',name:'Wise',badge:'nice',desc:'Travel card for ATM withdrawals in Taiwan at better exchange rates. Requires ID verification — set up at home.'},
+      {icon:'🏨',bg:'#EEEDFE',name:'Booking.com',badge:'nice',desc:'Best platform for Taiwan hotels if anything changes — clear cancellation policies and easy management.'}
+    ]
+  },
+  { label:'Getting around', color:'#534AB7', note:'Covers every transport need — MRT, taxi, Uber, and navigation.',
+    apps:[
+      {icon:'🗺',bg:'#E6F1FB',name:'Google Maps',badge:'must',desc:'Most-used app in Taiwan. Navigation, MRT routes, restaurant discovery, reviews. Download offline Taipei maps before you go.'},
+      {icon:'🚇',bg:'#E1F5EE',name:'Go! Taipei Metro',badge:'must',desc:'Essential MRT app. High-res line map, fares, travel times, elevator info, bus connections. Way more detail than Google Maps for the MRT.'},
+      {icon:'🚕',bg:'#FAEEDA',name:'Uber',badge:'must',desc:'Easiest way to get around without speaking Mandarin. Enter destination, pay in-app. Your existing account works in Taiwan.'},
+      {icon:'🚐',bg:'#EAF3DE',name:'Tripool',badge:'nice',desc:'Best for booking a private 10-person van — exactly what you need for the Jiufen day trip. Book point-to-point or hourly.'},
+      {icon:'🚖',bg:'#FAECE7',name:'FindTaxi',badge:'nice',desc:'English-friendly taxi app for when Uber isn\'t available. Your US number works with +1 country code.'}
+    ]
+  },
+  { label:'Communication', color:'#185FA5', note:'LINE is essential — it\'s how everyone communicates in Taiwan. WhatsApp is rarely used.',
+    apps:[
+      {icon:'💬',bg:'#E1F5EE',name:'LINE',badge:'must',desc:'East Asia\'s WhatsApp. Universally used in Taiwan. Hotels, restaurants, van driver, local contacts — all use LINE. Set up with your US number before leaving.'},
+      {icon:'🌐',bg:'#E6F1FB',name:'Google Translate',badge:'must',desc:'Point camera at Chinese text and see it translated live on screen — no photo needed. Download Chinese (Traditional) offline language pack.'},
+      {icon:'📖',bg:'#FAEEDA',name:'Naver Papago',badge:'nice',desc:'Often more accurate than Google Translate for Chinese. Specializes in Asian languages — translations feel more natural.'}
+    ]
+  },
+  { label:'Food & delivery', color:'#854F0B', note:'Useful for hotel mornings, rest days, or anyone wanting to order in.',
+    apps:[
+      {icon:'🛵',bg:'#E1F5EE',name:'UberEats',badge:'nice',desc:'Delivers from restaurants, bubble tea shops, 7-Eleven, and grocery stores. Your existing account works in Taiwan.'},
+      {icon:'🛵',bg:'#FBEAF0',name:'FoodPanda',badge:'nice',desc:'UberEats\' main rival — bright pink scooters everywhere. Often has more small local restaurants and more in-app discounts.'}
+    ]
+  },
+  { label:'Weather & payments', color:'#712B13', note:'Taiwan\'s May weather can change quickly. Check every morning before heading out.',
+    apps:[
+      {icon:'🌦',bg:'#E6F1FB',name:'Taiwan Weather (CWB)',badge:'must',desc:'Taiwan\'s official Central Weather Bureau app. Forecasts by district, air quality maps, clothing suggestions. Far more accurate than Apple Weather for Taiwan.'},
+      {icon:'💳',bg:'#E1F5EE',name:'LINE Pay',badge:'nice',desc:'Built into LINE and useful at some chains, but do not rely on it everywhere. Keep cash for night markets, taxis, small shops, and local vendors.'},
+      {icon:'💳',bg:'#EEEDFE',name:'Apple Pay / Google Pay',badge:'nice',desc:'Accepted at major malls, chain restaurants, and convenience stores. Good to have enabled regardless.'}
+    ]
+  }
+];
+const appCatsMapped = appCats.map(cat=>({
+  label:cat.label, color:cat.color,
+  html:`<div class="section-note">${cat.note}</div><div class="app-grid">${cat.apps.map(app=>`<div class="app-card"><div class="app-header-row"><div class="app-icon" style="background:${app.bg}">${app.icon}</div><div><div class="app-name">${linkify(app.name,'name-link','web')}</div><span class="app-badge ${app.badge==='must'?'b-must':'b-nice'}">${app.badge==='must'?'Must-have':'Nice to have'}</span></div></div><div class="app-desc">${app.desc}</div>${openWebLink(app.name)}</div>`).join('')}</div>`
+}));
+makeTabSystem('app-tabs','app-panels',appCatsMapped,'ap',appCats.map(c=>c.color));
+
+/* ════════════════════════════════════════════════
+   DATA — PREP CHECKLIST
+════════════════════════════════════════════════ */
+const weatherItems = [
+  {icon:'🌡️',label:'Daytime High',val:'27–30°C / 81–86°F',sub:'Warm to hot'},
+  {icon:'🌙',label:'Overnight Low',val:'22–23°C / 72–73°F',sub:'No jacket needed'},
+  {icon:'💧',label:'Humidity',val:'82–84%',sub:'Very muggy'},
+  {icon:'🌧️',label:'Rain chance',val:'~50–58% per day',sub:'Plum rain season'},
+  {icon:'☀️',label:'Sunshine',val:'7–7.5 hrs/day',sub:'Mornings usually clearer'},
+  {icon:'🌂',label:'Rainy days',val:'8–15 days in May',sub:'Afternoon showers most common'}
+];
+const packSections = [
+  {title:'👗 Clothing',items:['<b>Light summer tops</b> — linen, cotton, moisture-wicking ✦','<b>Loose breathable shorts or light trousers</b> ✦','<b>Light dress or sundress</b> for evenings ✦','Light cardigan or thin layer for A/C indoors','1 smart-casual outfit for nice dinners','Comfortable walking clothes × 7 days ✦']},
+  {title:'👟 Footwear',items:['<b>Comfortable walking shoes</b> — 10,000+ steps/day ✦','<b>Water-resistant sandals or shoes</b> ✦','Flip flops for Beitou hot springs ✦','One smart pair for dinners (no heels — cobblestones in Jiufen)']},
+  {title:'🌧️ Rain gear — essential',items:['<b>Compact travel umbrella</b> — one per person ✦','<b>Lightweight waterproof rain jacket</b> ✦','Small dry bag or waterproof phone pouch','Quick-dry fabrics preferred over cotton']},
+  {title:'🧴 Health & beauty',items:['<b>SPF 50+ sunscreen</b> — UV index HIGH in May ✦','<b>Insect repellent</b> — parks and temple grounds ✦','Anti-humidity hair products / frizz serum ✦','Deodorant ✦','<b>Pocket tissue packs</b> — no TP in most restrooms ✦','Electrolyte tablets / hydration packets','Personal prescriptions + doctor\'s note ✦']},
+  {title:'🎒 Daypack essentials',items:['<b>Small crossbody bag or daypack</b> ✦','<b>Portable power bank</b> ✦','Reusable water bottle ✦','Small cash wallet for NT$ bills ✦','Foldable tote bag for shopping','Universal adapter — Taiwan uses Type A (same as US)']},
+  {title:'📄 Documents & money',items:['<b>Passport</b> — valid 6+ months past May 17 ✦','<b>TWAC QR confirmation</b> saved to phone ✦','<b>NT$ cash</b> — NT$5,000–10,000 per person ✦','Credit/debit cards ✦','Travel insurance documents ✦','Hotel address in Chinese saved ✦','Return flight confirmation ✦']},
+  {title:'🧳 Luggage tips',items:['<b>Leave extra suitcase space</b> — you WILL shop ✦','Pack a foldable duffel bag for overflow','Bubble wrap / clothing padding for ceramics','Extra checked bag allowance for return souvenirs']}
+];
+
+const prepCats = [
+  { label:'🚨 Do now', color:'#C0392B',
+    note:'<b>Book these immediately</b> — limited availability for groups of 10. The sooner the better.',
+    type:'checklist',
+    items:[
+      {name:'Check all passports valid 6+ months past May 17, 2026',detail:'Taiwan strictly enforces 6-month validity. Any passport expiring before November 2026 must be renewed now.',tag:'urgent'},
+      {name:'Book Jiufen private 10-person van',detail:'Charter a private van via Klook, Tripool, or a recommended Taiwan driver. Fills up fast for the dates.',tag:'urgent'},
+      {name:'Reserve Din Tai Fung — Xinyi branch',detail:'Groups of 10 need advance booking. Walk-ins face 1–2 hour waits.',tag:'urgent'},
+      {name:'Reserve Amei Teahouse, Jiufen',detail:'The most famous teahouse in Taiwan. Books out weeks ahead for groups. Reserve the moment the date is confirmed.',tag:'urgent'},
+      {name:'Book Taipei 101 observation deck — group tickets',detail:'Buy skip-the-line group tickets via Klook. Significant time saving for a group of 10.',tag:'urgent'},
+      {name:'Reserve A Joy at Taipei 101 (86F) for farewell dinner',detail:'Reservations open 30 days in advance at 9am Taiwan time. Book the moment the window opens.',tag:'urgent'},
+      {name:'Reserve Shin Yeh Taiwanese Signature',detail:'Popular banquet-style restaurant. Groups of 10 need advance notice — call or email ahead.',tag:'urgent'}
+    ]
+  },
+  { label:'📋 1–2 weeks before', color:'#E67E22',
+    note:'Complete these at least <b>1–2 weeks before May 9</b>. Most take under 15 minutes.',
+    type:'checklist',
+    items:[
+      {name:'Complete Taiwan Arrival Card (TWAC) — all 10 travelers',detail:'Mandatory since Oct 2025. Complete at twac.immigration.gov.tw within 3 days of arrival. One person can file for up to 16 travelers. Completely free.',tag:'asap'},
+      {name:'US citizens: no visa needed — passport + return ticket',detail:'US passport holders get 90 days visa-free. Just ensure passport is valid and you have a confirmed return flight.',tag:'asap'},
+      {name:'Set up Holafly eSIM (or plan for airport SIM)',detail:'Buy and activate before departure so you have data the moment you land. Use code NICKKEMBEL for 5% off.',tag:'asap'},
+      {name:'Download all essential apps (see Apps tab)',detail:'Google Maps (download offline Taiwan), LINE, Google Translate (download Chinese Traditional offline), Go! Taipei Metro, Klook, Uber, Taiwan Weather CWB.',tag:'asap'},
+      {name:'Set up LINE with US phone numbers',detail:'Taiwan\'s universal messaging app. Register with your US number before departure — it works fine.',tag:'asap'},
+      {name:'Notify credit cards of Taiwan travel dates',detail:'Alert all banks before departure to prevent fraud blocks on cards abroad.',tag:'asap'},
+      {name:'Get New Taiwan Dollar (NTD) cash',detail:'NT$5,000–10,000 per person in small bills (NT$100–500). Night markets and traditional shops are cash-only.',tag:'asap'},
+      {name:'Book Beitou hot spring experience',detail:'For luxury, book a private room at a Beitou hot spring resort. Public baths (Millennium Hot Springs) are walk-in.',tag:'before'},
+      {name:'Reserve Orange Shabu Shabu for group hot pot night',detail:'Book ahead to secure a table for 10.',tag:'before'},
+      {name:'Add travel insurance for all 10 travelers',detail:'Covers medical, trip cancellation, and lost luggage. Strongly recommended for a mixed-age group.',tag:'before'},
+      {name:'Save Park Taipei Hotel address in Chinese',detail:'有巢氏旅館台北本館 — Save for showing taxi drivers and for the TWAC accommodation field.',tag:'before'},
+      {name:'Mother\'s Day heads up — May 10 is arrival day',detail:'Mother\'s Day 2026 falls on arrival Sunday. Restaurants fully booked that evening. Ningxia Night Market for arrival night — no reservation needed.',tag:'before'}
+    ]
+  },
+  { label:'🌦️ Weather & packing', color:'#1D9E75', type:'packing', items:[] },
+  { label:'📱 Apps to download', color:'#185FA5',
+    note:'Download and set up before you leave. Some (LINE, Google Translate) need a few minutes of setup.',
+    type:'checklist',
+    items:[
+      {name:'Google Maps — download offline Taiwan map',detail:'Your #1 tool. Offline map = works without data.',tag:'day'},
+      {name:'Go! Taipei Metro',detail:'MRT map, fares, travel times, elevator locations. Essential for daily transit.',tag:'day'},
+      {name:'LINE — set up with US number',detail:'Taiwan\'s universal messaging app. Hotels, drivers, and locals all use it. Register before departure.',tag:'day'},
+      {name:'Google Translate — download Chinese Traditional offline',detail:'Point camera at menus and signs for instant translation. Offline mode is essential.',tag:'day'},
+      {name:'Klook — create account + pre-book tickets',detail:'Book Taipei 101 skip-the-line tickets, private van, and other activities.',tag:'day'},
+      {name:'Uber — confirm account works internationally',detail:'Your existing Uber account works in Taiwan. Confirm payment method is set up.',tag:'day'},
+      {name:'Taiwan Weather (CWB)',detail:'Taiwan\'s official weather app — by district, not city-wide. More accurate than Apple Weather.',tag:'day'},
+      {name:'Holafly — set up eSIM',detail:'Buy and activate before departure. Switch to Taiwan eSIM the moment you land.',tag:'day'},
+      {name:'UberEats — confirm account',detail:'Useful for jet-lag mornings or rest days.',tag:'day'}
+    ]
+  },
+  { label:'✈️ Day of travel', color:'#534AB7',
+    note:'Things to handle on <b>May 9 (departure day)</b> and during the flight.',
+    type:'checklist',
+    items:[
+      {name:'Complete Taiwan Arrival Card if not already done',detail:'Must be done within 3 days of arrival (May 8–10). URL: twac.immigration.gov.tw — free.',tag:'day'},
+      {name:'Save TWAC QR confirmation on every phone',detail:'Screenshot or save to photos. Speeds up immigration significantly.',tag:'day'},
+      {name:'Activate Holafly eSIM',detail:'Switch to Taiwan eSIM before landing so you have data as soon as you touch down.',tag:'day'},
+      {name:'Get NTD cash at Taoyuan Airport',detail:'Reliable ATMs and exchange desks in arrivals. NT$5,000–10,000 per person in mixed bills.',tag:'day'},
+      {name:'Confirm transfer to Park Taipei Hotel',detail:'Airport MRT to Taipei Main Station (~35 min, NT$160/person) then taxi. Or book a private group transfer on Klook.',tag:'day'},
+      {name:'Screenshot hotel address in Chinese for taxi',detail:'有巢氏旅館台北本館',tag:'day'}
+    ]
+  },
+  { label:'🧴 Health & money tips', color:'#712B13',
+    note:'Practical tips for Taipei in May — particularly relevant for a mixed-age group.',
+    type:'checklist',
+    items:[
+      {name:'Pack high-SPF sunscreen (SPF 50+)',detail:'UV index in May is HIGH (6.4). Reapply every 2 hours. Taiwan\'s drugstores (Cosmed, Watsons) also carry excellent local sunscreen.',tag:'before'},
+      {name:'Anti-humidity hair products',detail:'82–84% humidity is intense. Bring smoothing serums — local pharmacies carry great options if needed.',tag:'before'},
+      {name:'Portable umbrella — every person, every day',detail:'58% daily rain chance. A compact umbrella in every bag is non-negotiable. Taiwan convenience stores sell them for ~NT$200.',tag:'before'},
+      {name:'Electrolytes / hydration tablets',detail:'Heat + humidity is dehydrating. Bring electrolyte packets, especially for the aunts.',tag:'before'},
+      {name:'Pocket tissues every day',detail:'Most restrooms do NOT provide toilet paper. Carry pocket tissue packs at all times.',tag:'before'},
+      {name:'US customs rules for return: what you can bring back',detail:'Pineapple cakes, sealed teas, packaged snacks are fine. No fresh fruit or meat. Declare any cash over $10,000 USD.',tag:'before'},
+      {name:'Emergency numbers: 110 (police) · 119 (ambulance)',detail:'English-speaking operators available. Save on all phones.',tag:'before'}
+    ]
+  },
+  { label:'🧻 Daily comfort notes', color:'#712B13', type:'checklist', note:'Small Taiwan-specific habits that make each day smoother.', items:[
+      {name:'Carry pocket tissues every day',detail:'Toilet paper is not always provided in public restrooms. Put tissues in every day bag.',tag:'before'},
+      {name:'Carry small NT cash for night markets',detail:'Many stalls, small vendors, markets, taxis, and older shops prefer cash or may not take foreign cards.',tag:'before'},
+      {name:'Use small bills at food stalls',detail:'NT$100 and NT$500 bills are easier than large notes when buying snacks, drinks, and souvenirs.',tag:'before'},
+      {name:'Start a souvenir stamp habit early',detail:'Bring or buy a small notebook so every attraction stamp becomes part of the family trip memory.',tag:'before'}
+    ]}
+
+];
+
+// Checklist toggle functions
+function toggleCheck(catIdx, itemIdx, total) {
+  const ci = document.getElementById(`ci-${catIdx}-${itemIdx}`);
+  ci.classList.toggle('done');
+  const done = document.querySelectorAll(`#prep-panel-${catIdx} .check-item.done`).length;
+  const pct = Math.round((done/total)*100);
+  const pf = document.getElementById(`progf-${catIdx}`);
+  const pl = document.getElementById(`progl-${catIdx}`);
+  if(pf) pf.style.width = pct+'%';
+  if(pl) pl.textContent = `${done} / ${total} complete`;
+}
+function togglePack(id) {
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle('done');
+}
+
+const tagConf = {urgent:{cls:'u-urgent',txt:'Do now'},asap:{cls:'u-asap',txt:'1–2 weeks before'},before:{cls:'u-before',txt:'Before departure'},day:{cls:'u-day',txt:'Day of travel'}};
+
+const prepTabsEl = document.getElementById('prep-tabs');
+const prepPanelsEl = document.getElementById('prep-panels');
+
+prepCats.forEach((cat, i) => {
+  const tab = document.createElement('button');
+  tab.className = 'tab'+(i===0?' on':'');
+  tab.textContent = cat.label;
+  if(i===0){tab.style.background=cat.color;tab.style.borderColor=cat.color;}
+  tab.onclick = () => {
+    prepTabsEl.querySelectorAll('.tab').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.borderColor='';});
+    prepPanelsEl.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+    tab.classList.add('on'); tab.style.background=cat.color; tab.style.borderColor=cat.color;
+    document.getElementById('prep-panel-'+i).classList.add('on');
+  };
+  prepTabsEl.appendChild(tab);
+
+  const panel = document.createElement('div');
+  panel.className = 'panel'+(i===0?' on':'');
+  panel.id = 'prep-panel-'+i;
+
+  let html = `<div class="section-note">${cat.note||''}</div>`;
+
+  if(cat.type === 'packing') {
+    html += `<div class="weather-grid">`;
+    weatherItems.forEach(w => {
+      html += `<div class="wcard"><div class="wcard-icon">${w.icon}</div><div class="wcard-label">${w.label}</div><div class="wcard-val">${w.val}</div><div class="wcard-sub">${w.sub}</div></div>`;
+    });
+    html += `</div><div class="pack-grid">`;
+    packSections.forEach((sec, si) => {
+      html += `<div class="pack-section"><div class="pack-title">${sec.title}</div>`;
+      sec.items.forEach((item, ii) => {
+        const pid = `pi-${i}-${si}-${ii}`;
+        html += `<div class="pack-item" id="${pid}" onclick="togglePack('${pid}')"><div class="pcheck"></div><div class="pname">${item}</div></div>`;
+      });
+      html += `</div>`;
+    });
+    html += `</div>`;
+  } else if(cat.type === 'checklist') {
+    const total = cat.items.length;
+    html += `<div class="progress-bar"><div class="progress-fill" id="progf-${i}" style="width:0%"></div></div><div class="progress-label" id="progl-${i}">0 / ${total} complete</div><div class="check-list">`;
+    cat.items.forEach((item, ii) => {
+      const tc = tagConf[item.tag]||{cls:'u-day',txt:''};
+      html += `<div class="check-item" id="ci-${i}-${ii}" onclick="toggleCheck(${i},${ii},${total})"><div class="checkbox"></div><div class="item-body"><div class="item-name">${item.name}<span class="urgent-tag ${tc.cls}">${tc.txt}</span></div><div class="item-detail">${item.detail}</div></div></div>`;
+    });
+    html += `</div>`;
+  }
+
+  panel.innerHTML = html;
+  prepPanelsEl.appendChild(panel);
+});
+</script>
+</body>
+</html>
