@@ -528,7 +528,7 @@ const SPECIAL_LINKS = {
   'UberEats':'https://www.ubereats.com/tw-en',
   'FoodPanda':'https://www.foodpanda.com.tw/en/',
   'Taiwan Weather (CWB)':'https://www.cwa.gov.tw/eng/',
-  'LINE Pay':'https://linepay.line.me/',
+  'LINE Pay':'https://pay.line.me/portal/tw/main',
   'Apple Pay / Google Pay':'https://support.apple.com/apple-pay',
   'Yongkang Beef Noodles':'https://www.yongkang-beefnoodle.com.tw/',
   'Yongkang Beef Noodles (永康牛肉麵)':'https://www.yongkang-beefnoodle.com.tw/',
@@ -558,7 +558,29 @@ const SPECIAL_LINKS = {
   'Google Photos':'https://photos.google.com/',
   'WhatsApp':'https://www.whatsapp.com/',
   'Airalo':'https://www.airalo.com/taiwan-esim',
-  'LINE Pay Taiwan':'https://linepay.line.me/'
+  'LINE Pay Taiwan':'https://pay.line.me/portal/tw/main',
+  'Chun Shui Tang Original Store (春水堂創始店)':'https://www.google.com/maps/search/?api=1&query=Chun+Shui+Tang+Siwei+Original+Store+Taichung',
+  'Taipei 101 Mall':'https://www.taipei-101.com.tw/en/shopping',
+  'Taipei 101 Mall luxury shopping':'https://www.taipei-101.com.tw/en/shopping',
+  'Breeze Xinyi':'https://www.breezecenter.com/',
+  'Shinkong Mitsukoshi Taipei Xinyi Place':'https://www.skm.com.tw/BrandSearch/BrandSearch?StoreID=10001',
+  'Bellavita':'https://www.bellavita.com.tw/',
+  'Eslite Spectrum Songyan':'https://www.eslitecorp.com/eslite/index.jsp',
+  'Songshan Cultural and Creative Park':'https://www.songshanculturalpark.org/en/',
+  'Huashan 1914 Creative Park':'https://www.huashan1914.com/w/huashan1914_en/index',
+  'The Red House Ximen':'https://www.redhouse.taipei/en/',
+  'Yongkang Street boutique gifts':'https://www.travel.taipei/en/attraction/details/1580',
+  'Bear Mom DIY':'https://www.bearmama.com.tw/',
+  '101 Stationery Paradise':'https://www.101sp.com.tw/',
+  'Eslite Bookstore stationery':'https://www.eslitecorp.com/eslite/index.jsp',
+  'Kinokuniya Taipei':'https://taiwan.kinokuniya.com/',
+  'Pokémon Center Taipei':'https://tw.portal-pokemon.com/shop/',
+  'Donguri Republic Taipei':'https://www.google.com/maps/search/?api=1&query=Donguri+Republic+Taipei',
+  'Sanrio Taiwan / Hello Kitty':'https://www.google.com/maps/search/?api=1&query=Sanrio+Hello+Kitty+Taipei+Taiwan',
+  'Miffy Taiwan finds':'https://www.google.com/search?q=Miffy+Taipei+Taiwan+shopping+goods',
+  'Shiba Says':'https://www.google.com/search?q=Shiba+Says+Taipei+Taiwan+official+merch+shopping',
+  'Station Mikan':'https://www.google.com/search?q=Station+Mikan+Taipei+Taiwan+character+goods',
+  'Yao Yue Teahouse':'https://maps.app.goo.gl/MYv75iQMTAGWMcL28?g_st=ac',
 
 };
 function stripHtml(v){ return String(v||'').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').trim(); }
@@ -588,7 +610,8 @@ const APP_STORE_LINKS = {
   'Google Translate':'https://apps.apple.com/us/app/google-translate/id414706506',
   'Google Lens':'https://apps.apple.com/us/app/google/id284815942',
   'LINE':'https://apps.apple.com/us/app/line/id443904275',
-  'LINE Pay Taiwan':'https://apps.apple.com/tw/app/line-pay/id1449817412',
+  'LINE Pay Taiwan':'https://pay.line.me/portal/tw/main',
+  'LINE Pay':'https://pay.line.me/portal/tw/main',
   'Klook':'https://apps.apple.com/us/app/klook-travel-hotels-leisure/id961850126',
   'Trip.com':'https://apps.apple.com/us/app/trip-com-book-flights-hotels/id681752345',
   'Wanderlog':'https://apps.apple.com/us/app/wanderlog-travel-planner/id1476732439',
@@ -605,7 +628,8 @@ const GOOGLE_PLAY_LINKS = {
   'Google Translate':'https://play.google.com/store/apps/details?id=com.google.android.apps.translate',
   'Google Lens':'https://play.google.com/store/apps/details?id=com.google.ar.lens',
   'LINE':'https://play.google.com/store/apps/details?id=jp.naver.line.android',
-  'LINE Pay Taiwan':'https://play.google.com/store/apps/details?id=com.linecorp.linepay',
+  'LINE Pay Taiwan':'https://pay.line.me/portal/tw/main',
+  'LINE Pay':'https://pay.line.me/portal/tw/main',
   'Klook':'https://play.google.com/store/apps/details?id=com.klook',
   'Trip.com':'https://play.google.com/store/apps/details?id=ctrip.english',
   'Wanderlog':'https://play.google.com/store/apps/details?id=com.wanderlog.android',
@@ -617,6 +641,9 @@ function appStoreButtons(name){
   const ios = APP_STORE_LINKS[name];
   const android = GOOGLE_PLAY_LINKS[name];
   const site = getLink(name,'web');
+  if(name === 'LINE Pay'){
+    return `<div class="link-row"><a class="open-link" href="${site}" target="_blank" rel="noopener noreferrer">↗ Open LINE Pay Taiwan</a></div>`;
+  }
   return `<div class="link-row">${ios ? `<a class="open-link" href="${ios}" target="_blank" rel="noopener noreferrer"> App Store</a>` : ''}${android ? `<a class="open-link" href="${android}" target="_blank" rel="noopener noreferrer">▶ Google Play</a>` : ''}<a class="open-link" href="${site}" target="_blank" rel="noopener noreferrer">↗ Website</a></div>`;
 }
 
@@ -984,6 +1011,8 @@ const restCats = [
       {name:'Oolong Tea Project',cuisine:'Milk tea',badges:['iconic'],desc:'Tea-focused drinks with more grown-up flavor profiles than basic bubble tea chains.',order:'Oolong milk tea or seasonal tea latte',price:'NT$80–160'},
       {name:'Milksha',cuisine:'Milk tea',badges:['iconic'],desc:'Popular chain known for fresh milk tea and brown sugar drinks.',order:'Fresh milk tea with pearls',price:'NT$70–140'},
       {name:'TP Tea',cuisine:'Milk tea',badges:['iconic'],desc:'Chun Shui Tang family chain; reliable tea drinks across Taipei.',order:'Tieguanyin milk tea or classic pearl milk tea',price:'NT$70–150'},
+      {name:'Chun Shui Tang Original Store (春水堂創始店)',cuisine:'Bubble tea / teahouse',badges:['iconic'],desc:'Historic teahouse credited as the birthplace of pearl milk tea. The original is in Taichung; Taipei branches are easiest if the family stays local.',order:'Classic pearl milk tea and Taiwanese tea snacks',price:'NT$150–400'},
+      {name:'Yao Yue Teahouse',cuisine:'Traditional teahouse',badges:['iconic','book'],desc:'Atmospheric Maokong teahouse for Taiwanese tea, mountain air, relaxed group conversation, and a more classic sit-down tea experience.',order:'High mountain oolong, tea snacks, and shared pots for the table',price:'NT$300–800'},
       {name:'Crispy Milk Donuts',cuisine:'Street dessert',badges:['iconic'],desc:'Instagram-famous fried milk donuts — simple, hot, and crowd-pleasing.',order:'Original crispy milk donut',price:'NT$40–100'},
       {name:'Snow King Ice Cream',cuisine:'Ice cream',badges:['iconic'],desc:'Old-school Taipei ice cream shop with wild flavors like tea, tropical fruit, and savory oddities.',order:'Ask for samples and share several scoops',price:'NT$100–250'},
       {name:'Tian Jin Scallion Pancakes',cuisine:'Street snack',badges:['iconic'],desc:'Beloved Yongkang-area scallion pancake stop; a perfect snack while walking.',order:'Egg scallion pancake',price:'NT$40–100'},
@@ -1064,6 +1093,40 @@ const shopCats = [
       {name:'Kavalan Solist series',price:'splurge',pdesc:'NT$3,500–15,000+',desc:'Top tier of Taiwan\'s award-winning distillery. Cask-strength single malts. Collected worldwide. Cheaper here than abroad.',where:'Breeze Center, National Cultural & Creative Gift Center, duty-free'},
       {name:'Kavalan Classic / Conductor',price:'mid',pdesc:'NT$1,200–2,500',desc:'Entry and mid-tier expressions — honeyed, tropical, beautifully smooth. Excellent value.',where:'Supermarkets, duty-free, Jason\'s Market Place'},
       {name:'Taiwan Beer gift edition',price:'budget',pdesc:'NT$150–600',desc:'The nation\'s most beloved brew. Gift tins and limited edition cans — fun, inexpensive, very Taiwanese.',where:'Convenience stores, supermarkets, night markets'}
+    ]
+  },
+  { label:'✨ Luxury malls — Xinyi & Taipei 101', color:'#8A5A12', note:'For higher-end shopping, keep this clustered around Xinyi so the group can split between malls, cafés, Taipei 101, and Pokémon Center.',
+    items:[
+      {name:'Taipei 101 Mall luxury shopping',price:'splurge',pdesc:'Luxury flagship mall',desc:'Best single stop for high-end shopping inside Taipei’s most iconic tower: designer boutiques, premium gifts, food hall, Din Tai Fung, and easy access to the observatory.',where:'Taipei 101 / World Trade Center MRT'},
+      {name:'Breeze Xinyi',price:'splurge',pdesc:'Luxury + fashion',desc:'Modern Xinyi luxury mall with international fashion, beauty, accessories, restaurants, and polished indoor browsing.',where:'Xinyi District'},
+      {name:'Shinkong Mitsukoshi Taipei Xinyi Place',price:'splurge',pdesc:'Large department complex',desc:'Large multi-building department-store zone with luxury labels, cosmetics, food halls, gifts, and easy group-friendly shopping.',where:'Xinyi District around Taipei 101'},
+      {name:'Bellavita',price:'splurge',pdesc:'Ultra-luxury boutique mall',desc:'One of Taipei’s most upscale malls, focused on designer fashion, premium dining, and a quieter luxury atmosphere.',where:'Xinyi District'}
+    ]
+  },
+  { label:'🎨 Local art, crafts & designer goods', color:'#6F3FA0', note:'Best for Taiwan-made design, handmade items, small creative brands, stationery-adjacent gifts, and artful souvenirs.',
+    items:[
+      {name:'Songshan Cultural and Creative Park',price:'mid',pdesc:'Design park',desc:'Converted tobacco-factory creative park with exhibitions, local design shops, cafés, pop-ups, and Eslite Spectrum Songyan next door.',where:'Xinyi / Songshan-adjacent'},
+      {name:'Huashan 1914 Creative Park',price:'mid',pdesc:'Creative park',desc:'Historic cultural complex with art events, indie boutiques, cafés, craft goods, pop-up exhibits, and Taiwan designer souvenirs.',where:'Zhongzheng District'},
+      {name:'The Red House Ximen',price:'mid',pdesc:'Handmade market',desc:'Historic red-brick landmark in Ximending with local maker stalls, handmade accessories, indie art, and LGBTQ-friendly nightlife around the plaza.',where:'Ximen MRT'},
+      {name:'Yongkang Street boutique gifts',price:'mid',pdesc:'Boutique gifts',desc:'Good wandering zone for paper lanterns, paintings, canvas art, scroll-style art, tea gifts, ceramics, and tasteful Taiwan souvenirs.',where:'Yongkang Street / Dongmen MRT'}
+    ]
+  },
+  { label:'✒️ Stationery & craft supplies', color:'#2F6E8E', note:'Add these for stationery fans, paper goods, pens, stickers, planners, journals, art supplies, DIY crafts, and family-friendly souvenir hunting.',
+    items:[
+      {name:'101 Stationery Paradise',price:'budget',pdesc:'Stationery supplies',desc:'Large local stationery chain for pens, notebooks, stickers, folders, art supplies, craft basics, tape, and practical school/office items.',where:'Multiple Taipei locations'},
+      {name:'Bear Mom DIY',price:'budget',pdesc:'Craft supplies',desc:'Craft-supply favorite for DIY materials, beads, leather-craft basics, floral supplies, ribbons, tools, and varied handmade-project supplies.',where:'Taipei craft-supply shopping'},
+      {name:'Eslite Bookstore stationery',price:'mid',pdesc:'Curated stationery',desc:'Best polished stationery stop: notebooks, cards, washi tape, design books, journals, pens, local creative goods, and nicer gift packaging.',where:'Xinyi / Songshan / major branches'},
+      {name:'Kinokuniya Taipei',price:'mid',pdesc:'Books + Japanese goods',desc:'Great for Japanese books, magazines, character stationery, art books, cards, and high-quality paper goods.',where:'Taipei city branches'}
+    ]
+  },
+  { label:'🐾 Character shopping — Totoro, Miffy, Hello Kitty, Pokémon & cute goods', color:'#D14D72', note:'For the family members who want cute character goods, plushies, stickers, keychains, blind boxes, stationery, and Japan/Taiwan-exclusive finds.',
+    items:[
+      {name:'Pokémon Center Taipei',price:'mid',pdesc:'Official Pokémon',desc:'Official Pokémon Center with plushies, apparel, exclusive Taipei items, collectibles, stationery, and excellent gifts for kids and adults.',where:'Shinkong Mitsukoshi Taipei Xinyi Place'},
+      {name:'Donguri Republic Taipei',price:'mid',pdesc:'Totoro / Ghibli',desc:'Studio Ghibli-focused shop for Totoro plushies, kitchen goods, bags, figures, stationery, and charming character souvenirs.',where:'Breeze / Taipei department-store locations'},
+      {name:'Sanrio Taiwan / Hello Kitty',price:'mid',pdesc:'Hello Kitty + Sanrio',desc:'Look for Hello Kitty, Cinnamoroll, Kuromi, My Melody, Pompompurin, and Sanrio gift goods across official shops and department-store counters.',where:'Taipei malls and Sanrio Taiwan retailers'},
+      {name:'Miffy Taiwan finds',price:'mid',pdesc:'Miffy goods',desc:'Miffy items appear through licensed pop-ups, stationery shops, bookstores, and character-goods sections — especially good for plush, stickers, and small gifts.',where:'Eslite, Kinokuniya, department stores, pop-ups'},
+      {name:'Shiba Says',price:'mid',pdesc:'Cute local character',desc:'Taiwanese cute-character goods, stickers, stationery, and playful souvenirs — check official social for the latest pop-ups or retail locations before the trip.',where:'Official social / pop-ups'},
+      {name:'Station Mikan',price:'mid',pdesc:'Cute local character',desc:'Sweet local character-shopping add for stickers, keychains, stationery, art goods, and small illustrated gifts.',where:'Official social / pop-ups'}
     ]
   },
   { label:'👟 Fashion & beauty', color:'#3B6D11', note:'Taiwan punches above its weight in fashion design and skincare.',
@@ -1148,7 +1211,7 @@ const appCats = [
 ];
 const appCatsMapped = appCats.map(cat=>({
   label:cat.label, color:cat.color,
-  html:`<div class="section-note">${cat.note}</div><div class="app-grid">${cat.apps.map(app=>`<div class="app-card"><div class="app-header-row"><div class="app-icon" style="background:${app.bg}">${app.icon}</div><div><div class="app-name">${linkify(app.name,'name-link','web')}</div><span class="app-badge ${app.badge==='must'?'b-must':'b-nice'}">${app.badge==='must'?'Must-have':'Nice to have'}</span></div></div><div class="app-desc">${app.desc}</div>${openWebLink(app.name)}</div>`).join('')}</div>`
+  html:`<div class="section-note">${cat.note}</div><div class="app-grid">${cat.apps.map(app=>`<div class="app-card"><div class="app-header-row"><div class="app-icon" style="background:${app.bg}">${app.icon}</div><div><div class="app-name">${linkify(app.name,'name-link','web')}</div><span class="app-badge ${app.badge==='must'?'b-must':'b-nice'}">${app.badge==='must'?'Must-have':'Nice to have'}</span></div></div><div class="app-desc">${app.desc}</div>${appStoreButtons(app.name)}</div>`).join('')}</div>`
 }));
 makeTabSystem('app-tabs','app-panels',appCatsMapped,'ap',appCats.map(c=>c.color));
 
