@@ -581,6 +581,7 @@ const SPECIAL_LINKS = {
   'Shiba Says':'https://www.google.com/search?q=Shiba+Says+Taipei+Taiwan+official+merch+shopping',
   'Station Mikan':'https://www.google.com/search?q=Station+Mikan+Taipei+Taiwan+character+goods',
   'Yao Yue Teahouse':'https://maps.app.goo.gl/MYv75iQMTAGWMcL28?g_st=ac',
+  'ISLAND Buffet Taipei Hi-Lai Branch':'https://www.hilai-foods.com/brand-content/41/hilai-islandbuffet',
 
 };
 function stripHtml(v){ return String(v||'').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').trim(); }
@@ -714,98 +715,473 @@ makeTabSystem('explore-tabs','explore-panels',exploreCatsMapped,'ep',exploreCats
 ════════════════════════════════════════════════ */
 const itinDays = [
   {
-    date:'May 10 · Sat', title:'Arrival & settle in', sub:'No agenda — just arrive, eat, and breathe',
-    summary:'Land at 8pm, check into Park Taipei Hotel, take a gentle stroll to Ningxia Night Market for first bites — braised pork, scallion pancakes, first bubble tea. Early night to beat jet lag.',
-    pills:['food','iconic','free'],
-    blocks:[
-      {time:'8:00 PM',title:'Check into Park Taipei Hotel',desc:'Drop bags, freshen up, get everyone oriented. No rush — you have a full week ahead.',tags:['sight']},
-      {time:'9:00 PM',title:'Ningxia Night Market — first taste of Taiwan',desc:'One of Taipei\'s most relaxed, manageable night markets. Braised pork belly rice, scallion pancakes, oyster vermicelli, stinky tofu. Pick up your first bubble tea.',tags:['food','iconic']},
-      {time:'10:30 PM',title:'Early night — rest up',desc:'Jet lag is real. Get a good sleep and start fresh tomorrow.',tags:['free']}
+    "date": "May 10 · Sun",
+    "title": "Arrival night",
+    "sub": "Park Taipei Hotel · Ningxia Night Market",
+    "summary": "Arrive, check into Park Taipei Hotel, then keep the first night simple with Ningxia Night Market and an early bedtime.",
+    "pills": [
+      "food",
+      "iconic",
+      "free"
     ],
-    tip:'Bring cash to the night market — small NT bills. Grab your first bubble tea: Chi Cha San Chen or Milksha are both excellent.'
+    "blocks": [
+      {
+        "time": "8:00 PM",
+        "title": "Check into Park Taipei Hotel",
+        "desc": "Drop bags, freshen up, get everyone oriented. No rush — you have a full week ahead.",
+        "tags": [
+          "sight"
+        ]
+      },
+      {
+        "time": "9:00 PM",
+        "title": "Ningxia Night Market — first taste of Taiwan",
+        "desc": "One of Taipei's most relaxed, manageable night markets. Braised pork belly rice, scallion pancakes, oyster vermicelli, stinky tofu. Pick up your first bubble tea.",
+        "tags": [
+          "food",
+          "iconic"
+        ]
+      },
+      {
+        "time": "10:30 PM",
+        "title": "Early night — rest up",
+        "desc": "Jet lag is real. Get a good sleep and start fresh tomorrow.",
+        "tags": [
+          "free"
+        ]
+      }
+    ],
+    "tip": "Bring cash to the night market — small NT bills. Grab your first bubble tea: Chi Cha San Chen or Milksha are both excellent."
   },
   {
-    date:'May 11 · Sun', title:'Iconic Taipei day', sub:'Elephant Mountain · Taipei 101 · Xinyi shopping · Din Tai Fung',
-    summary:'Slow breakfast, easy Elephant Mountain hike for the 101 view, Taipei 101 observation deck, Din Tai Fung lunch, then a free afternoon of Xinyi luxury shopping and Pokémon Center. Michelin dinner at Shin Yeh.',
-    pills:['sight','food','shop','iconic'],
-    blocks:[
-      {time:'8:30 AM',title:'Traditional Taiwanese breakfast',desc:'秦小姐豆漿 — soy milk, egg pancakes, scallion flatbreads. The real local experience.',tags:['food']},
-      {time:'10:00 AM',title:'Elephant Mountain hike',desc:'Easy 20-minute paved hike with iconic Taipei 101 skyline views. Manageable for everyone.',tags:['sight','iconic']},
-      {time:'12:00 PM',title:'Taipei 101 observation deck',desc:'World\'s fastest elevator to the 89th floor. Book group skip-the-line tickets on Klook in advance.',tags:['sight','iconic']},
-      {time:'2:00 PM',title:'Din Tai Fung lunch',desc:'World\'s most famous xiaolongbao. Order soup dumplings, shrimp fried rice, red bean buns. Reserve ahead for groups.',tags:['food','iconic']},
-      {time:'4:00 PM',title:'Free time: Xinyi luxury shopping + Pokémon Center',desc:'Breeze Center, Shinkong Mitsukoshi, Taipei 101 mall, themed 7-Eleven stops, and Pokémon Center Taipei. Shop at your own pace — split up or stay together.',tags:['shop','free']},
-      {time:'7:30 PM',title:'Dinner: Shin Yeh Taiwanese Signature',desc:'Michelin Bib Gourmand Taiwanese banquet restaurant. Three-cup chicken, oyster omelet, pineapple shrimp.',tags:['food']}
+    "date": "May 11 · Mon",
+    "title": "Relaxed arrival + shopping day",
+    "sub": "Yongkang gifts · Xinyi malls · character shopping",
+    "summary": "Because 2 family members arrive in the afternoon, this day is intentionally light: breakfast, boutique gift browsing, Xinyi shopping, Pokémon/character stops, and an easy group dinner after everyone arrives.",
+    "pills": [
+      "shop",
+      "food",
+      "free"
     ],
-    tip:'After dinner, the Xinyi area is beautiful lit up at night. Opera Bar (15F, Ambassador Hotel) is a lovely group nightcap.'
+    "blocks": [
+      {
+        "time": "9:30 AM",
+        "title": "Traditional Taiwanese breakfast",
+        "desc": "Start easy with soy milk, egg pancakes, scallion flatbreads, or a hotel/café breakfast depending on energy levels.",
+        "tags": [
+          "food",
+          "free"
+        ]
+      },
+      {
+        "time": "11:00 AM",
+        "title": "Yongkang Street boutique gifts + cafés",
+        "desc": "A relaxed, walkable block for paper goods, boutique souvenirs, tea gifts, small art, canvas pieces, scroll-style items, and easy snacks without overcommitting the group.",
+        "tags": [
+          "shop",
+          "food"
+        ]
+      },
+      {
+        "time": "1:30 PM",
+        "title": "Hotel rest / airport-arrival buffer",
+        "desc": "Keep this window flexible so the first 8 can rest and the 2 afternoon arrivals can transfer from the airport, check in, and reset.",
+        "tags": [
+          "free"
+        ]
+      },
+      {
+        "time": "3:30 PM",
+        "title": "Xinyi leisure shopping",
+        "desc": "Low-pressure indoor browsing around Taipei 101 Mall, Breeze Xinyi, Shinkong Mitsukoshi, Bellavita, stationery stops, luxury stores, and snack breaks. This is shopping time only — save the 101 observation deck for tomorrow when all 10 are together.",
+        "tags": [
+          "shop",
+          "free"
+        ]
+      },
+      {
+        "time": "5:30 PM",
+        "title": "Pokémon Center Taipei + character shopping",
+        "desc": "Easy Xinyi character loop for Pokémon, Sanrio/Hello Kitty, Miffy-style finds, Totoro/Donguri Republic searches, Shiba Says, Station Mikan, and themed convenience-store stops.",
+        "tags": [
+          "shop",
+          "iconic"
+        ]
+      },
+      {
+        "time": "7:30 PM",
+        "title": "Dinner: Shin Yeh Taiwanese Signature",
+        "desc": "A comfortable first full-group meal once the afternoon arrivals have settled in. Order family-style Taiwanese classics: three-cup chicken, oyster omelet, pineapple shrimp, and braised pork.",
+        "tags": [
+          "food"
+        ]
+      }
+    ],
+    "tip": "Do not schedule Elephant Mountain or the Taipei 101 observation deck today. Keep May 11 flexible so the 2 afternoon arrivals are not rushed or forced to miss an iconic stop."
   },
   {
-    date:'May 12 · Mon', title:'Culture morning, leisure afternoon', sub:'Temples · Dihua Street · Free afternoon',
-    summary:'Longshan Temple, Dihua Street browsing and pineapple cake shopping, Yongkang Street lunch crawl, then a completely free afternoon — rest, wander, or explore. Evening stroll to CKS Memorial at dusk.',
-    pills:['sight','food','shop','free'],
-    blocks:[
-      {time:'9:30 AM',title:'Longshan Temple',desc:'Taipei\'s most beautiful and atmospheric temple — incense smoke, intricate carvings, lotus ponds. Arrive relaxed, take your time.',tags:['sight','iconic']},
-      {time:'11:00 AM',title:'Dihua Street',desc:'Taipei\'s oldest preserved street. Teas, spices, herbs, textiles. Best place to buy pineapple cakes — Chia Te is the top pick.',tags:['sight','shop','iconic']},
-      {time:'1:00 PM',title:'Lunch: Yongkang Street food crawl',desc:'Taiwan\'s best food street. Beef noodles, bubble tea, cafes and dessert shops. Made for wandering.',tags:['food']},
-      {time:'3:00 PM',title:'Free afternoon — National Palace Museum or Huashan 1914 option',desc:'Choose rest, a café, National Palace Museum for a bigger cultural block, or Huashan 1914 Creative Park for exhibitions, pop-ups, restaurants, and live music.',tags:['free','sight']},
-      {time:'6:00 PM',title:'228 Peace Memorial Park',desc:'Short, shaded walk near CKS Memorial with Taiwan history context — an easy add-on before the plaza.',tags:['sight']},
-      {time:'7:00 PM',title:'CKS Memorial — evening stroll',desc:'Grand plaza and illuminated memorial at dusk. Far less crowded in the evening. Changing of the guard runs hourly during the day if the group wants the Buckingham Palace-style ceremony.',tags:['sight','iconic']},
-      {time:'8:30 PM',title:'Dinner: casual Daan or Yongkang area',desc:'Explore a local restaurant at your own pace — no reservation needed.',tags:['food']}
+    "date": "May 12 · Tue",
+    "title": "Iconic Taipei day for all 10",
+    "sub": "Elephant Mountain · Taipei 101 · Din Tai Fung · CKS Memorial",
+    "summary": "Now that all 10 family members are in Taipei, do the signature view day: Elephant Mountain, Taipei 101 observation deck, Din Tai Fung lunch, then a lighter cultural/evening block.",
+    "pills": [
+      "sight",
+      "food",
+      "iconic"
     ],
-    tip:'Buy a stamp book at Longshan Temple or Dihua Street gift shop — you\'ll collect stamps all week across every attraction.'
+    "blocks": [
+      {
+        "time": "8:30 AM",
+        "title": "Elephant Mountain hike",
+        "desc": "Easy paved climb to the classic Taipei 101 skyline view. Go early for cooler weather and better photos.",
+        "tags": [
+          "sight",
+          "iconic"
+        ]
+      },
+      {
+        "time": "10:30 AM",
+        "title": "Taipei 101 observation deck",
+        "desc": "Book group skip-the-line tickets in advance. This is the right day for the observation deck because the full family is together.",
+        "tags": [
+          "sight",
+          "iconic"
+        ]
+      },
+      {
+        "time": "12:30 PM",
+        "title": "Din Tai Fung lunch",
+        "desc": "World-famous xiaolongbao. Order soup dumplings, shrimp fried rice, red bean buns, and vegetables. Reserve ahead for groups.",
+        "tags": [
+          "food",
+          "iconic"
+        ]
+      },
+      {
+        "time": "2:30 PM",
+        "title": "Taipei 101 Mall / Xinyi free time",
+        "desc": "Keep this as recovery time after the morning hike: coffee, luxury browsing, desserts, or a short hotel break.",
+        "tags": [
+          "shop",
+          "free"
+        ]
+      },
+      {
+        "time": "5:30 PM",
+        "title": "228 Peace Memorial Park + CKS Memorial evening stroll",
+        "desc": "Grand plaza and illuminated memorial at dusk. Easier than a heavy museum day and photogenic in the evening.",
+        "tags": [
+          "sight",
+          "iconic"
+        ]
+      },
+      {
+        "time": "8:00 PM",
+        "title": "Dinner: Daan or Yongkang casual meal",
+        "desc": "Stay flexible after a full iconic day — beef noodles, Taiwanese stir-fry, hot pot, or casual small plates nearby.",
+        "tags": [
+          "food"
+        ]
+      }
+    ],
+    "tip": "This replaces the original May 11 Elephant Mountain + Taipei 101 block so the 2 afternoon arrivals can fully participate."
   },
   {
-    date:'May 13 · Tue', title:'Jiufen day trip', sub:'The Spirited Away village — go at your own pace',
-    summary:'Private van to the Spirited Away mountaintop village. Wander freely, eat from stalls, linger at the iconic Amei Teahouse for a gongfu tea ceremony. No rushing — leave when ready. Optional Raohe Night Market on return.',
-    pills:['trip','sight','food','iconic'],
-    blocks:[
-      {time:'9:00 AM',title:'Depart for Jiufen by private van',desc:'Charter a 10-person van — about 1.5 hours from Taipei. Book via Klook or Tripool.',tags:['sight']},
-      {time:'11:00 AM',title:'Arrive in Jiufen — wander freely',desc:'Red lantern-lined staircases, misty ocean views, alleyways that inspired Spirited Away. Taro balls, fish balls, stinky tofu from stalls.',tags:['sight','food']},
-      {time:'1:00 PM',title:'Amei Teahouse — gongfu tea ceremony',desc:'The iconic teahouse overlooking the valley and sea. Host walks the group through gongfu-style brewing. Book well ahead.',tags:['food','iconic']},
-      {time:'3:30 PM',title:'Continue exploring or rest at the teahouse',desc:'Stay as long as the group is happy. No clock — leave when ready.',tags:['free']},
-      {time:'6:00 PM',title:'Return to Taipei',desc:'Back at hotel by 6:00–6:30 PM.',tags:['sight']},
-      {time:'8:00 PM',title:'Optional: Raohe Night Market',desc:'Famous pepper pork bun at the temple entrance. Totally optional — skip if tired.',tags:['food']}
+    "date": "May 13 · Wed",
+    "title": "Jiufen day trip",
+    "sub": "The Spirited Away village — go at your own pace",
+    "summary": "Private van to the Spirited Away-style mountaintop village. Wander freely, eat from stalls, linger at the iconic Amei Teahouse for a gongfu tea ceremony, and return without rushing.",
+    "pills": [
+      "trip",
+      "sight",
+      "food",
+      "iconic"
     ],
-    tip:'Skip Shifen on this trip — combining lanterns + Jiufen in one day is exhausting. Jiufen alone, done slowly, is far better.'
+    "blocks": [
+      {
+        "time": "9:00 AM",
+        "title": "Depart for Jiufen by private van",
+        "desc": "Charter a 10-person van — about 1.5 hours from Taipei. Book via Klook or Tripool.",
+        "tags": [
+          "sight"
+        ]
+      },
+      {
+        "time": "11:00 AM",
+        "title": "Arrive in Jiufen — wander freely",
+        "desc": "Red lantern-lined staircases, misty ocean views, alleyways that inspired Spirited Away. Taro balls, fish balls, stinky tofu from stalls.",
+        "tags": [
+          "sight",
+          "food"
+        ]
+      },
+      {
+        "time": "1:00 PM",
+        "title": "Amei Teahouse — gongfu tea ceremony",
+        "desc": "The iconic teahouse overlooking the valley and sea. Host walks the group through gongfu-style brewing. Book well ahead.",
+        "tags": [
+          "food",
+          "iconic"
+        ]
+      },
+      {
+        "time": "3:30 PM",
+        "title": "Continue exploring or rest at the teahouse",
+        "desc": "Stay as long as the group is happy. No clock — leave when ready.",
+        "tags": [
+          "free"
+        ]
+      },
+      {
+        "time": "6:00 PM",
+        "title": "Return to Taipei",
+        "desc": "Back at hotel by 6:00–6:30 PM.",
+        "tags": [
+          "sight"
+        ]
+      },
+      {
+        "time": "8:00 PM",
+        "title": "Optional: Raohe Night Market",
+        "desc": "Famous pepper pork bun at the temple entrance. Totally optional — skip if tired.",
+        "tags": [
+          "food"
+        ]
+      }
+    ],
+    "tip": "Skip Shifen on this trip — combining lanterns + Jiufen in one day is exhausting. Jiufen alone, done slowly, is far better."
   },
   {
-    date:'May 14 · Wed', title:'Full shopping day', sub:'Wufenpu · Ximending · Donki — all at leisure',
-    summary:'Slow start, then Wufenpu wholesale fashion district, brown sugar boba, Ximending fashion wandering and Ga Ji Dai bag shopping, Donki for gifts and snacks, casual dinner at Huaxi Night Market.',
-    pills:['shop','food','iconic','free'],
-    blocks:[
-      {time:'10:00 AM',title:'Slow start — hotel breakfast or café',desc:'Sleep in. This is a shopping and leisure day with nothing cultural required.',tags:['free']},
-      {time:'11:30 AM',title:'Wufenpu wholesale fashion district',desc:'Hundreds of stalls with trendy, affordable clothing. The aunts\' paradise. Bring cash, wear comfortable shoes, plan 2+ hours.',tags:['shop']},
-      {time:'2:00 PM',title:'Lunch + brown sugar boba milk tea',desc:'Xing Fu Tang boba in Ximending — caramelized pearls cooked fresh in front of you.',tags:['food','iconic']},
-      {time:'3:00 PM',title:'Ximending — wander at leisure',desc:'Traffic-free fashion district. Pick up the iconic Ga Ji Dai striped bag — "Taiwan LV." Very cheap, very iconic.',tags:['shop','iconic']},
-      {time:'5:00 PM',title:'Donki (Don Quijote)',desc:'Japan\'s everything-store. Snacks, cosmetics, gadgets, quirky gifts. At least an hour here.',tags:['shop']},
-      {time:'7:30 PM',title:'Dinner: Huaxi Street Night Market',desc:'Old-school market with fresh seafood and classic street food. Casual end to a big shopping day.',tags:['food']}
+    "date": "May 14 · Thu",
+    "title": "Full shopping day",
+    "sub": "Wufenpu · Ximending · Donki — all at leisure",
+    "summary": "Slow start, then Wufenpu wholesale fashion district, brown sugar boba, Ximending fashion wandering and Ga Ji Dai bag shopping, Donki for gifts and snacks, casual dinner at Huaxi Night Market.",
+    "pills": [
+      "shop",
+      "food",
+      "iconic",
+      "free"
     ],
-    tip:'Snow King Ice Cream near Ximending has 70+ wild flavors — pig\'s blood, rose lychee, pineapple cake flavor.'
+    "blocks": [
+      {
+        "time": "10:00 AM",
+        "title": "Slow start — hotel breakfast or café",
+        "desc": "Sleep in. This is a shopping and leisure day with nothing cultural required.",
+        "tags": [
+          "free"
+        ]
+      },
+      {
+        "time": "11:30 AM",
+        "title": "Wufenpu wholesale fashion district",
+        "desc": "Hundreds of stalls with trendy, affordable clothing. The aunts' paradise. Bring cash, wear comfortable shoes, plan 2+ hours.",
+        "tags": [
+          "shop"
+        ]
+      },
+      {
+        "time": "2:00 PM",
+        "title": "Lunch + brown sugar boba milk tea",
+        "desc": "Xing Fu Tang boba in Ximending — caramelized pearls cooked fresh in front of you.",
+        "tags": [
+          "food",
+          "iconic"
+        ]
+      },
+      {
+        "time": "3:00 PM",
+        "title": "Ximending — wander at leisure",
+        "desc": "Traffic-free fashion district. Pick up the iconic Ga Ji Dai striped bag — Taiwan LV. Very cheap, very iconic.",
+        "tags": [
+          "shop",
+          "iconic"
+        ]
+      },
+      {
+        "time": "5:00 PM",
+        "title": "Donki (Don Quijote)",
+        "desc": "Japan's everything-store. Snacks, cosmetics, gadgets, quirky gifts. At least an hour here.",
+        "tags": [
+          "shop"
+        ]
+      },
+      {
+        "time": "7:30 PM",
+        "title": "Dinner: Huaxi Street Night Market",
+        "desc": "Old-school market with fresh seafood and classic street food. Casual end to a big shopping day.",
+        "tags": [
+          "food"
+        ]
+      }
+    ],
+    "tip": "Snow King Ice Cream near Ximending has 70+ wild flavors — pig's blood, rose lychee, pineapple cake flavor."
   },
   {
-    date:'May 15 · Thu', title:'Hot springs & leisure', sub:'Beitou morning · Free afternoon · Shilin Night Market',
-    summary:'Restorative morning at Beitou Hot Spring Village (30 min by MRT), relaxed lunch, then a completely free afternoon. Evening Shilin Night Market for Taiwan\'s most famous street food spread.',
-    pills:['sight','food','iconic','free'],
-    blocks:[
-      {time:'9:30 AM',title:'Beitou Hot Spring Village',desc:'Take the MRT (30 min) to world-class sulfur springs. Colonial-era public baths or luxurious resort — your choice. A slow, restorative morning.',tags:['sight','iconic']},
-      {time:'12:30 PM',title:'Lunch in Beitou, return to city',desc:'Relaxed lunch in the village before heading back.',tags:['food']},
-      {time:'2:30 PM',title:'Free afternoon — completely open',desc:'Hotel rest, spa, more shopping, café, or nothing at all. Intentional downtime.',tags:['free']},
-      {time:'7:30 PM',title:'Shilin Night Market dinner',desc:'Taiwan\'s most famous night market. Oyster omelets, giant fried chicken, bubble tea, stinky tofu. Come hungry, no agenda.',tags:['food','iconic']}
+    "date": "May 15 · Fri",
+    "title": "Final full day with all 10",
+    "sub": "Beitou · free afternoon · farewell dinner",
+    "summary": "Use the last full day with all 10 family members for a restorative Beitou morning, intentional afternoon downtime, and the main farewell dinner before 8 people leave for Seoul the next day.",
+    "pills": [
+      "sight",
+      "food",
+      "iconic",
+      "free"
     ],
-    tip:'Millennium Hot Springs in Beitou is the affordable authentic public bath. For privacy and luxury, book a private room at a hot spring hotel in advance.'
+    "blocks": [
+      {
+        "time": "9:30 AM",
+        "title": "Beitou Hot Spring Village",
+        "desc": "Take the MRT or a rideshare to world-class sulfur springs. Colonial-era public baths or luxurious private-room hot spring hotel — your choice.",
+        "tags": [
+          "sight",
+          "iconic"
+        ]
+      },
+      {
+        "time": "12:30 PM",
+        "title": "Lunch in Beitou, return to city",
+        "desc": "Relaxed lunch in the village before heading back.",
+        "tags": [
+          "food"
+        ]
+      },
+      {
+        "time": "2:30 PM",
+        "title": "Free afternoon — pack, rest, shop, or café",
+        "desc": "This is the key buffer before departures: hotel rest, spa, souvenir run, Xinyi browsing, or nothing at all. The Seoul group should pack tonight.",
+        "tags": [
+          "free",
+          "shop"
+        ]
+      },
+      {
+        "time": "6:30 PM",
+        "title": "Farewell dinner for all 10",
+        "desc": "Book the main group meal tonight, not May 16. Good options: ISLAND Buffet Taipei Hi-Lai Branch for a big family buffet, A Joy at Taipei 101 for skyline views, or Shin Yeh for classic Taiwanese banquet dining.",
+        "tags": [
+          "food",
+          "iconic"
+        ]
+      },
+      {
+        "time": "8:30 PM",
+        "title": "Optional Shilin Night Market or Opera Bar nightcap",
+        "desc": "Shilin is the classic last street-food stroll; Opera Bar is better if the group wants skyline drinks and less walking.",
+        "tags": [
+          "food",
+          "night"
+        ]
+      }
+    ],
+    "tip": "Tonight is the real farewell night for the full group. Keep it reservation-based and avoid anything too late for the 8 travelers flying to Seoul tomorrow."
   },
   {
-    date:'May 16 · Fri', title:'Last full day — savor it', sub:'Final shopping · Tamsui sunset · Farewell dinner',
-    summary:'Zhongshan luxury shopping morning, beef noodle lunch at Liu Shandong, final souvenir sweep at Taipei Station Underground Mall (pineapple cakes, Kuai Kuai puffs), Tamsui sunset walk, farewell banquet dinner, final drinks at Ounce or Opera Bar.',
-    pills:['shop','food','sight','night','iconic'],
-    blocks:[
-      {time:'10:00 AM',title:'Zhongshan district — final luxury shopping',desc:'Miramar Mall, boutiques, international brands, local designers. Relaxed final morning.',tags:['shop']},
-      {time:'1:00 PM',title:'Lunch: Liu Shandong Beef Noodles',desc:'The best beef noodles in Taipei since the 1950s. Rich bone broth, braised beef, silky noodles.',tags:['food','iconic']},
-      {time:'2:30 PM',title:'Final souvenir sweep',desc:'Taipei Station Underground Mall — nearly 200 stores. Pineapple cakes (Chia Te), Kuai Kuai corn puffs (good-luck snack), last gifts.',tags:['shop','iconic']},
-      {time:'4:30 PM',title:'Tamsui riverfront — sunset walk',desc:'Short MRT ride to Taipei\'s best sunset. Waterfront stalls, fresh air, beautiful send-off.',tags:['sight']},
-      {time:'7:30 PM',title:'Farewell dinner — go all out',desc:'Book a private room: Shin Yeh for Taiwanese banquet, A Joy at Taipei 101 for the view, or a full luxury spread at Le Palais.',tags:['food']},
-      {time:'9:30 PM',title:'Final drinks: Ounce or Opera Bar',desc:'Ounce is English-speaking and warm. Opera has the views. Both welcome groups.',tags:['night']}
+    "date": "May 16 · Sat",
+    "title": "Split departure day",
+    "sub": "8 depart for Seoul · 2 stay for final Taipei time",
+    "summary": "Eight family members fly to Seoul at 12:55 PM, so the morning is checkout and airport transfer. The 2 remaining travelers can use the rest of the day for final shopping, food, Tamsui sunset, and a relaxed last night.",
+    "pills": [
+      "shop",
+      "food",
+      "sight",
+      "free"
     ],
-    tip:'Pack bags tonight. Flight is May 17 at 9:30 AM — aim to leave Park Taipei Hotel by 7:00 AM.'
+    "blocks": [
+      {
+        "time": "8:30 AM",
+        "title": "Breakfast + final room check",
+        "desc": "Seoul group: confirm passports, luggage, chargers, medication, and airport documents. Ask Park Taipei Hotel about luggage help and checkout timing.",
+        "tags": [
+          "free"
+        ]
+      },
+      {
+        "time": "9:15 AM",
+        "title": "Seoul group checkout + airport transfer",
+        "desc": "For the 12:55 PM flight to Seoul, leave the hotel around 9:15–9:30 AM to allow airport travel, check-in, security, and group buffer time.",
+        "tags": [
+          "sight"
+        ]
+      },
+      {
+        "time": "12:00 PM",
+        "title": "Remaining 2: Liu Shandong Beef Noodles or Yongkang lunch",
+        "desc": "Once the Seoul group is en route, the 2 remaining travelers can slow down and enjoy a proper lunch without coordinating a large group.",
+        "tags": [
+          "food"
+        ]
+      },
+      {
+        "time": "1:30 PM",
+        "title": "Remaining 2: final souvenir sweep",
+        "desc": "Taipei Station Underground Mall, Dihua Street, or Xinyi malls for pineapple cakes, Kuai Kuai puffs, stationery, tea, and last character goods.",
+        "tags": [
+          "shop"
+        ]
+      },
+      {
+        "time": "4:30 PM",
+        "title": "Remaining 2: Tamsui riverfront sunset walk",
+        "desc": "A softer final Taipei moment: waterfront stalls, river views, fresh air, and sunset photos before the last night.",
+        "tags": [
+          "sight"
+        ]
+      },
+      {
+        "time": "7:30 PM",
+        "title": "Remaining 2: final dinner + early night",
+        "desc": "Keep it close and easy — Daan, Zhongshan, or Yongkang. The May 17 flight is early, so pack before bed.",
+        "tags": [
+          "food",
+          "free"
+        ]
+      }
+    ],
+    "tip": "The 8-person Seoul group should be packed the night before. The 2 remaining travelers can ask the hotel to store luggage during the day if changing rooms or extending checkout."
+  },
+  {
+    "date": "May 17 · Sun",
+    "title": "Final departure morning",
+    "sub": "2 travelers fly out at 9:55 AM",
+    "summary": "Only the 2 remaining travelers are still in Taipei. Keep the morning strictly practical: checkout, airport transfer, and flight home.",
+    "pills": [
+      "free"
+    ],
+    "blocks": [
+      {
+        "time": "6:15 AM",
+        "title": "Wake up + final packing check",
+        "desc": "Passports, wallets, phones, chargers, medication, souvenirs, and any hotel safe items.",
+        "tags": [
+          "free"
+        ]
+      },
+      {
+        "time": "6:45 AM",
+        "title": "Checkout at Park Taipei Hotel",
+        "desc": "Settle any hotel charges and get luggage loaded before the airport transfer.",
+        "tags": [
+          "free"
+        ]
+      },
+      {
+        "time": "7:00 AM",
+        "title": "Depart for airport",
+        "desc": "For the 9:55 AM flight, leave around 7:00 AM to allow travel time, check-in, security, and a comfortable buffer.",
+        "tags": [
+          "sight"
+        ]
+      },
+      {
+        "time": "9:55 AM",
+        "title": "Flight departure",
+        "desc": "End of Taipei family trip.",
+        "tags": [
+          "free"
+        ]
+      }
+    ],
+    "tip": "Aim to be mostly packed before sleeping on May 16 so the early departure is painless."
   }
 ];
 
@@ -832,7 +1208,8 @@ const buckets = [
     {b:'Xing Fu Tang',s:'— brown sugar boba, Ximending'},
     {b:'Snow King Ice Cream',s:'— 70+ wild flavors'},
     {b:'Chia Te / Sunnyhills',s:'— best pineapple cakes'},
-    {b:'Amei Teahouse, Jiufen',s:'— book ahead'}
+    {b:'Amei Teahouse, Jiufen',s:'— book ahead'},
+    {b:'ISLAND Buffet Taipei Hi-Lai Branch',s:'— group-friendly farewell buffet'}
   ]},
   {label:'Bars', color:'#72243E', items:[
     {b:'Ounce',s:'— English-speaking, NY-style, group-friendly'},
@@ -992,6 +1369,7 @@ const restCats = [
     note:'For the farewell dinner or a truly special occasion — the most memorable dining in Taipei.',
     items:[
       {name:'A Joy at Taipei 101 (86F)', cuisine:'Taiwanese elevated buffet', badges:['book'], desc:'300+ dishes on the 86th floor with floor-to-ceiling city views. The most spectacular dining room backdrop in Taiwan. Perfect for the group farewell.', order:'Truffle xiaolongbao, abalone, Peking duck, lobster teppanyaki', price:'NT$1,800–2,500/person'},
+      {name:'ISLAND Buffet Taipei Hi-Lai Branch', cuisine:'Luxury buffet / group dining', badges:['book','iconic'], desc:'A polished, high-variety buffet from the Hi-Lai group — very practical for a large family farewell dinner because everyone can choose seafood, hot dishes, desserts, and Taiwanese/Japanese-style stations at their own pace.', order:'Seafood, roast meats, sushi, hot dishes, dessert stations, and seasonal specialties', price:'NT$1,200–2,000+/person'},
       {name:'Le Palais (頤宮)', cuisine:'Cantonese / 3 Michelin stars', badges:['star3','book'], desc:'Eight consecutive years of 3 Michelin stars. The most prestigious Chinese restaurant in Taiwan. For a truly world-class evening.', order:'Whole Cantonese roast duck, lobster preparations, double-boiled soups', price:'NT$4,000–8,000+/person'},
       {name:'N°168 Prime Steakhouse', cuisine:'Premium steakhouse', badges:['bib','book'], desc:'Grand Victoria Hotel. Two wood-fired ovens, USDA Black Angus beef, the "godfather of Taiwanese steakhouses" at the helm.', order:'Black Angus top cap steak set, wood-fired specials', price:'NT$1,500–3,000/person'}
     ]
