@@ -313,6 +313,145 @@
     .day-grid, .card-grid, .rest-grid, .item-grid, .app-grid, .bucket-grid { grid-template-columns: 1fr 1fr; }
     .rest-grid, .bucket-grid { grid-template-columns: 1fr; }
   }
+
+
+  /* ── Interactive itinerary builder + Google Maps routing ── */
+  .itinerary-tools {
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+    background:var(--bg2); border:0.5px solid var(--border); border-radius:var(--radius);
+    padding:10px 12px; margin:10px 0 14px;
+  }
+  .tool-btn {
+    border:1px solid var(--border2); background:var(--bg); color:var(--text);
+    border-radius:999px; padding:7px 10px; font-size:11px; font-weight:700; cursor:pointer;
+  }
+  .tool-btn:hover { background:#E6F1FB; border-color:#C7DDF3; color:#0C447C; }
+  .tool-btn.primary { background:var(--brand); border-color:var(--brand); color:#fff; }
+  .tool-btn.warn { background:#FAEEDA; border-color:#E8CF9E; color:#633806; }
+  .route-hint { font-size:11px; color:var(--text2); line-height:1.5; flex:1; min-width:220px; }
+  .itinerary-dropzone { display:flex; flex-direction:column; gap:0; }
+  .insert-drop-line { position:relative; height:16px; margin:0 0 0 104px; display:flex; align-items:center; opacity:.55; transition:opacity .12s, height .12s, margin .12s; }
+  .insert-drop-line::before { content:''; display:block; width:100%; height:2px; border-radius:999px; background:transparent; border-top:2px dashed transparent; transition:background .12s, border-color .12s, box-shadow .12s; }
+  .insert-drop-line .insert-label { position:absolute; left:50%; transform:translateX(-50%); top:-2px; background:var(--bg); color:var(--text3); border:0.5px solid var(--border); border-radius:999px; padding:2px 8px; font-size:9px; font-weight:900; letter-spacing:.04em; text-transform:uppercase; opacity:0; pointer-events:none; white-space:nowrap; }
+  .itinerary-dropzone:hover .insert-drop-line { opacity:1; }
+  .insert-drop-line.insert-active-reorder, .insert-drop-line.insert-active-palette { height:30px; opacity:1; margin-top:2px; margin-bottom:2px; }
+  .insert-drop-line.insert-active-reorder::before { background:#0C447C; border-color:#0C447C; box-shadow:0 0 0 4px rgba(12,68,124,.14); }
+  .insert-drop-line.insert-active-palette::before { background:#1D9E75; border-color:#1D9E75; box-shadow:0 0 0 4px rgba(29,158,117,.14); }
+  .insert-drop-line.insert-active-reorder .insert-label { opacity:1; color:#0C447C; border-color:#7DB7EA; }
+  .insert-drop-line.insert-active-palette .insert-label { opacity:1; color:#085041; border-color:#1D9E75; }
+  .block.draggable-block {
+    border:1px solid transparent; border-radius:var(--radius-sm); padding:7px 6px; margin-left:-6px; margin-right:-6px;
+    transition:background .12s, border-color .12s, transform .12s;
+  }
+  .block.draggable-block:hover { background:var(--bg2); border-color:var(--border); }
+  .block.draggable-block.dragging { opacity:.45; transform:scale(.995); }
+  .block.draggable-block.drop-reorder {
+    background:#E6F1FB !important;
+    border-color:#7DB7EA !important;
+    box-shadow:0 0 0 3px rgba(12,68,124,.18);
+    transform:translateY(-1px);
+  }
+  .block.draggable-block.drop-replace {
+    background:#E9F8F2 !important;
+    border-color:#1D9E75 !important;
+    box-shadow:0 0 0 3px rgba(29,158,117,.18);
+  }
+  .drag-handle { font-size:14px; color:var(--text3); cursor:grab; user-select:none; padding-top:1px; touch-action:none; }
+  .drag-handle:active { cursor:grabbing; }
+  .time-input {
+    width:82px; border:1px solid var(--border2); border-radius:7px; padding:4px 5px;
+    font-family:var(--font); font-size:11px; color:var(--text); background:var(--bg);
+  }
+  .editable-title, .editable-desc {
+    outline:none; border-radius:5px; padding:1px 2px; margin-left:-2px;
+  }
+  .editable-title:focus, .editable-desc:focus { background:#FFF8E6; box-shadow:0 0 0 1px #E8CF9E; }
+  .block-actions { display:flex; gap:6px; flex-wrap:wrap; margin-top:7px; }
+  .mini-btn {
+    border:1px solid var(--border2); background:var(--bg); border-radius:999px; padding:3px 7px;
+    font-size:10px; font-weight:700; color:var(--text2); cursor:pointer; text-decoration:none;
+  }
+  .mini-btn:hover { background:var(--bg2); color:var(--text); }
+  .add-activity-box {
+    display:none; background:var(--bg2); border:1px dashed var(--border2); border-radius:var(--radius);
+    padding:11px; margin:10px 0 14px;
+  }
+  .add-activity-box.open { display:block; }
+  .add-grid { display:grid; grid-template-columns:90px 1fr 1fr 140px; gap:8px; }
+  .add-grid input, .add-grid select {
+    border:1px solid var(--border2); border-radius:7px; padding:7px 8px; font-family:var(--font); font-size:12px; background:var(--bg);
+  }
+  @media (max-width: 720px) { .add-grid { grid-template-columns:1fr; } }
+
+
+  /* ── Activity palette + route export ── */
+  .itinerary-builder-layout { display:grid; grid-template-columns:260px minmax(0,1fr); gap:14px; align-items:start; }
+  .activity-palette { position:sticky; top:132px; background:var(--bg); border:0.5px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:12px; max-height:calc(100vh - 160px); overflow:auto; }
+  .palette-title { font-size:13px; font-weight:800; color:var(--text); margin-bottom:4px; }
+  .palette-sub { font-size:11px; color:var(--text2); line-height:1.45; margin-bottom:10px; }
+  .palette-cat { margin-bottom:10px; border-top:0.5px solid var(--border); padding-top:9px; }
+  .palette-cat:first-of-type { border-top:none; padding-top:0; }
+  .palette-cat-title { font-size:10px; font-weight:900; letter-spacing:.06em; text-transform:uppercase; color:var(--text3); margin-bottom:6px; }
+  .palette-item { background:var(--bg2); border:1px solid var(--border); border-radius:9px; padding:8px; margin-bottom:6px; cursor:grab; transition:background .12s, border-color .12s, transform .12s; }
+  .palette-item:hover { background:#E6F1FB; border-color:#C7DDF3; transform:translateY(-1px); }
+  .palette-item:active { cursor:grabbing; }
+  .palette-name { font-size:12px; font-weight:800; color:var(--text); line-height:1.25; }
+  .palette-meta { font-size:10px; color:var(--text2); line-height:1.35; margin-top:2px; }
+  .palette-actions { display:flex; gap:5px; flex-wrap:wrap; margin-top:6px; }
+  .slot-selected { background:#FFF8E6 !important; border-color:#E8CF9E !important; box-shadow:0 0 0 2px rgba(232,207,158,.35); }
+  .drop-replace { outline:2px dashed #1D9E75; outline-offset:2px; }
+  .drop-reorder { outline:2px dashed #0C447C; outline-offset:2px; }
+  .map-panel { margin:12px 0 14px; background:var(--bg); border:0.5px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .map-panel-top { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; background:var(--bg2); border-bottom:0.5px solid var(--border); }
+  .map-panel-title { font-size:12px; font-weight:900; color:var(--text); }
+  .map-panel-note { font-size:10px; color:var(--text2); line-height:1.35; }
+  .map-embed { width:100%; height:310px; border:0; display:block; background:var(--bg3); }
+  .google-map-live { width:100%; height:360px; border:0; display:block; background:var(--bg3); }
+  .map-status { padding:8px 12px; font-size:11px; color:var(--text2); border-top:0.5px solid var(--border); background:var(--bg2); }
+  .map-status.ok { color:#085041; }
+  .map-status.warn { color:#633806; }
+  .transfer-card.loading { opacity:.8; }
+  .transfer-live-badge { font-size:10px; font-weight:900; color:#085041; background:#E1F5EE; border-radius:999px; padding:2px 7px; }
+  .transfer-card { margin:0 0 10px 104px; padding:8px 10px; border:0.5px solid var(--border); border-radius:999px; background:var(--bg2); color:var(--text2); font-size:11px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .transfer-mode { font-weight:900; color:#0C447C; }
+  .transfer-time { font-weight:800; color:var(--text); }
+  .transfer-note { color:var(--text2); }
+  @media (max-width: 860px) {
+    .itinerary-builder-layout { grid-template-columns:1fr; gap:10px; }
+    .activity-palette { position:relative; top:auto; max-height:320px; }
+    .palette-item { padding:10px; }
+    .transfer-card { margin-left:0; border-radius:var(--radius-sm); }
+    .insert-drop-line { margin-left:0; }
+    .itinerary-tools { align-items:stretch; }
+    .itinerary-tools .tool-btn { flex:1 1 145px; justify-content:center; }
+  }
+  @media (max-width: 600px) {
+    .app-header { padding:14px 12px 12px; }
+    .app-title { font-size:16px; }
+    .app-subtitle, .share-note { font-size:11px; }
+    .main-nav-inner { padding:0 8px; }
+    .nav-btn { padding:10px 11px; font-size:12px; }
+    .page-inner { padding:14px 10px 34px; }
+    .section-header h2 { font-size:18px; }
+    .day-card { padding:12px; }
+    .block.draggable-block { margin-left:0; margin-right:0; padding:10px 8px; border-color:var(--border); }
+    .block { gap:7px; }
+    .time-col { min-width:76px; }
+    .time-input { width:76px; font-size:11px; padding:6px 5px; }
+    .drag-handle { font-size:18px; padding-top:3px; }
+    .block-actions { gap:5px; }
+    .mini-btn { padding:6px 8px; font-size:10px; }
+    .activity-palette { max-height:300px; }
+    .palette-sub { font-size:10px; }
+    .map-panel-top { flex-direction:column; align-items:flex-start; }
+    .map-panel-top .mini-btn { width:100%; text-align:center; }
+    .transfer-card { display:block; line-height:1.5; padding:8px 10px; }
+  }
+  @media (pointer: coarse) {
+    .mini-btn, .tool-btn, .tab, .day-tab, .nav-btn { min-height:36px; }
+    .palette-item, .block.draggable-block { -webkit-tap-highlight-color:rgba(29,158,117,.12); }
+  }
+
 </style>
 </head>
 <body>
@@ -583,6 +722,32 @@ const SPECIAL_LINKS = {
   'Yao Yue Teahouse':'https://maps.app.goo.gl/MYv75iQMTAGWMcL28?g_st=ac',
   'ISLAND Buffet Taipei Hi-Lai Branch':'https://www.hilai-foods.com/brand-content/41/hilai-islandbuffet',
 
+  "Wulao Hot Pot / 無老鍋":"https://www.wulao.com.tw/",
+  "Wulao Hot Pot":"https://www.wulao.com.tw/",
+  "Fu Dau Pastry Studio / 芙稻菓室":"https://www.google.com/maps/search/?api=1&query=Fu+Dau+Pastry+Studio+Taipei",
+  "A Cheng Goose / 阿城鵝肉":"https://www.google.com/maps/search/?api=1&query=A+Cheng+Goose+Zhongshan+Taipei",
+  "Fuzhou Black Pepper Bun / 福州世祖胡椒餅":"https://www.google.com/maps/search/?api=1&query=Fuzhou+Black+Pepper+Bun+Raohe+Night+Market+Taipei",
+  "Ximending Walking District":"https://www.travel.taipei/en/attraction/details/1573",
+  "Tian Jin Scallion Flaky Pancakes":"https://www.google.com/maps/search/?api=1&query=Tian+Jin+Scallion+Flaky+Pancakes+Yongkang+Street+Taipei",
+  "Smoothie House Yongkang Street":"https://www.smoothiehouse.com/en/",
+  "Dongmen Dumplings":"https://www.google.com/maps/search/?api=1&query=Dongmen+Dumplings+Taipei",
+  "50 Lan / FIFTYLAN":"https://www.50lan.com/",
+  "Gong Cha":"https://www.gong-cha.com/",
+  "Chatime":"https://chatime.com/",
+  "Ten Ren’s Tea":"https://www.tenren.com.tw/",
+  "Xing Fu Tang Flagship Store":"https://www.google.com/maps/search/?api=1&query=Xing+Fu+Tang+Flagship+Store+Ximending+Taipei",
+  "Gongguan Night Market":"https://www.travel.taipei/en/attraction/details/1701",
+  "CookInn Taiwan":"https://www.cookinn.tw/",
+  "TourMeAway Taipei Food Tour":"https://tourmeaway.com/",
+  "Kavalan Whisky Distillery":"https://www.kavalanwhisky.com/en/",
+  "Taihu Brewing":"https://taihubrewing.com/",
+  "Mikkeller Taipei":"https://mikkeller.com/locations/mikkeller-taipei",
+  "Brasserie at Regent Taipei":"https://www.regenttaiwan.com/dining/brasserie/",
+  "Café at Grand Hyatt Taipei":"https://www.hyatt.com/grand-hyatt/en-US/taigh-grand-hyatt-taipei/dining",
+  "上順興香Q飯糰":"https://www.google.com/maps/search/?api=1&query=%E4%B8%8A%E9%A0%86%E8%88%88%E9%A6%99Q%E9%A3%AF%E7%B3%B0+Taipei",
+  "Cheng Ji":"https://www.google.com/maps/search/?api=1&query=Cheng+Ji+-18%C2%B0C+cheesecake+Taipei",
+  "A Joy in Taipei 101 / 饗 A Joy":"https://www.ajoy.com.tw/",
+  "Lao Shan Dong Homemade Noodles / 老山東牛肉麵":"https://www.google.com/maps/search/?api=1&query=Lao+Shan+Dong+Homemade+Noodles+Taipei",
 };
 function stripHtml(v){ return String(v||'').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').trim(); }
 function baseName(v){ return stripHtml(v).replace(/^\d+\.\s*/,'').replace(/\s+[—-].*$/,'').replace(/\s*\([^)]*\)\s*/g,' ').replace(/\s+/g,' ').trim(); }
@@ -1283,34 +1448,431 @@ itinDays.forEach(d => {
   summaryGrid.innerHTML += `<div class="dcard"><div class="dnum">${d.date}</div><div class="dtitle">${d.title}</div><div class="dsummary">${d.summary}</div><div class="dpills">${pillHtml}</div></div>`;
 });
 
-/* Build detailed */
+/* Build detailed — interactive drag/drop itinerary + Google Maps routing */
 const detailTabs = document.getElementById('detail-tabs');
 const detailCards = document.getElementById('detail-cards');
-const tagLabel = {food:'Food',shop:'Shopping',sight:'Sightseeing',night:'Nightlife',iconic:'Iconic Taiwan',free:'Leisure'};
-itinDays.forEach((d, i) => {
-  const tab = document.createElement('button');
-  tab.className = 'day-tab' + (i===0?' active':'');
-  tab.textContent = d.date.split(' · ')[0];
-  tab.onclick = () => {
-    detailTabs.querySelectorAll('.day-tab').forEach(t=>t.classList.remove('active'));
-    detailCards.querySelectorAll('.day-card-wrap').forEach(c=>c.classList.remove('visible'));
-    tab.classList.add('active');
-    document.getElementById('dc'+i).classList.add('visible');
-  };
-  detailTabs.appendChild(tab);
+const tagLabel = {food:'Food',shop:'Shopping',sight:'Sightseeing',night:'Nightlife',iconic:'Iconic Taiwan',free:'Leisure',trip:'Day trip'};
+const ITIN_STORAGE_KEY = 'taipeiFamilyTripInteractiveItineraryV2';
+const originalItinDays = JSON.parse(JSON.stringify(itinDays));
+let activeItinDay = 0;
+let draggedBlock = null;
+let paletteDragItem = null;
+let selectedSlot = null;
 
-  const wrap = document.createElement('div');
-  wrap.className = 'day-card-wrap' + (i===0?' visible':'');
-  wrap.id = 'dc'+i;
-  let bHtml = '';
-  d.blocks.forEach((b, bi) => {
-    const isLast = bi===d.blocks.length-1;
-    const tags = b.tags.map(t=>`<span class="btag btag-${t}">${tagLabel[t]||t}</span>`).join('');
-    bHtml += `<div class="block"><div class="time-col"><div class="time">${b.time}</div></div><div class="dot-line"><div class="dot"></div>${isLast?'':`<div class="vline"></div>`}</div><div class="block-content"><div class="block-title">${linkify(b.title,'name-link')}</div><div class="block-desc">${b.desc}</div><div class="block-tags">${tags}</div></div></div>`;
+function hydrateItinerary(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(ITIN_STORAGE_KEY) || 'null');
+    if(Array.isArray(saved) && saved.length === itinDays.length){
+      saved.forEach((day, i) => { if(day && Array.isArray(day.blocks)) itinDays[i].blocks = day.blocks; });
+    }
+  } catch(e) {}
+}
+function saveItinerary(){
+  try { localStorage.setItem(ITIN_STORAGE_KEY, JSON.stringify(itinDays)); } catch(e) {}
+}
+function escapeAttr(v){ return String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function parseTimeToMinutes(t){
+  const m = String(t||'').trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?$/i);
+  if(!m) return 9*60;
+  let h = parseInt(m[1],10), min = parseInt(m[2]||'0',10), ap = (m[3]||'').toUpperCase();
+  if(ap === 'PM' && h !== 12) h += 12;
+  if(ap === 'AM' && h === 12) h = 0;
+  return h*60 + min;
+}
+function minutesToTime(total){
+  total = ((total % 1440) + 1440) % 1440;
+  let h = Math.floor(total/60), m = total%60, ap = h >= 12 ? 'PM' : 'AM';
+  let hh = h % 12; if(hh === 0) hh = 12;
+  return `${hh}:${String(m).padStart(2,'0')} ${ap}`;
+}
+function mapsDirectionsUrl(dayIndex){
+  const stops = itinDays[dayIndex].blocks.map(b => baseName(b.title)).filter(Boolean).map(s => s + ' Taipei Taiwan');
+  if(stops.length < 2) return mapSearchUrl(stops[0] || 'Taipei Taiwan');
+  const origin = stops[0], destination = stops[stops.length-1];
+  const waypoints = stops.slice(1,-1).slice(0,8).join('|');
+  let url = 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(origin) + '&destination=' + encodeURIComponent(destination) + '&travelmode=transit';
+  if(waypoints) url += '&waypoints=' + encodeURIComponent(waypoints);
+  return url;
+}
+function getDayRouteStops(dayIndex){
+  return itinDays[dayIndex].blocks.map(b => baseName(b.title)).filter(Boolean).map(s => s + ' Taipei Taiwan');
+}
+function transferId(dayIndex, legIndex){ return `transfer-${dayIndex}-${legIndex}`; }
+function mapId(dayIndex){ return `google-map-${dayIndex}`; }
+function mapStatusId(dayIndex){ return `google-map-status-${dayIndex}`; }
+function mapsEmbedUrl(dayIndex){
+  const stops = itinDays[dayIndex].blocks.map(b => baseName(b.title)).filter(Boolean).map(s => s + ' Taipei Taiwan');
+  if(!stops.length) return 'https://www.google.com/maps?q=Taipei%20Taiwan&output=embed';
+  if(stops.length === 1) return 'https://www.google.com/maps?q=' + encodeURIComponent(stops[0]) + '&output=embed';
+  return 'https://www.google.com/maps/dir/' + stops.map(encodeURIComponent).join('/') + '/?output=embed';
+}
+function normalizeArea(title){
+  const t = String(title||'').toLowerCase();
+  if(/airport|taoyuan|tsa|songshan airport/.test(t)) return 'airport';
+  if(/xinyi|taipei 101|elephant|breeze|a joy|pokemon/.test(t)) return 'xinyi';
+  if(/yongkang|dongmen|daan|da’an|park taipei/.test(t)) return 'daan';
+  if(/ximen|ximending|wanhua|huaxi|longshan|monga/.test(t)) return 'ximending';
+  if(/raohe|songshan|wufenpu/.test(t)) return 'songshan';
+  if(/shilin|beitou|tamsui/.test(t)) return 'north';
+  if(/jiufen|shifen|keelung|yilan|kavalan/.test(t)) return 'daytrip';
+  if(/zhongshan|taipei main|ningxia|dihua|cks|chiang kai|228/.test(t)) return 'central';
+  return 'taipei';
+}
+function transferPlan(fromBlock, toBlock){
+  const a = normalizeArea(fromBlock?.title), b = normalizeArea(toBlock?.title);
+  if(!fromBlock || !toBlock) return {mode:'Transit / Taxi', time:'TBD', note:'Add at least two stops for routing.'};
+  if(a === b) return {mode:'Walk / short taxi', time:'5–15 min', note:'Same-area hop; walking is usually easiest unless the group is tired.'};
+  if(a === 'airport' || b === 'airport') return {mode:'Taxi / airport MRT', time:'45–70 min', note:'Build in baggage, checkout, and group-transfer buffer.'};
+  if(a === 'daytrip' || b === 'daytrip') return {mode:'Private van / TRA + bus', time:'60–100 min', note:'Private van is best for 10 travelers or luggage-heavy days.'};
+  if((a === 'north' && b !== 'north') || (b === 'north' && a !== 'north')) return {mode:'MRT + walk', time:'30–55 min', note:'Efficient by MRT; taxi can be faster for a small subgroup.'};
+  if((a === 'songshan' && b === 'ximending') || (a === 'ximending' && b === 'songshan')) return {mode:'MRT / taxi', time:'25–40 min', note:'Taxi may be easier after night markets.'};
+  if((a === 'xinyi' && b === 'daan') || (a === 'daan' && b === 'xinyi')) return {mode:'MRT / taxi', time:'10–25 min', note:'Quick hop; MRT is reliable and taxis are easy.'};
+  return {mode:'MRT / taxi', time:'15–35 min', note:'Estimate only; open Google Maps for live routing.'};
+}
+function estimateActivityDuration(block){
+  if(block && Number(block.duration) > 0) return Number(block.duration);
+  const title = String(block?.title || '').toLowerCase();
+  const desc = String(block?.desc || '').toLowerCase();
+  const txt = title + ' ' + desc;
+  if(/airport|check out|checkout|depart|flight|leave park taipei/.test(txt)) return 45;
+  if(/breakfast|coffee|café|cafe|bubble tea|dessert|pastry|snack/.test(txt)) return 60;
+  if(/lunch|dinner|hot pot|buffet|din tai fung|restaurant|farewell/.test(txt)) return 105;
+  if(/night market|ximending|shopping|mall|wufenpu|xinyi|zhongshan|souvenir|street/.test(txt)) return 120;
+  if(/jiufen|shifen|day trip|beitou|maokong|tamsui|museum/.test(txt)) return 150;
+  if(/elephant mountain|taipei 101|observation/.test(txt)) return 90;
+  if(/temple|memorial|park|gondola|teahouse/.test(txt)) return 75;
+  return 90;
+}
+function transferMinutes(fromBlock, toBlock){
+  const plan = transferPlan(fromBlock, toBlock);
+  const nums = String(plan.time || '').match(/\d+/g);
+  if(nums && nums.length >= 2) return Math.round((Number(nums[0]) + Number(nums[1])) / 2 / 5) * 5;
+  if(nums && nums.length === 1) return Number(nums[0]);
+  return 20;
+}
+function autoScheduleDayTimes(dayIndex, startIndex=0){
+  const arr = itinDays[dayIndex].blocks;
+  if(!arr || arr.length < 2) return;
+  const safeStart = Math.max(0, Math.min(startIndex, arr.length - 1));
+  let cursor = parseTimeToMinutes(arr[safeStart].time || arr[0].time || '9:00 AM');
+  arr[safeStart].time = minutesToTime(cursor);
+  for(let i=safeStart + 1; i<arr.length; i++){
+    const prev = arr[i-1];
+    cursor += estimateActivityDuration(prev) + transferMinutes(prev, arr[i]);
+    cursor = Math.round(cursor / 5) * 5;
+    arr[i].time = minutesToTime(cursor);
+  }
+}
+function autoScheduleAffectedDays(dayIndexes){
+  [...new Set(dayIndexes.filter(i => Number.isInteger(i) && itinDays[i]))].forEach(i => autoScheduleDayTimes(i, 0));
+}
+
+function renderTransfer(fromBlock, toBlock, dayIndex, legIndex){
+  const t = transferPlan(fromBlock, toBlock);
+  return '<div class="transfer-card" id="' + transferId(dayIndex, legIndex) + '"><span>↳</span><span class="transfer-mode">' + t.mode + '</span><span class="transfer-time">' + t.time + '</span><span class="transfer-note">' + t.note + ' Open the full route in Google Maps for live traffic/transit updates.</span></div>';
+}
+function mapPanel(dayIndex){
+  return '<div class="map-panel"><div class="map-panel-top"><div><div class="map-panel-title">Google Maps route export</div><div class="map-panel-note">Open the current draggable stop order in Google Maps. Transfer cards below use practical built-in travel-time estimates and update when you reorder or replace stops.</div></div><a class="mini-btn" href="' + mapsDirectionsUrl(dayIndex) + '" target="_blank" rel="noopener noreferrer">Open full Google Maps</a></div></div>';
+}
+function refreshGoogleRoutingForVisibleDay(){
+  // No-op by design: this secure version uses outbound Google Maps links plus built-in transfer estimates.
+}
+function loadGoogleMapsPrototype(){
+}
+const ACTIVITY_PALETTE = [
+  {cat:'Iconic sights', color:'#0C447C', items:[
+    {title:'Elephant Mountain', desc:'Classic Taipei 101 skyline hike/viewpoint.', tags:['sight','iconic'], duration:75},
+    {title:'Taipei 101 observation deck', desc:'Observation deck, skyline views, damper, and mall time.', tags:['sight','iconic'], duration:90},
+    {title:'Chiang Kai-shek Memorial Hall', desc:'Grand plaza, architecture, and optional guard ceremony.', tags:['sight','iconic'], duration:75},
+    {title:'Longshan Temple', desc:'Historic temple stop near old Taipei and Wanhua eats.', tags:['sight'], duration:60},
+    {title:'National Palace Museum', desc:'Major museum block for Chinese art and artifacts.', tags:['sight'], duration:150}
+  ]},
+  {cat:'Food & restaurants', color:'#085041', items:[
+    {title:'Din Tai Fung', desc:'Xiao long bao, truffle pork dumplings, fried rice, chocolate XLB.', tags:['food','iconic'], duration:90},
+    {title:'A Joy at Taipei 101 (86F)', desc:'Luxury buffet with skyline views, seafood, meats, and desserts.', tags:['food','iconic'], duration:120},
+    {title:'ISLAND Buffet Taipei Hi-Lai Branch', desc:'Large-format buffet option for a celebratory group meal.', tags:['food'], duration:120},
+    {title:'Wulao Hot Pot', desc:'Group-friendly hot pot broths, meats, vegetables, and interactive dining.', tags:['food'], duration:120},
+    {title:'Yao Yue Teahouse', desc:'Scenic teahouse experience for tea, snacks, and slower pacing.', tags:['food','sight'], duration:120},
+    {title:'Wang’s Broth / 小王煮瓜', desc:'Bib Gourmand-style Wanhua classic for lu rou fan, braised egg, tofu, and pork sides.', tags:['food','iconic'], duration:75},
+    {title:'A Cheng Goose / 阿城鵝肉', desc:'Michelin-listed goose restaurant option in Zhongshan.', tags:['food'], duration:90},
+    {title:'Liu Shandong Beef Noodles / 劉山東牛肉麵', desc:'Classic beef noodle soup near Taipei Main Station.', tags:['food','iconic'], duration:75},
+    {title:'Lao Shan Dong Homemade Noodles / 老山東牛肉麵', desc:'Ximending/Wanhua beef noodle stop with handmade noodles.', tags:['food'], duration:75},
+    {title:'Yongkang Beef Noodles', desc:'Signature beef noodle soup stop in the Yongkang food district.', tags:['food'], duration:75},
+    {title:'Fu Dau Pastry Studio / 芙稻菓室', desc:'Oolong tea soufflé pancakes, coffee, and tea.', tags:['food'], duration:75}
+  ]},
+  {cat:'Night markets & snacks', color:'#712B13', items:[
+    {title:'Raohe Night Market', desc:'Pepper pork buns, grilled snacks, drinks, and desserts.', tags:['food','night'], duration:90},
+    {title:'Ningxia Night Market', desc:'Relaxed night market for oyster omelets, gua bao, fried snacks, and dessert.', tags:['food','night'], duration:90},
+    {title:'Shilin Night Market', desc:'Big classic night market for fried chicken, sausages, drinks, and desserts.', tags:['food','night'], duration:120},
+    {title:'Ximending street snacks', desc:'Bubble tea, fried chicken, oyster misua, crispy milk donuts, and wandering.', tags:['food','shop'], duration:90},
+    {title:'Fu Dau Pastry Studio', desc:'Oolong tea soufflé pancakes, coffee, and tea.', tags:['food'], duration:75},
+    {title:'Tian Jin Scallion Flaky Pancakes', desc:'Yongkang Street scallion pancake, especially with egg, basil, or cheese.', tags:['food'], duration:45},
+    {title:'Smoothie House Yongkang Street', desc:'Mango shaved ice and fruit desserts.', tags:['food'], duration:45},
+    {title:'Xing Fu Tang Flagship Store', desc:'Brown sugar boba milk tea in Ximending.', tags:['food'], duration:45},
+    {title:'Fuzhou Black Pepper Bun / 福州世祖胡椒餅', desc:'Raohe Night Market pork pepper bun / hu jiao bing.', tags:['food','night','iconic'], duration:45},
+    {title:'50 Lan / FIFTYLAN', desc:'Classic Taiwan bubble tea chain stop.', tags:['food'], duration:30},
+    {title:'Bai-Shui Douhua', desc:'Yongkang tofu pudding / douhua dessert stop.', tags:['food'], duration:45}
+  ]},
+  {cat:'Shopping & leisure', color:'#3C3489', items:[
+    {title:'Xinyi luxury shopping', desc:'Taipei 101 Mall, Breeze Xinyi, Shinkong Mitsukoshi, Bellavita, and polished city wandering.', tags:['shop','free'], duration:120},
+    {title:'Pokémon Center Taipei', desc:'Character shopping stop in Xinyi for Pokémon gifts and collectibles.', tags:['shop','iconic'], duration:60},
+    {title:'Huashan 1914 Creative Park', desc:'Creative park with design shops, pop-ups, cafés, exhibitions, and local goods.', tags:['shop','sight'], duration:120},
+    {title:'Songshan Cultural and Creative Park', desc:'Designer goods, exhibitions, and creative retail near Xinyi/Songshan.', tags:['shop','sight'], duration:120},
+    {title:'Yongkang Street boutique gifts', desc:'Boutique gifts, cafés, art, paper goods, and food crawl potential.', tags:['shop','food'], duration:120}
+  ]},
+  {cat:'Day trips & scenic', color:'#854F0B', items:[
+    {title:'Jiufen Old Street', desc:'Lantern-lined mountain village, tea, taro balls, ocean views, and wandering.', tags:['trip','sight','food'], duration:240},
+    {title:'Beitou Hot Spring Village', desc:'Restorative hot springs, thermal valley, bathhouses, and relaxed lunch.', tags:['sight','free'], duration:180},
+    {title:'Tamsui riverfront sunset walk', desc:'Waterfront stalls, river views, and sunset send-off.', tags:['sight','food'], duration:120},
+    {title:'Maokong Gondola', desc:'Cable car views and tea houses in the hills above Taipei.', tags:['sight','food'], duration:180}
+  ]}
+];
+function paletteItemPayload(catIndex, itemIndex){ return JSON.parse(JSON.stringify(ACTIVITY_PALETTE[catIndex].items[itemIndex])); }
+function activityPalette(dayIndex){
+  return '<aside class="activity-palette"><div class="palette-title">Activity library</div><div class="palette-sub">Drag a card between itinerary items to insert it as a new stop, or onto an activity card to replace that slot using the same time.</div>' + ACTIVITY_PALETTE.map((cat, ci)=>'<div class="palette-cat"><div class="palette-cat-title" style="color:' + cat.color + '">' + cat.cat + '</div>' + cat.items.map((item, ii)=>'<div class="palette-item" draggable="true" data-cat="' + ci + '" data-item="' + ii + '"><div class="palette-name">' + stripHtml(item.title) + '</div><div class="palette-meta">' + stripHtml(item.desc) + '</div><div class="palette-actions"><button class="mini-btn" onclick="addPaletteActivity(' + dayIndex + ',' + ci + ',' + ii + ')">Add</button><button class="mini-btn" onclick="replaceSelectedSlot(' + dayIndex + ',' + ci + ',' + ii + ')">Replace selected</button></div></div>').join('') + '</div>').join('') + '</aside>';
+}
+function buildBlockFromPalette(item, time){ return {time:time || '9:00 AM', title:item.title, desc:item.desc, tags:item.tags || ['sight'], duration:item.duration || 90}; }
+function addPaletteActivity(dayIndex, catIndex, itemIndex){
+  const item = paletteItemPayload(catIndex, itemIndex), arr = itinDays[dayIndex].blocks, last = arr[arr.length-1];
+  const nextTime = minutesToTime(parseTimeToMinutes(last?.time || '9:00 AM') + estimateActivityDuration(last) + (last ? transferMinutes(last, item) : 0));
+  arr.push(buildBlockFromPalette(item, nextTime));
+  saveItinerary(); renderDetailed();
+}
+function selectSlot(dayIndex, blockIndex){ selectedSlot = {day:dayIndex, index:blockIndex}; renderDetailed(); }
+function markSelectedSlotInDom(dayIndex, blockIndex){
+  document.querySelectorAll('.draggable-block').forEach(el => el.classList.remove('slot-selected'));
+  const el = document.querySelector('.draggable-block[data-day="' + dayIndex + '"][data-index="' + blockIndex + '"]');
+  if(el) el.classList.add('slot-selected');
+}
+function selectSlotFromClick(event, dayIndex, blockIndex){
+  if(event.target.closest('button,a')) return;
+  selectedSlot = {day:dayIndex, index:blockIndex};
+  if(event.target.closest('input,select,textarea,[contenteditable="true"]')){
+    markSelectedSlotInDom(dayIndex, blockIndex);
+    return;
+  }
+  renderDetailed();
+}
+function replaceSelectedSlot(dayIndex, catIndex, itemIndex){
+  const slot = selectedSlot && selectedSlot.day === dayIndex ? selectedSlot : null;
+  if(!slot){ alert('Select an itinerary slot first, then choose Replace selected.'); return; }
+  replaceBlockWithPalette(dayIndex, slot.index, catIndex, itemIndex);
+}
+function replaceBlockWithPalette(dayIndex, blockIndex, catIndex, itemIndex){
+  const old = itinDays[dayIndex].blocks[blockIndex] || {}, item = paletteItemPayload(catIndex, itemIndex);
+  itinDays[dayIndex].blocks[blockIndex] = buildBlockFromPalette(item, old.time || '9:00 AM');
+  autoScheduleDayTimes(dayIndex, blockIndex);
+  selectedSlot = {day:dayIndex, index:blockIndex};
+  saveItinerary(); renderDetailed();
+}
+function bindPaletteDrag(){
+  document.querySelectorAll('.palette-item').forEach(el => {
+    el.addEventListener('dragstart', e => { paletteDragItem = {cat:+el.dataset.cat, item:+el.dataset.item}; e.dataTransfer.effectAllowed='copyMove'; try{e.dataTransfer.setData('text/plain', JSON.stringify(paletteDragItem));}catch(err){} });
+    el.addEventListener('dragend', () => { paletteDragItem = null; clearDropHighlights(); });
   });
-  wrap.innerHTML = `<div class="day-card"><div class="day-title">${d.title}</div><div class="day-sub">${d.sub}</div>${bHtml}${d.tip?`<div class="tip-box"><b>Pro tip:</b> ${d.tip}</div>`:''}</div>`;
-  detailCards.appendChild(wrap);
-});
+}
+function addActivityBox(dayIndex){
+  return `<div class="add-activity-box" id="addbox-${dayIndex}"><div class="add-grid"><input id="addtime-${dayIndex}" placeholder="Time, e.g. 3:30 PM"><input id="addtitle-${dayIndex}" placeholder="Activity or place"><input id="adddesc-${dayIndex}" placeholder="Short note"><select id="addtag-${dayIndex}"><option value="sight">Sightseeing</option><option value="food">Food</option><option value="shop">Shopping</option><option value="free">Leisure</option><option value="night">Nightlife</option><option value="trip">Day trip</option></select></div><div class="block-actions"><button class="mini-btn" onclick="saveNewActivity(${dayIndex})">Add to this day</button><button class="mini-btn" onclick="toggleAddActivity(${dayIndex})">Cancel</button></div></div>`;
+}
+function renderInsertDropLine(dayIndex, insertIndex){
+  return `<div class="insert-drop-line" data-day="${dayIndex}" data-insert-index="${insertIndex}" aria-label="Drop here to insert activity"><span class="insert-label">Drop here to insert</span></div>`;
+}
+function insertPaletteActivityAt(dayIndex, insertIndex, catIndex, itemIndex){
+  const item = paletteItemPayload(catIndex, itemIndex);
+  const arr = itinDays[dayIndex].blocks;
+  const safeIndex = Math.max(0, Math.min(insertIndex, arr.length));
+  let suggestedTime = '9:00 AM';
+  if(safeIndex === 0){
+    suggestedTime = arr[0]?.time || '9:00 AM';
+  } else {
+    const prev = arr[safeIndex - 1];
+    suggestedTime = minutesToTime(parseTimeToMinutes(prev?.time || '9:00 AM') + estimateActivityDuration(prev) + transferMinutes(prev, item));
+  }
+  arr.splice(safeIndex, 0, buildBlockFromPalette(item, suggestedTime));
+  autoScheduleDayTimes(dayIndex, safeIndex === 0 ? 0 : safeIndex - 1);
+  selectedSlot = {day:dayIndex, index:safeIndex};
+  activeItinDay = dayIndex;
+  saveItinerary(); renderDetailed();
+}
+function moveDraggedBlockToInsert(dayIndex, insertIndex){
+  if(!draggedBlock) return;
+  const fromDay = draggedBlock.day;
+  const fromIndex = draggedBlock.index;
+  const moved = itinDays[fromDay].blocks.splice(fromIndex, 1)[0];
+  if(!moved) return;
+  let targetIndex = Math.max(0, Math.min(insertIndex, itinDays[dayIndex].blocks.length));
+  if(fromDay === dayIndex && fromIndex < insertIndex) targetIndex--;
+  targetIndex = Math.max(0, Math.min(targetIndex, itinDays[dayIndex].blocks.length));
+  itinDays[dayIndex].blocks.splice(targetIndex, 0, moved);
+  autoScheduleAffectedDays([fromDay, dayIndex]);
+  selectedSlot = {day:dayIndex, index:targetIndex};
+  activeItinDay = dayIndex;
+  saveItinerary(); renderDetailed();
+}
+function clearInsertHighlights(){
+  document.querySelectorAll('.insert-drop-line').forEach(el => el.classList.remove('insert-active-reorder','insert-active-palette'));
+}
+function bindInsertDropLines(){
+  document.querySelectorAll('.insert-drop-line').forEach(line => {
+    line.addEventListener('dragenter', e => {
+      e.preventDefault();
+      clearDropHighlights(); clearInsertHighlights();
+      if(paletteDragItem) line.classList.add('insert-active-palette');
+      else if(draggedBlock) line.classList.add('insert-active-reorder');
+    });
+    line.addEventListener('dragover', e => {
+      e.preventDefault(); e.stopPropagation();
+      clearDropHighlights(); clearInsertHighlights();
+      if(paletteDragItem){ e.dataTransfer.dropEffect='copy'; line.classList.add('insert-active-palette'); }
+      else if(draggedBlock){ e.dataTransfer.dropEffect='move'; line.classList.add('insert-active-reorder'); }
+    });
+    line.addEventListener('dragleave', e => {
+      if(!line.contains(e.relatedTarget)) line.classList.remove('insert-active-reorder','insert-active-palette');
+    });
+    line.addEventListener('drop', e => {
+      e.preventDefault(); e.stopPropagation();
+      const targetDay = +line.dataset.day;
+      const insertIndex = +line.dataset.insertIndex;
+      clearDropHighlights(); clearInsertHighlights();
+      if(paletteDragItem){
+        const item = paletteDragItem; paletteDragItem = null;
+        insertPaletteActivityAt(targetDay, insertIndex, item.cat, item.item);
+        return;
+      }
+      if(draggedBlock){ moveDraggedBlockToInsert(targetDay, insertIndex); draggedBlock = null; }
+    });
+  });
+}
+
+function renderDetailTabs(){
+  detailTabs.innerHTML = '';
+  itinDays.forEach((d, i) => {
+    const tab = document.createElement('button');
+    tab.className = 'day-tab' + (i===activeItinDay?' active':'');
+    tab.textContent = d.date.split(' · ')[0];
+    tab.onclick = () => { activeItinDay = i; renderDetailed(); };
+    detailTabs.appendChild(tab);
+  });
+}
+function renderDetailed(){
+  renderDetailTabs();
+  detailCards.innerHTML = '';
+  itinDays.forEach((d, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'day-card-wrap' + (i===activeItinDay?' visible':'');
+    wrap.id = 'dc'+i;
+    let bHtml = `<div class="itinerary-tools"><button class="tool-btn primary" onclick="window.open(mapsDirectionsUrl(${i}),'_blank','noopener')">🗺️ Open day route in Google Maps</button><button class="tool-btn" onclick="toggleAddActivity(${i})">＋ Add activity</button><button class="tool-btn" onclick="rebalanceDayTimes(${i})">⏱️ Rebalance times</button><button class="tool-btn warn" onclick="resetDayItinerary(${i})">↺ Reset day</button><div class="route-hint">Drag activities to reorder. Drop on the line between events to insert; drop a library card onto an event to replace it. Blue indicates reorder/insert targets; green indicates library insertions/replacements. Times automatically reflow after drag/drop.</div></div>${addActivityBox(i)}${mapPanel(i)}<div class="itinerary-dropzone" data-day="${i}">`;
+    bHtml += renderInsertDropLine(i, 0);
+    d.blocks.forEach((b, bi) => {
+      const isLast = bi===d.blocks.length-1;
+      const tags = (b.tags||[]).map(t=>`<span class="btag btag-${t}">${tagLabel[t]||t}</span>`).join('');
+      const selected = selectedSlot && selectedSlot.day===i && selectedSlot.index===bi;
+      bHtml += `<div class="block draggable-block ${selected?'slot-selected':''}" draggable="true" data-day="${i}" data-index="${bi}" onclick="selectSlotFromClick(event,${i},${bi})"><div class="drag-handle" title="Drag to reorder">⋮⋮</div><div class="time-col"><input class="time-input" value="${escapeAttr(b.time)}" onchange="updateBlockField(${i},${bi},'time',this.value)"></div><div class="dot-line"><div class="dot"></div>${isLast?'':`<div class="vline"></div>`}</div><div class="block-content"><div class="block-title editable-title" contenteditable="true" onblur="updateBlockField(${i},${bi},'title',this.textContent)">${stripHtml(b.title)}</div><div class="block-desc editable-desc" contenteditable="true" onblur="updateBlockField(${i},${bi},'desc',this.textContent)">${stripHtml(b.desc)}</div><div class="block-tags">${tags}</div><div class="block-actions"><button class="mini-btn" onclick="selectSlot(${i},${bi})">${selected?'✓ Slot selected':'Select slot'}</button><button class="mini-btn" onclick="moveBlock(${i},${bi},-1)">↑ Earlier</button><button class="mini-btn" onclick="moveBlock(${i},${bi},1)">↓ Later</button><button class="mini-btn" onclick="duplicateBlock(${i},${bi})">Duplicate</button><button class="mini-btn" onclick="deleteBlock(${i},${bi})">Remove</button><a class="mini-btn" href="${mapSearchUrl(b.title)}" target="_blank" rel="noopener noreferrer">Map stop</a></div></div></div>`;
+      if(!isLast) bHtml += renderTransfer(b, d.blocks[bi+1], i, bi);
+      bHtml += renderInsertDropLine(i, bi + 1);
+    });
+    bHtml += `</div>`;
+    wrap.innerHTML = `<div class="itinerary-builder-layout">${activityPalette(i)}<div class="day-card"><div class="day-title">${d.title}</div><div class="day-sub">${d.sub}</div>${bHtml}${d.tip?`<div class="tip-box"><b>Pro tip:</b> ${d.tip}</div>`:''}</div></div>`;
+    detailCards.appendChild(wrap);
+  });
+  bindDragDrop();
+  bindPaletteDrag();
+  bindInsertDropLines();
+  refreshGoogleRoutingForVisibleDay();
+}
+function clearDropHighlights(){
+  document.querySelectorAll('.draggable-block').forEach(el => el.classList.remove('drop-reorder','drop-replace'));
+  clearInsertHighlights();
+}
+function setDropHighlight(el){
+  clearDropHighlights();
+  if(!el) return;
+  if(paletteDragItem) el.classList.add('drop-replace');
+  else if(draggedBlock) el.classList.add('drop-reorder');
+}
+function bindDragDrop(){
+  document.querySelectorAll('.draggable-block').forEach(el => {
+    el.addEventListener('dragstart', e => {
+      if(paletteDragItem) return;
+      draggedBlock = {day:+el.dataset.day, index:+el.dataset.index};
+      el.classList.add('dragging'); e.dataTransfer.effectAllowed='move';
+    });
+    el.addEventListener('dragend', () => { el.classList.remove('dragging'); draggedBlock = null; clearDropHighlights(); });
+    el.addEventListener('dragenter', e => { e.preventDefault(); setDropHighlight(el); });
+    el.addEventListener('dragover', e => { e.preventDefault(); setDropHighlight(el); });
+    el.addEventListener('dragleave', e => { if(!el.contains(e.relatedTarget)) el.classList.remove('drop-reorder','drop-replace'); });
+    el.addEventListener('drop', e => {
+      e.preventDefault(); clearDropHighlights();
+      const target = {day:+el.dataset.day, index:+el.dataset.index};
+      if(paletteDragItem){ replaceBlockWithPalette(target.day, target.index, paletteDragItem.cat, paletteDragItem.item); paletteDragItem = null; return; }
+      if(!draggedBlock) return;
+      const [moved] = itinDays[draggedBlock.day].blocks.splice(draggedBlock.index,1);
+      let insertAt = target.index;
+      if(draggedBlock.day === target.day && draggedBlock.index < target.index) insertAt--;
+      itinDays[target.day].blocks.splice(insertAt,0,moved);
+      autoScheduleAffectedDays([draggedBlock.day, target.day]);
+      selectedSlot = {day:target.day, index:insertAt};
+      activeItinDay = target.day; saveItinerary(); renderDetailed();
+    });
+  });
+  document.querySelectorAll('.itinerary-dropzone').forEach(zone => {
+    zone.addEventListener('dragover', e => e.preventDefault());
+    zone.addEventListener('dragleave', e => { if(!zone.contains(e.relatedTarget)) clearDropHighlights(); });
+    zone.addEventListener('drop', e => {
+      if(e.target.closest('.draggable-block')) return;
+      clearDropHighlights();
+      const targetDay = +zone.dataset.day;
+      if(paletteDragItem){ addPaletteActivity(targetDay, paletteDragItem.cat, paletteDragItem.item); paletteDragItem = null; return; }
+      if(!draggedBlock) return;
+      const [moved] = itinDays[draggedBlock.day].blocks.splice(draggedBlock.index,1);
+      itinDays[targetDay].blocks.push(moved);
+      autoScheduleAffectedDays([draggedBlock.day, targetDay]);
+      selectedSlot = {day:targetDay, index:itinDays[targetDay].blocks.length-1};
+      activeItinDay = targetDay; saveItinerary(); renderDetailed();
+    });
+  });
+}
+function updateBlockField(dayIndex, blockIndex, field, value){
+  itinDays[dayIndex].blocks[blockIndex][field] = String(value||'').trim();
+  if(field === 'time') autoScheduleDayTimes(dayIndex, blockIndex);
+  saveItinerary(); refreshGoogleRoutingForVisibleDay(); renderDetailed();
+}
+function moveBlock(dayIndex, blockIndex, dir){
+  const arr = itinDays[dayIndex].blocks, ni = blockIndex + dir;
+  if(ni < 0 || ni >= arr.length) return;
+  [arr[blockIndex], arr[ni]] = [arr[ni], arr[blockIndex]];
+  autoScheduleDayTimes(dayIndex, Math.min(blockIndex, ni));
+  selectedSlot = {day:dayIndex, index:ni};
+  saveItinerary(); renderDetailed();
+}
+function duplicateBlock(dayIndex, blockIndex){
+  const copy = JSON.parse(JSON.stringify(itinDays[dayIndex].blocks[blockIndex]));
+  copy.title = copy.title + ' copy';
+  itinDays[dayIndex].blocks.splice(blockIndex+1,0,copy); autoScheduleDayTimes(dayIndex, blockIndex); selectedSlot = {day:dayIndex, index:blockIndex+1}; saveItinerary(); renderDetailed();
+}
+function deleteBlock(dayIndex, blockIndex){ itinDays[dayIndex].blocks.splice(blockIndex,1); autoScheduleDayTimes(dayIndex, Math.max(0, blockIndex-1)); selectedSlot = null; saveItinerary(); renderDetailed(); }
+function toggleAddActivity(dayIndex){ document.getElementById(`addbox-${dayIndex}`)?.classList.toggle('open'); }
+function saveNewActivity(dayIndex){
+  const time = document.getElementById(`addtime-${dayIndex}`).value || minutesToTime(parseTimeToMinutes(itinDays[dayIndex].blocks.at(-1)?.time || '9:00 AM') + 90);
+  const title = document.getElementById(`addtitle-${dayIndex}`).value.trim();
+  const desc = document.getElementById(`adddesc-${dayIndex}`).value.trim() || 'Custom activity added to the flexible itinerary.';
+  const tag = document.getElementById(`addtag-${dayIndex}`).value;
+  if(!title){ alert('Add an activity/place name first.'); return; }
+  itinDays[dayIndex].blocks.push({time,title,desc,tags:[tag],duration:90});
+  saveItinerary(); renderDetailed();
+}
+function rebalanceDayTimes(dayIndex){
+  const arr = itinDays[dayIndex].blocks; if(!arr.length) return;
+  autoScheduleDayTimes(dayIndex, 0);
+  saveItinerary(); renderDetailed();
+}
+function resetDayItinerary(dayIndex){
+  itinDays[dayIndex].blocks = JSON.parse(JSON.stringify(originalItinDays[dayIndex].blocks));
+  saveItinerary(); renderDetailed();
+}
+hydrateItinerary();
+renderDetailed();
+loadGoogleMapsPrototype();
 
 /* Build buckets */
 const bucketGrid = document.getElementById('bucket-grid');
@@ -1323,91 +1885,981 @@ buckets.forEach(b => {
    DATA — RESTAURANTS
 ════════════════════════════════════════════════ */
 const restCats = [
-  { label:'🥟 Must-eat iconic', color:'#1D9E75',
-    note:'Non-negotiable restaurants for any first visit to Taipei.',
-    items:[
-      {name:'Din Tai Fung (鼎泰豐)', cuisine:'Xiaolongbao / Shanghainese', badges:['iconic','book'], desc:'The most famous restaurant in Taiwan. Each soup dumpling is made with exactly 18 folds on-site.', order:'Xiaolongbao, shrimp fried rice, red bean buns', price:'NT$400–800/person'},
-      {name:'Liu Shandong Beef Noodles (劉山東)', cuisine:'Taiwanese beef noodle soup', badges:['iconic'], desc:'Hidden back alley near Taipei Main Station since the 1950s. Widely considered the best beef noodle soup in Taipei.', order:'Braised beef noodle soup, tendon noodles, pickled vegetables', price:'NT$150–250/person'},
-      {name:'Shin Yeh (欣葉台菜)', cuisine:'Classic Taiwanese banquet', badges:['iconic','bib'], desc:'Taipei\'s most beloved traditional Taiwanese restaurant with Michelin Bib Gourmand recognition. Spinning round tables, perfect for a group of 10.', order:'Three-cup chicken, oyster omelet, pineapple shrimp, braised pork belly', price:'NT$500–900/person'},
-      {name:'Wang\'s Broth (王品)', cuisine:'Braised pork belly rice', badges:['iconic'], desc:'Renowned for lu rou fan — Taiwan\'s national comfort dish. Braised pork belly over rice with soft-boiled egg.', order:'Lu rou fan, braised egg, side soup', price:'NT$100–200/person'},
-      {name:'Lan Jia Gua Bao (藍家割包)', cuisine:'Taiwanese gua bao', badges:['iconic'], desc:'Award-winning Taiwanese burger — steamed bun with braised pork belly, pickled mustard greens, peanut powder.', order:'Classic gua bao, fatty or lean pork option', price:'NT$60–80 per bun'}
+  {
+    "label": "🥟 Must-eat iconic",
+    "color": "#1D9E75",
+    "note": "Core sit-down restaurants, food neighborhoods, tours, and classic Taiwan food experiences that belong in the main restaurant guide.",
+    "items": [
+      {
+        "name": "Din Tai Fung (鼎泰豐)",
+        "cuisine": "Xiaolongbao / Shanghainese",
+        "badges": [
+          "iconic",
+          "book"
+        ],
+        "desc": "The most famous restaurant in Taiwan; best for soup dumplings and a reliable group meal.",
+        "order": "Xiaolongbao, truffle & pork dumplings, shrimp fried rice, chocolate xiaolongbao",
+        "price": "NT$400–900/person"
+      },
+      {
+        "name": "Shin Yeh (欣葉台菜)",
+        "cuisine": "Classic Taiwanese banquet",
+        "badges": [
+          "iconic",
+          "bib",
+          "book"
+        ],
+        "desc": "Group-friendly Taiwanese banquet option with classic round-table dishes.",
+        "order": "Three-cup chicken, oyster omelet, pineapple shrimp, braised pork belly",
+        "price": "NT$500–900/person"
+      },
+      {
+        "name": "Lan Jia Gua Bao (藍家割包)",
+        "cuisine": "Taiwanese gua bao",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "A classic Taiwanese pork-belly bun stop, especially good as a casual snack meal.",
+        "order": "Classic gua bao, fatty or lean pork option",
+        "price": "NT$60–100 per bun"
+      },
+      {
+        "name": "仁弄砂鍋煲 / San Nong Sha Guo Bao",
+        "cuisine": "Taiwanese restaurant",
+        "badges": [],
+        "desc": "Taipei. Exact branch/map pin should be verified before routing the group.",
+        "order": "Soft tofu cubes",
+        "price": "Varies"
+      },
+      {
+        "name": "源芳刈包 / Yuan Fang Gua Bao",
+        "cuisine": "Classic Taiwanese snack",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Taipei. Image ID",
+        "order": "Pork belly gua bao",
+        "price": "Varies"
+      },
+      {
+        "name": "Weekend Chicken Club",
+        "cuisine": "Fried chicken / casual restaurant",
+        "badges": [],
+        "desc": "Taipei. Image ID",
+        "order": "Three-cup fried chicken",
+        "price": "Varies"
+      },
+      {
+        "name": "Shang Hao / 上好",
+        "cuisine": "Street-side / no-frills chicken rice",
+        "badges": [],
+        "desc": "New Taipei / Taipei area. Exact branch/map pin should be verified before routing the group.",
+        "order": "Chicken over rice",
+        "price": "Varies"
+      },
+      {
+        "name": "Lao Shan Dong Homemade Noodles / 老山東牛肉麵",
+        "cuisine": "Beef noodles / Michelin Bib Gourmand",
+        "badges": [
+          "bib",
+          "iconic"
+        ],
+        "desc": "Ximending / Wanhua, Taipei. User add + Taiwanderers; Michelin lists Lao Shan Dong Homemade Noodles as Bib Gourmand in Taipei.",
+        "order": "Handmade beef noodle soup",
+        "price": "Varies"
+      },
+      {
+        "name": "Yongkang Street",
+        "cuisine": "Food neighborhood",
+        "badges": [],
+        "desc": "Da’an, Taipei. Taiwanderers calls Yongkang Street one of Taipei’s tastiest neighborhoods with pancakes, dumplings, beef noodles, cafés, and desserts.",
+        "order": "Scallion pancakes, xiao long bao, beef noodles, tofu pudding, cafés",
+        "price": "Varies"
+      },
+      {
+        "name": "Hao Kung Tao Chin Chi Yuan",
+        "cuisine": "Casual restaurant",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Dumplings / local Taiwanese dishes",
+        "price": "Varies"
+      },
+      {
+        "name": "Yongkang Beef Noodles",
+        "cuisine": "Beef noodles",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Beef noodle soup",
+        "price": "Varies"
+      },
+      {
+        "name": "Dongmen Dumplings",
+        "cuisine": "Dumplings",
+        "badges": [],
+        "desc": "Yongkang / Dongmen, Taipei. Taiwanderers Yongkang list",
+        "order": "Pork dumplings, potstickers, hot and sour dumpling soup, side dishes",
+        "price": "Varies"
+      },
+      {
+        "name": "James Kitchen",
+        "cuisine": "Taiwanese restaurant",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Taiwanese home-style dishes",
+        "price": "Varies"
+      },
+      {
+        "name": "Liu Shandong Beef Noodles / 劉山東牛肉麵",
+        "cuisine": "Beef noodles",
+        "badges": [],
+        "desc": "Near Taipei Main Station. Taiwanderers food directory includes Liu Shandong Beef Noodles in Taipei.",
+        "order": "Beef noodle soup",
+        "price": "Varies"
+      },
+      {
+        "name": "Taiwan Railway Bento / Bian Dang",
+        "cuisine": "Transit food experience",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "TRA stations / trains. Taiwanderers calls railway bento a classic Taiwan food experience.",
+        "order": "Railway bento box",
+        "price": "Varies"
+      },
+      {
+        "name": "CookInn Taiwan",
+        "cuisine": "Cooking class",
+        "badges": [
+          "book"
+        ],
+        "desc": "Taipei. Blog add",
+        "order": "Cooking class: xiao long bao, beef noodles, gua bao, pineapple cakes, scallion pancakes",
+        "price": "Varies"
+      },
+      {
+        "name": "TourMeAway Taipei Food Tour",
+        "cuisine": "Food tour",
+        "badges": [
+          "book"
+        ],
+        "desc": "Taipei / Wanhua area. Blog add",
+        "order": "Guided tasting: oyster omelet, lu rou fan, gua bao, stinky tofu, scallion pancake, soup dumplings, herbal tea",
+        "price": "Varies"
+      },
+      {
+        "name": "Kavalan Whisky Distillery",
+        "cuisine": "Distillery / day trip",
+        "badges": [],
+        "desc": "Yilan. Blog add",
+        "order": "Whisky tasting",
+        "price": "Varies"
+      }
     ]
   },
-  { label:'⭐ Michelin — 3 stars', color:'#854F0B',
-    note:'Taipei\'s 3-star restaurants. Book months ahead. Special-occasion splurges only.',
-    items:[
-      {name:'Le Palais (頤宮)', cuisine:'Cantonese fine dining', badges:['star3','book'], desc:'Holding 3 Michelin stars for eight consecutive years. Famous for Cantonese roast duck carved tableside. One of the world\'s truly great Chinese restaurants.', order:'Whole Cantonese roast duck (pre-order), Cantonese seafood, double-boiled soups', price:'NT$3,000–8,000+/person'},
-      {name:'Taïrroir (態芮)', cuisine:'Taiwanese-French fusion', badges:['star3','book'], desc:'Three Michelin stars. Chef Kai Ho crafts 10-course tasting menus telling Taiwan\'s story through French culinary technique.', order:'Tasting menu only, seasonal. Taiwanese produce with French precision.', price:'NT$4,500–7,000/person'}
+  {
+    "label": "⭐ Michelin — 3 stars",
+    "color": "#854F0B",
+    "note": "Taipei's 3-star restaurants. Book months ahead. Special-occasion splurges only.",
+    "items": [
+      {
+        "name": "Le Palais (頤宮)",
+        "cuisine": "Cantonese fine dining",
+        "badges": [
+          "star3",
+          "book"
+        ],
+        "desc": "Taipei’s most prestigious Chinese fine-dining restaurant, especially known for Cantonese banquet dishes.",
+        "order": "Whole Cantonese roast duck, seafood, double-boiled soups",
+        "price": "NT$3,000–8,000+/person"
+      },
+      {
+        "name": "Taïrroir (態芮)",
+        "cuisine": "Taiwanese-French fusion",
+        "badges": [
+          "star3",
+          "book"
+        ],
+        "desc": "Three-star Taiwanese-French tasting menu experience for a major special occasion.",
+        "order": "Seasonal tasting menu",
+        "price": "NT$4,500–7,000/person"
+      }
     ]
   },
-  { label:'✨ Michelin — 2 stars', color:'#534AB7',
-    note:'Taipei\'s most exciting fine dining — Japanese omakase, French tasting menus, modern Taiwanese.',
-    items:[
-      {name:'logy', cuisine:'Japanese-European omakase', badges:['star2','book'], desc:'Best Restaurant in Taiwan 2025. Ranked #22 in Asia\'s 50 Best. Seasonal Taiwanese ingredients interpreted through Japanese and European techniques.', order:'Omakase tasting menu, changes every two months.', price:'NT$5,000–8,000/person'},
-      {name:'L\'Atelier de Joël Robuchon', cuisine:'French haute cuisine', badges:['star2','book'], desc:'Opened by the most decorated chef in history. In the Bellavita luxury mall, Xinyi. 36 seats around a show kitchen counter.', order:'Foie gras quail with potato purée, seasonal French tasting menus', price:'NT$3,000–8,000/person'},
-      {name:'Molino de Urdániz', cuisine:'Modern Spanish', badges:['star2','book'], desc:'Two-Michelin-star Spanish restaurant. Creative Basque-influenced cooking. A remarkable surprise in Taipei.', order:'Tasting menu only. Spanish seafood, Basque-influenced dishes.', price:'NT$4,000–7,000/person'}
+  {
+    "label": "✨ Michelin — 2 stars",
+    "color": "#534AB7",
+    "note": "Taipei's high-end two-star dining tier: tasting menus, omakase-style meals, and luxury international cooking.",
+    "items": [
+      {
+        "name": "logy",
+        "cuisine": "Japanese-European omakase",
+        "badges": [
+          "star2",
+          "book"
+        ],
+        "desc": "Seasonal Taiwanese ingredients interpreted through Japanese and European technique.",
+        "order": "Omakase tasting menu",
+        "price": "NT$5,000–8,000/person"
+      },
+      {
+        "name": "L'Atelier de Joël Robuchon",
+        "cuisine": "French haute cuisine",
+        "badges": [
+          "star2",
+          "book"
+        ],
+        "desc": "French fine dining in Bellavita with counter seating and polished service.",
+        "order": "Seasonal French tasting menu",
+        "price": "NT$3,000–8,000/person"
+      },
+      {
+        "name": "Molino de Urdániz",
+        "cuisine": "Modern Spanish",
+        "badges": [
+          "star2",
+          "book"
+        ],
+        "desc": "Creative Spanish/Basque-influenced fine dining in Taipei.",
+        "order": "Tasting menu",
+        "price": "NT$4,000–7,000/person"
+      }
     ]
   },
-  { label:'🌟 Michelin — 1 star + Bib', color:'#185FA5',
-    note:'The sweet spot — serious cooking, more accessible pricing, easier reservations.',
-    items:[
-      {name:'Mume', cuisine:'Modern international / Taiwanese', badges:['star1','book'], desc:'One of Taipei\'s most beloved 1-star restaurants. Seasonal tasting menus with Taiwanese ingredients and international technique. Warm, relaxed atmosphere.', order:'5 or 7-course tasting menu. Fermented, botanical dishes rooted in Taiwan.', price:'NT$2,200–3,500/person'},
-      {name:'A Joy (饗 A Joy)', cuisine:'Taiwanese elevated buffet', badges:['bib','book'], desc:'86th floor of Taipei 101 — over 300 dishes with floor-to-ceiling city views. The most scenic dining room in the city. Perfect for a group farewell dinner.', order:'Truffle xiaolongbao, Peking duck three ways, teppanyaki lobster', price:'NT$1,800–2,500/person'},
-      {name:'Mountain and Sea House (山海楼)', cuisine:'Refined Taiwanese', badges:['star1','book'], desc:'Michelin Green Star. Committed to preserving traditional Taiwanese cuisine. Elegant townhouse, small farms and fisheries sourcing.', order:'Braised abalone, three-cup chicken, slow-cooked pork knuckle', price:'NT$1,800–3,500/person'},
-      {name:'James Kitchen (大隱酒食)', cuisine:'Home-style Taiwanese', badges:['bib'], desc:'Michelin Bib Gourmand. Feels like eating in a Taiwanese family home. On Yongkang Street — perfect for the food crawl.', order:'Pickled radish omelet, oyster rolls, flying fish roe sausages', price:'NT$350–700/person'}
+  {
+    "label": "🌟 Michelin — 1 star + Bib",
+    "color": "#185FA5",
+    "note": "Accessible Michelin, Bib Gourmand, and Michelin-recognized local-food stops from the master food list.",
+    "items": [
+      {
+        "name": "Mume",
+        "cuisine": "Modern international / Taiwanese",
+        "badges": [
+          "star1",
+          "book"
+        ],
+        "desc": "A beloved one-star tasting-menu restaurant using Taiwanese ingredients in a relaxed modern setting.",
+        "order": "5- or 7-course tasting menu",
+        "price": "NT$2,200–3,500/person"
+      },
+      {
+        "name": "Mountain and Sea House (山海楼)",
+        "cuisine": "Refined Taiwanese",
+        "badges": [
+          "star1",
+          "book"
+        ],
+        "desc": "Elegant Taiwanese cooking rooted in traditional recipes and local sourcing.",
+        "order": "Braised abalone, three-cup chicken, slow-cooked pork knuckle",
+        "price": "NT$1,800–3,500/person"
+      },
+      {
+        "name": "Wang’s Broth / 小王煮瓜",
+        "cuisine": "Michelin / Bib Gourmand-style local food",
+        "badges": [
+          "bib"
+        ],
+        "desc": "Huaxi Street / Wanhua, Taipei. Image ID + Taiwanderers names Wang’s Broth as a Michelin/Bib Gourmand food stop.",
+        "order": "Lu rou fan, braised pork rice, braised egg, braised tofu / pork sides",
+        "price": "Varies"
+      },
+      {
+        "name": "A Cheng Goose / 阿城鵝肉",
+        "cuisine": "Taiwanese restaurant",
+        "badges": [
+          "bib"
+        ],
+        "desc": "Zhongshan, Taipei. Image ID; Michelin lists A Cheng Goose Zhongshan in the 2025 guide.",
+        "order": "Half roasted goose / steamed or smoked goose",
+        "price": "Varies"
+      }
     ]
   },
-  { label:'🍲 Hot pot & groups', color:'#712B13',
-    note:'Hot pot is Taiwan\'s great communal dining ritual — perfect for a group of 10.',
-    items:[
-      {name:'Orange Shabu Shabu (橘色涮涮鍋)', cuisine:'Japanese-style hot pot', badges:['iconic'], desc:'Taipei\'s most popular shabu shabu chain. Individual broth pots, premium meats and seafood. Book ahead for groups.', order:'Premium beef set, seafood combo, mushroom broth base', price:'NT$600–1,200/person'},
-      {name:'Xin Dian Hotpot (辛殿麻辣鍋)', cuisine:'Sichuan spicy hot pot', badges:['iconic','book'], desc:'Mala (spicy numbing) Sichuan hot pot. Rich, intense broth with premium ingredients. Often queues — reserve ahead.', order:'Mala broth, premium beef slices, fresh seafood, tofu skins', price:'NT$600–1,000/person'},
-      {name:'Modern Toilet Restaurant (便所主題餐廳)', cuisine:'Themed hot pot', badges:['iconic'], desc:'Hot pot in miniature toilet bowls at toilet-shaped tables. Completely absurd. Completely fun. The whole family will talk about it for years.', order:'Hot pot set, chocolate sundae in a mini toilet bowl', price:'NT$300–500/person'}
+  {
+    "label": "🍲 Hot pot & groups",
+    "color": "#712B13",
+    "note": "Communal dining options that work especially well for a large family group.",
+    "items": [
+      {
+        "name": "Orange Shabu Shabu (橘色涮涮鍋)",
+        "cuisine": "Japanese-style hot pot",
+        "badges": [
+          "iconic",
+          "book"
+        ],
+        "desc": "Popular shabu-shabu chain with premium meats and seafood. Reserve ahead for groups.",
+        "order": "Premium beef set, seafood combo, mushroom broth base",
+        "price": "NT$600–1,200/person"
+      },
+      {
+        "name": "Xin Dian Hotpot (辛殿麻辣鍋)",
+        "cuisine": "Sichuan spicy hot pot",
+        "badges": [
+          "iconic",
+          "book"
+        ],
+        "desc": "Mala spicy hot pot with rich broth and premium ingredients.",
+        "order": "Mala broth, beef slices, seafood, tofu skins",
+        "price": "NT$600–1,000/person"
+      },
+      {
+        "name": "Modern Toilet Restaurant (便所主題餐廳)",
+        "cuisine": "Themed hot pot",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Absurd, memorable toilet-themed hot pot restaurant for a fun family story.",
+        "order": "Hot pot set, chocolate sundae in a mini toilet bowl",
+        "price": "NT$300–500/person"
+      },
+      {
+        "name": "Wulao Hot Pot / 無老鍋",
+        "cuisine": "Hot pot",
+        "badges": [
+          "iconic",
+          "book"
+        ],
+        "desc": "Taipei. User add",
+        "order": "Hot pot broths, meats, vegetables, interactive hot pot",
+        "price": "Varies"
+      }
     ]
   },
-  { label:'🌅 Splurge & farewell', color:'#27500A',
-    note:'For the farewell dinner or a truly special occasion — the most memorable dining in Taipei.',
-    items:[
-      {name:'A Joy at Taipei 101 (86F)', cuisine:'Taiwanese elevated buffet', badges:['book'], desc:'300+ dishes on the 86th floor with floor-to-ceiling city views. The most spectacular dining room backdrop in Taiwan. Perfect for the group farewell.', order:'Truffle xiaolongbao, abalone, Peking duck, lobster teppanyaki', price:'NT$1,800–2,500/person'},
-      {name:'ISLAND Buffet Taipei Hi-Lai Branch', cuisine:'Luxury buffet / group dining', badges:['book','iconic'], desc:'A polished, high-variety buffet from the Hi-Lai group — very practical for a large family farewell dinner because everyone can choose seafood, hot dishes, desserts, and Taiwanese/Japanese-style stations at their own pace.', order:'Seafood, roast meats, sushi, hot dishes, dessert stations, and seasonal specialties', price:'NT$1,200–2,000+/person'},
-      {name:'Le Palais (頤宮)', cuisine:'Cantonese / 3 Michelin stars', badges:['star3','book'], desc:'Eight consecutive years of 3 Michelin stars. The most prestigious Chinese restaurant in Taiwan. For a truly world-class evening.', order:'Whole Cantonese roast duck, lobster preparations, double-boiled soups', price:'NT$4,000–8,000+/person'},
-      {name:'N°168 Prime Steakhouse', cuisine:'Premium steakhouse', badges:['bib','book'], desc:'Grand Victoria Hotel. Two wood-fired ovens, USDA Black Angus beef, the "godfather of Taiwanese steakhouses" at the helm.', order:'Black Angus top cap steak set, wood-fired specials', price:'NT$1,500–3,000/person'}
+  {
+    "label": "🌅 Splurge & farewell",
+    "color": "#27500A",
+    "note": "Buffets, skyline dining, and special-occasion group meals appropriate for the family farewell dinner.",
+    "items": [
+      {
+        "name": "A Joy at Taipei 101 (86F)",
+        "cuisine": "Taiwanese elevated buffet",
+        "badges": [
+          "book",
+          "iconic"
+        ],
+        "desc": "Skyline buffet on the 86th floor of Taipei 101, ideal for the group’s major farewell meal.",
+        "order": "Seafood, premium meats, desserts, skyline-view buffet stations",
+        "price": "NT$1,800–2,800/person"
+      },
+      {
+        "name": "ISLAND Buffet Taipei Hi-Lai Branch",
+        "cuisine": "Luxury buffet / group dining",
+        "badges": [
+          "book",
+          "iconic"
+        ],
+        "desc": "Large, polished Hi-Lai buffet branch that works well for a mixed-preference family group.",
+        "order": "Seafood, roast meats, sushi, hot dishes, dessert stations",
+        "price": "NT$1,200–2,000+/person"
+      },
+      {
+        "name": "N°168 Prime Steakhouse",
+        "cuisine": "Premium steakhouse",
+        "badges": [
+          "book"
+        ],
+        "desc": "Upscale steakhouse option for travelers who want a Western luxury dinner.",
+        "order": "USDA Black Angus steak set, wood-fired specials",
+        "price": "NT$1,500–3,000/person"
+      },
+      {
+        "name": "Brasserie at Regent Taipei",
+        "cuisine": "Buffet",
+        "badges": [
+          "book"
+        ],
+        "desc": "Taipei. Blog add",
+        "order": "Hotel buffet",
+        "price": "Varies"
+      },
+      {
+        "name": "Café at Grand Hyatt Taipei",
+        "cuisine": "Buffet",
+        "badges": [
+          "book"
+        ],
+        "desc": "Xinyi, Taipei. Blog add",
+        "order": "Hotel buffet, seafood, meats, desserts",
+        "price": "Varies"
+      },
+      {
+        "name": "Miao Yuan Vegetarian Buffet",
+        "cuisine": "Vegetarian",
+        "badges": [],
+        "desc": "Taipei. Blog add",
+        "order": "Vegetarian buffet",
+        "price": "Varies"
+      },
+      {
+        "name": "Hi Lai Vegetarian Restaurant",
+        "cuisine": "Vegetarian / temple-area dining",
+        "badges": [],
+        "desc": "Fo Guang Shan / Kaohsiung area. Blog add",
+        "order": "Vegetarian dishes",
+        "price": "Varies"
+      }
     ]
   },
-  { label:'🌙 Night market dishes', color:'#993C1D',
-    note:'Not restaurants — these are the iconic dishes to seek at Taipei\'s night markets.',
-    items:[
-      {name:'Pepper pork bun (胡椒餅) — Raohe', cuisine:'Night market street food', badges:['iconic'], desc:'Baked in a clay oven at the Raohe entrance stall. The most famous single snack in any Taipei night market.', order:'One bun = NT$55. Queue is part of the experience.', price:'NT$55'},
-      {name:'Giant fried chicken cutlet (豪大大雞排)', cuisine:'Night market classic', badges:['iconic'], desc:'Bigger than your face. Battered, fried, dusted with basil. Taiwan\'s most iconic night market snack.', order:'One cutlet. Basil dusting is mandatory.', price:'NT$80–100'},
-      {name:'Oyster omelet (蚵仔煎)', cuisine:'Night market classic', badges:['iconic'], desc:'Fresh oysters in starchy egg pancake with sweet chili sauce. A founding pillar of Taiwanese night market cuisine.', order:'One portion. Best at Shilin or Raohe.', price:'NT$60–120'},
-      {name:'Stinky tofu (臭豆腐)', cuisine:'Night market classic', badges:['iconic'], desc:'Fermented, fried, served with kimchi. The most divisive food in Taiwan — but deeply satisfying once you\'re past the smell.', order:'Fried version is more approachable. One portion.', price:'NT$50–80'},
-      {name:'Bubble tea (珍珠奶茶)', cuisine:'Taiwanese drink', badges:['iconic'], desc:'Taiwan invented it. Chi Cha San Chen, Milksha, and TP Tea are the best brands in Taipei.', order:'Classic milk tea + pearls. Ask for 50% sugar, less ice.', price:'NT$60–120'}
+  {
+    "label": "🌙 Night market dishes",
+    "color": "#993C1D",
+    "note": "Night markets, food districts, and essential dishes to seek while wandering Taipei after dark.",
+    "items": [
+      {
+        "name": "Fuzhou Black Pepper Bun / 福州世祖胡椒餅",
+        "cuisine": "Night market / Michelin-recognized stall",
+        "badges": [
+          "bib"
+        ],
+        "desc": "Raohe Night Market, Taipei. Image ID; Michelin highlights Fuzhou Black Pepper Bun at Raohe Night Market.",
+        "order": "Pork pepper bun / hu jiao bing",
+        "price": "Varies"
+      },
+      {
+        "name": "Ximending Walking District",
+        "cuisine": "Food district",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Ximending, Taipei. User add",
+        "order": "Bubble tea, fried chicken, oyster rice noodles, crispy milk donuts, street snacks",
+        "price": "Varies"
+      },
+      {
+        "name": "Raohe Night Market",
+        "cuisine": "Night market",
+        "badges": [
+          "bib",
+          "iconic"
+        ],
+        "desc": "Songshan, Taipei. User add + Taiwanderers/Michelin-supported",
+        "order": "Pork pepper buns, grilled snacks, drinks, desserts",
+        "price": "Varies"
+      },
+      {
+        "name": "Hsiung Chi Scallion Pancake",
+        "cuisine": "Night market / Bib Gourmand-style street food",
+        "badges": [
+          "bib"
+        ],
+        "desc": "Gongguan Night Market, Taipei. Taiwanderers names Hsiung Chi Scallion Pancake at Gongguan Night Market.",
+        "order": "Scallion pancake",
+        "price": "Varies"
+      },
+      {
+        "name": "Gongguan Night Market",
+        "cuisine": "Night market",
+        "badges": [],
+        "desc": "Gongguan, Taipei. Taiwanderers night-market guide listing",
+        "order": "Scallion pancake, student-area snacks, drinks",
+        "price": "Varies"
+      },
+      {
+        "name": "Ningxia Night Market",
+        "cuisine": "Night market",
+        "badges": [],
+        "desc": "Datong, Taipei. Taiwanderers includes Ningxia among its Taipei night-market guides.",
+        "order": "Stinky tofu, oyster omelets, gua bao, grilled squid, fried ice cream",
+        "price": "Varies"
+      },
+      {
+        "name": "Shilin Night Market",
+        "cuisine": "Night market",
+        "badges": [],
+        "desc": "Shilin, Taipei. Taiwanderers night-market guide listing",
+        "order": "Fried chicken cutlets, sausages, drinks, desserts",
+        "price": "Varies"
+      },
+      {
+        "name": "Huaxi Street Night Market",
+        "cuisine": "Night market",
+        "badges": [],
+        "desc": "Wanhua, Taipei. Blog add",
+        "order": "Wang’s Broth, old-school Wanhua eats",
+        "price": "Varies"
+      },
+      {
+        "name": "Monga Night Market",
+        "cuisine": "Night market / local food area",
+        "badges": [],
+        "desc": "Wanhua, Taipei. Blog add",
+        "order": "Food-tour snacks near Longshan Temple area",
+        "price": "Varies"
+      },
+      {
+        "name": "Stinky Tofu",
+        "cuisine": "Essential dish",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Night markets across Taiwan. Blog add",
+        "order": "Fried stinky tofu with sauce / pickled cabbage",
+        "price": "Varies"
+      },
+      {
+        "name": "Oyster Omelet",
+        "cuisine": "Essential dish",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Night markets across Taiwan. Blog add",
+        "order": "Oyster omelet",
+        "price": "Varies"
+      },
+      {
+        "name": "Gua Bao",
+        "cuisine": "Essential dish",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Taipei / night markets. Blog add",
+        "order": "Pork belly bun",
+        "price": "Varies"
+      },
+      {
+        "name": "Taiwanese Fried Chicken",
+        "cuisine": "Essential dish",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Ximending / night markets / fried chicken shops. User + blog-style add",
+        "order": "Fried chicken cutlet or popcorn chicken",
+        "price": "Varies"
+      },
+      {
+        "name": "Oyster Rice Noodles / Oyster Misua",
+        "cuisine": "Essential dish",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Ximending / night markets. User add",
+        "order": "Oyster vermicelli / rice noodles",
+        "price": "Varies"
+      },
+      {
+        "name": "Crispy Milk Donuts",
+        "cuisine": "Dessert / snack",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Ximending / street snack stalls. User add",
+        "order": "Crispy milk donut",
+        "price": "Varies"
+      },
+      {
+        "name": "Scallion Pancakes",
+        "cuisine": "Street snack",
+        "badges": [],
+        "desc": "Yongkang / Gongguan / street stalls. Blog + image theme",
+        "order": "Flaky scallion pancake, often with egg",
+        "price": "Varies"
+      },
+      {
+        "name": "Pork Pepper Buns / Hu Jiao Bing",
+        "cuisine": "Night market snack",
+        "badges": [
+          "bib"
+        ],
+        "desc": "Raohe Night Market. Image + Michelin",
+        "order": "Black pepper pork bun baked in tandoor-like oven",
+        "price": "Varies"
+      },
+      {
+        "name": "Lu Rou Fan",
+        "cuisine": "Essential Taiwanese dish",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Wang’s Broth / local eateries. Image + blog",
+        "order": "Braised pork rice",
+        "price": "Varies"
+      },
+      {
+        "name": "Beef Noodle Soup",
+        "cuisine": "Essential Taiwanese dish",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Lao Shan Dong / Liu Shandong / Yongkang. User + blog",
+        "order": "Braised beef noodle soup",
+        "price": "Varies"
+      },
+      {
+        "name": "Xiao Long Bao",
+        "cuisine": "Essential Taiwanese dish",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Din Tai Fung / Yongkang. User + blog",
+        "order": "Soup dumplings",
+        "price": "Varies"
+      }
     ]
   },
-  { label:'🧋 Snacks, tea & sweets', color:'#185FA5', note:'Fast hits to weave into open blocks, shopping time, and night market wandering.', items:[
-      {name:'Chi Cha San Chen',cuisine:'Milk tea',badges:['iconic'],desc:'One of the most famous tea-forward milk tea chains; good first stop for high-quality Taiwanese tea drinks.',order:'Dong Ding oolong milk tea or classic milk tea',price:'NT$80–150'},
-      {name:'Oolong Tea Project',cuisine:'Milk tea',badges:['iconic'],desc:'Tea-focused drinks with more grown-up flavor profiles than basic bubble tea chains.',order:'Oolong milk tea or seasonal tea latte',price:'NT$80–160'},
-      {name:'Milksha',cuisine:'Milk tea',badges:['iconic'],desc:'Popular chain known for fresh milk tea and brown sugar drinks.',order:'Fresh milk tea with pearls',price:'NT$70–140'},
-      {name:'TP Tea',cuisine:'Milk tea',badges:['iconic'],desc:'Chun Shui Tang family chain; reliable tea drinks across Taipei.',order:'Tieguanyin milk tea or classic pearl milk tea',price:'NT$70–150'},
-      {name:'Chun Shui Tang Original Store (春水堂創始店)',cuisine:'Bubble tea / teahouse',badges:['iconic'],desc:'Historic teahouse credited as the birthplace of pearl milk tea. The original is in Taichung; Taipei branches are easiest if the family stays local.',order:'Classic pearl milk tea and Taiwanese tea snacks',price:'NT$150–400'},
-      {name:'Yao Yue Teahouse',cuisine:'Traditional teahouse',badges:['iconic','book'],desc:'Atmospheric Maokong teahouse for Taiwanese tea, mountain air, relaxed group conversation, and a more classic sit-down tea experience.',order:'High mountain oolong, tea snacks, and shared pots for the table',price:'NT$300–800'},
-      {name:'Crispy Milk Donuts',cuisine:'Street dessert',badges:['iconic'],desc:'Instagram-famous fried milk donuts — simple, hot, and crowd-pleasing.',order:'Original crispy milk donut',price:'NT$40–100'},
-      {name:'Snow King Ice Cream',cuisine:'Ice cream',badges:['iconic'],desc:'Old-school Taipei ice cream shop with wild flavors like tea, tropical fruit, and savory oddities.',order:'Ask for samples and share several scoops',price:'NT$100–250'},
-      {name:'Tian Jin Scallion Pancakes',cuisine:'Street snack',badges:['iconic'],desc:'Beloved Yongkang-area scallion pancake stop; a perfect snack while walking.',order:'Egg scallion pancake',price:'NT$40–100'},
-      {name:'Taiwan Coffee Project',cuisine:'Coffee + gifts',badges:[],desc:'Coffee and tea chocolate-bar style souvenirs; good for easy bring-home gifts.',order:'Coffee, tea chocolate bars, or packaged gifts',price:'NT$150–600'}
-    ]},
-  { label:'🍸 Taiwanese bars', color:'#72243E', note:'Late-night options ranging from English-friendly cocktails to speakeasy-style Taiwanese flavor bars.', items:[
-      {name:'Ounce',cuisine:'NY-style cocktails',badges:['book'],desc:'Whole team speaks English, strong hospitality, and a comfortable first cocktail bar for visitors.',order:'Dealer’s choice cocktail',price:'NT$400–700'},
-      {name:'Nisei',cuisine:'Japanese-American speakeasy',badges:['book'],desc:'Speakeasy exploring Taiwanese history through a Japanese-American lens.',order:'Signature menu flight or seasonal cocktail',price:'NT$400–800'},
-      {name:'Needle',cuisine:'Cocktails + live music',badges:[],desc:'Fun bartender energy; live music every Tuesday if the timing works.',order:'Ask Chili or Miya for a recommendation',price:'NT$350–700'},
-      {name:'Uno',cuisine:'Mezcal / tequila',badges:[],desc:'Dedicated agave bar — the right pick for mezcal and tequila fans.',order:'Mezcal cocktail or tasting pour',price:'NT$350–800'},
-      {name:'9birds',cuisine:'HK-themed intimate bar',badges:[],desc:'Small Hong Kong-themed bar; watch out for the bowl shots.',order:'House cocktail or bowl shot',price:'NT$350–700'},
-      {name:'Opera',cuisine:'Hotel view bar',badges:['iconic'],desc:'Good drinks with a good city view from the 15th floor of a hotel.',order:'Nightcap with skyline view',price:'NT$400–800'},
-      {name:'Bar Between',cuisine:'Japanese classics + fruit cocktails',badges:['book'],desc:'Excellent Japanese classic and fresh fruit cocktails. Be respectful; formerly members-only.',order:'Fresh fruit cocktail',price:'NT$400–800'},
-      {name:'Imbibe',cuisine:'Taiwanese flavor cocktails',badges:[],desc:'Good range of cocktails exploring local Taiwanese ingredients and flavors.',order:'Taiwanese flavor signature cocktail',price:'NT$350–700'},
-      {name:'Daybreak',cuisine:'Politics / events bar',badges:[],desc:'Only open Fridays, Saturdays, or events; interesting for Taiwan/global politics and youth activist community energy.',order:'Check schedule before going',price:'NT$300–700'}
-    ]}
-
+  {
+    "label": "🧋 Snacks, tea & sweets",
+    "color": "#185FA5",
+    "note": "Desserts, bubble tea, breakfast snacks, teahouses, cafés, and quick bites to weave into open blocks.",
+    "items": [
+      {
+        "name": "Chi Cha San Chen",
+        "cuisine": "Milk tea",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Tea-forward milk tea chain and an easy first stop for high-quality Taiwanese tea drinks.",
+        "order": "Dong Ding oolong milk tea or classic milk tea",
+        "price": "NT$80–150"
+      },
+      {
+        "name": "Oolong Tea Project",
+        "cuisine": "Milk tea",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Tea-focused drinks with more grown-up flavor profiles than standard boba chains.",
+        "order": "Oolong milk tea or seasonal tea latte",
+        "price": "NT$80–160"
+      },
+      {
+        "name": "Milksha",
+        "cuisine": "Milk tea",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Popular fresh-milk tea chain with dependable brown sugar and pearl drinks.",
+        "order": "Fresh milk tea with pearls",
+        "price": "NT$70–140"
+      },
+      {
+        "name": "TP Tea",
+        "cuisine": "Milk tea",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Chun Shui Tang family chain with reliable tea drinks across Taipei.",
+        "order": "Tieguanyin milk tea or classic pearl milk tea",
+        "price": "NT$70–150"
+      },
+      {
+        "name": "Yao Yue Teahouse",
+        "cuisine": "Traditional teahouse",
+        "badges": [
+          "iconic",
+          "book"
+        ],
+        "desc": "Atmospheric Maokong teahouse for Taiwanese tea, mountain air, and relaxed group conversation.",
+        "order": "High mountain oolong, tea snacks, shared pots for the table",
+        "price": "NT$300–800"
+      },
+      {
+        "name": "Taiwan Coffee Project",
+        "cuisine": "Coffee + gifts",
+        "badges": [],
+        "desc": "Good for coffee, tea-flavored souvenir bars, and small packaged gifts.",
+        "order": "Coffee, tea chocolate bars, packaged gifts",
+        "price": "NT$150–600"
+      },
+      {
+        "name": "上順興香Q飯糰",
+        "cuisine": "Breakfast / street food",
+        "badges": [],
+        "desc": "Taipei. Exact branch/map pin should be verified before routing the group.",
+        "order": "Scallion pancake wrapped fan tuan / rice roll",
+        "price": "Varies"
+      },
+      {
+        "name": "Cheng Ji",
+        "cuisine": "Dessert",
+        "badges": [],
+        "desc": "Taipei. Exact branch/map pin should be verified before routing the group.",
+        "order": "-18°C cheesecake",
+        "price": "Varies"
+      },
+      {
+        "name": "Tai Shun Street Waffle",
+        "cuisine": "Dessert / street snack",
+        "badges": [],
+        "desc": "Tai Shun Street, Taipei. Image ID",
+        "order": "Taro wheel cake",
+        "price": "Varies"
+      },
+      {
+        "name": "Fu Dau Pastry Studio / 芙稻菓室",
+        "cuisine": "Café / breakfast / dessert",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Taipei. User add",
+        "order": "Soufflé pancakes, especially oolong tea version",
+        "price": "Varies"
+      },
+      {
+        "name": "Tian Jin Scallion Flaky Pancakes",
+        "cuisine": "Street snack",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Scallion flaky pancake, add egg / basil / cheese",
+        "price": "Varies"
+      },
+      {
+        "name": "Smoothie House Yongkang Street",
+        "cuisine": "Dessert",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Mango shaved ice / fruit smoothies",
+        "price": "Varies"
+      },
+      {
+        "name": "Ciao Ciao Scone Cafe / 悄悄好食永康店舖",
+        "cuisine": "Café / bakery",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Scones, café drinks",
+        "price": "Varies"
+      },
+      {
+        "name": "Zhang Men Brewing Yongkang",
+        "cuisine": "Craft beer",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list; Taiwanderers notes Zhang Men Brewing has multiple Taiwan taprooms.",
+        "order": "Taiwanese craft beer",
+        "price": "Varies"
+      },
+      {
+        "name": "Saturn Landing Turkish Coffee",
+        "cuisine": "Café / coffee",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Turkish coffee",
+        "price": "Varies"
+      },
+      {
+        "name": "8%ice CAFÉ 永康公園店",
+        "cuisine": "Dessert / café",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Ice cream / café desserts",
+        "price": "Varies"
+      },
+      {
+        "name": "Bai-Shui Douhua",
+        "cuisine": "Dessert",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Tofu pudding / douhua",
+        "price": "Varies"
+      },
+      {
+        "name": "MATA Tofu Pudding",
+        "cuisine": "Dessert",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Tofu pudding",
+        "price": "Varies"
+      },
+      {
+        "name": "CAT.jpg Cafe",
+        "cuisine": "Themed café",
+        "badges": [],
+        "desc": "Yongkang Street, Taipei. Taiwanderers Yongkang list",
+        "order": "Cat café drinks / desserts",
+        "price": "Varies"
+      },
+      {
+        "name": "50 Lan / FIFTYLAN",
+        "cuisine": "Bubble tea chain",
+        "badges": [],
+        "desc": "Multiple Taipei locations. Taiwanderers Yongkang chain-store list",
+        "order": "Bubble tea / milk tea",
+        "price": "Varies"
+      },
+      {
+        "name": "Chun Shui Tang Original Store",
+        "cuisine": "Bubble tea / historic food stop",
+        "badges": [],
+        "desc": "Taichung. Taiwanderers food-blog add",
+        "order": "Original-style bubble tea",
+        "price": "Varies"
+      },
+      {
+        "name": "Gong Cha",
+        "cuisine": "Bubble tea chain",
+        "badges": [],
+        "desc": "Multiple Taiwan locations. Blog add",
+        "order": "Bubble tea",
+        "price": "Varies"
+      },
+      {
+        "name": "Chatime",
+        "cuisine": "Bubble tea chain",
+        "badges": [],
+        "desc": "Multiple Taiwan locations. Blog add",
+        "order": "Bubble tea",
+        "price": "Varies"
+      },
+      {
+        "name": "Ten Ren’s Tea",
+        "cuisine": "Tea chain",
+        "badges": [],
+        "desc": "Multiple Taiwan locations. Blog add",
+        "order": "Tea / bubble tea",
+        "price": "Varies"
+      },
+      {
+        "name": "Xing Fu Tang Flagship Store",
+        "cuisine": "Bubble tea / dessert drink",
+        "badges": [],
+        "desc": "Ximending, Taipei. Blog add",
+        "order": "Brown sugar boba milk tea",
+        "price": "Varies"
+      },
+      {
+        "name": "Tofu Pudding / Douhua",
+        "cuisine": "Dessert",
+        "badges": [],
+        "desc": "Yongkang / dessert shops. Taiwanderers Yongkang add",
+        "order": "Soft tofu pudding with toppings",
+        "price": "Varies"
+      },
+      {
+        "name": "Soufflé Pancakes",
+        "cuisine": "Café / breakfast",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Fu Dau Pastry Studio. User add",
+        "order": "Oolong tea soufflé pancakes",
+        "price": "Varies"
+      }
+    ]
+  },
+  {
+    "label": "🍸 Taiwanese bars",
+    "color": "#72243E",
+    "note": "Cocktail bars, craft beer bars, taprooms, and evening drink stops.",
+    "items": [
+      {
+        "name": "Ounce",
+        "cuisine": "NY-style cocktails",
+        "badges": [
+          "book"
+        ],
+        "desc": "English-friendly cocktail bar with strong hospitality and an easy first-nightcap vibe.",
+        "order": "Dealer’s choice cocktail",
+        "price": "NT$400–700"
+      },
+      {
+        "name": "Nisei",
+        "cuisine": "Japanese-American speakeasy",
+        "badges": [
+          "book"
+        ],
+        "desc": "Speakeasy-style bar exploring Taiwanese history through a Japanese-American lens.",
+        "order": "Signature menu flight or seasonal cocktail",
+        "price": "NT$400–800"
+      },
+      {
+        "name": "Needle",
+        "cuisine": "Cocktails + live music",
+        "badges": [],
+        "desc": "Fun bartender energy and occasional live music.",
+        "order": "House cocktail or bartender recommendation",
+        "price": "NT$350–700"
+      },
+      {
+        "name": "Uno",
+        "cuisine": "Mezcal / tequila",
+        "badges": [],
+        "desc": "Good pick for mezcal and tequila fans.",
+        "order": "Mezcal cocktail or tasting pour",
+        "price": "NT$350–800"
+      },
+      {
+        "name": "9birds",
+        "cuisine": "HK-themed intimate bar",
+        "badges": [],
+        "desc": "Small Hong Kong-themed bar with playful drinks.",
+        "order": "House cocktail or bowl shot",
+        "price": "NT$350–700"
+      },
+      {
+        "name": "Opera",
+        "cuisine": "Hotel view bar",
+        "badges": [
+          "iconic"
+        ],
+        "desc": "Hotel bar with city views for a more polished nightcap.",
+        "order": "Nightcap with skyline view",
+        "price": "NT$400–800"
+      },
+      {
+        "name": "Bar Between",
+        "cuisine": "Japanese classics + fruit cocktails",
+        "badges": [
+          "book"
+        ],
+        "desc": "Excellent Japanese classics and fresh fruit cocktails.",
+        "order": "Fresh fruit cocktail",
+        "price": "NT$400–800"
+      },
+      {
+        "name": "Imbibe",
+        "cuisine": "Taiwanese flavor cocktails",
+        "badges": [],
+        "desc": "Cocktails built around local Taiwanese ingredients and flavors.",
+        "order": "Taiwanese flavor signature cocktail",
+        "price": "NT$350–700"
+      },
+      {
+        "name": "Daybreak",
+        "cuisine": "Politics / events bar",
+        "badges": [],
+        "desc": "Event-driven bar with activist/community energy; check hours before going.",
+        "order": "Check schedule before going",
+        "price": "NT$300–700"
+      },
+      {
+        "name": "Taihu Brewing",
+        "cuisine": "Craft beer",
+        "badges": [],
+        "desc": "Taipei. Blog add",
+        "order": "Taiwanese craft beer",
+        "price": "Varies"
+      },
+      {
+        "name": "Hit Cat Brewing",
+        "cuisine": "Craft beer",
+        "badges": [],
+        "desc": "Taipei. Blog add",
+        "order": "Craft beer",
+        "price": "Varies"
+      },
+      {
+        "name": "Mikkeller Taipei",
+        "cuisine": "Craft beer bar",
+        "badges": [],
+        "desc": "Taipei. Blog add",
+        "order": "International craft beer",
+        "price": "Varies"
+      },
+      {
+        "name": "Rongjin Gorgeous Time",
+        "cuisine": "Food / drink complex",
+        "badges": [],
+        "desc": "Taipei. Blog add",
+        "order": "Beer, gyoza, heritage-complex food stop",
+        "price": "Varies"
+      },
+      {
+        "name": "Floating Taipei",
+        "cuisine": "Craft beer bar",
+        "badges": [],
+        "desc": "Taipei. Blog add",
+        "order": "Craft beer",
+        "price": "Varies"
+      }
+    ]
+  }
 ];
 
 const badgeConf = {

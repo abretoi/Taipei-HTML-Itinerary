@@ -1,93 +1,141 @@
 # Taipei Family Trip Guide — May 2026
 
-An interactive, single-file HTML travel guide for a family trip to Taipei, Taiwan from **May 10–17, 2026**. The guide is designed for a group of 10 travelers staying at **Park Taipei Hotel**, with itinerary planning, restaurants, shopping, apps, and trip-prep details organized into a mobile-friendly web app.
+Interactive single-file HTML travel guide for a Taipei family trip, built for GitHub Pages deployment.
 
-## Project Overview
+This project is designed as a lightweight travel web app for a family trip to Taipei from **May 10–17, 2026**. It includes an editable itinerary, restaurants, shopping, apps, trip-prep notes, Google Maps route export links, and a drag-and-drop itinerary builder that works on desktop and mobile.
 
-This repository is intended to host a static GitHub Pages site using `index.html` as the main entry point. The guide is built as a self-contained HTML web app with embedded CSS and JavaScript, so it does not require a build process, package manager, backend, database, or external framework.
+## Files included
 
-The app includes:
+- `index.html` — the full self-contained travel web app
+- `README.md` — this project summary and deployment guide
 
-- A day-by-day Taipei itinerary
-- Flexible scheduling for staggered arrivals and departures
-- Restaurant and food recommendations
-- Shopping, souvenirs, character goods, stationery, luxury malls, and local craft stops
-- Must-download travel apps
-- Trip-prep checklist and packing guidance
-- Live or search-safe external links for maps, official websites, and app downloads
+No build step is required. The app can run directly from GitHub Pages because it is a static HTML file.
 
-## Latest Itinerary Logic
+## Core features
 
-The itinerary has been updated to account for two important scheduling changes:
+- Responsive web app for desktop and mobile
+- Trip itinerary with day summaries, category buckets, and detailed day-by-day planning
+- Restaurant guide sorted into useful food categories instead of a catch-all list
+- Shopping guide with Taipei 101, Xinyi, stationery, local crafts, character shopping, and souvenir stops
+- Apps checklist for Taipei travel logistics
+- Trip prep checklist with tappable checklist behavior
+- Local browser persistence via `localStorage` for itinerary edits
 
-1. **Two family members arrive later on May 11**  
-   Because 2 travelers will not arrive until the afternoon of May 11, the original Taipei 101 and Elephant Mountain activities were moved later so all 10 travelers can participate together.
+## Latest itinerary updates
 
-2. **Split departures on May 16 and May 17**  
-   - 8 family members leave for **Seoul, South Korea on May 16 at 12:55 PM**.
-   - The schedule now includes checkout and airport-transfer time for that group.
-   - 2 remaining travelers depart Taipei on **May 17 at 9:55 AM**.
-   - May 16 afternoon/evening is now optimized as a lighter final Taipei window for the remaining 2 travelers.
+The itinerary reflects the latest family logistics:
 
-## Key Content Updates
+- **May 11** is now a more relaxed arrival, shopping, and leisure day because 2 family members arrive later that afternoon.
+- **Elephant Mountain + Taipei 101** were moved later so all 10 family members can participate.
+- **May 15** functions as the final full day together for the full family group.
+- **May 16** accounts for 8 family members flying to Seoul at **12:55 PM**, including checkout and airport-transfer buffer time.
+- **May 17** accounts for the remaining 2 travelers flying out at **9:55 AM**.
 
-Recent updates include:
+## Interactive drag-and-drop itinerary builder
 
-- May 11 changed into a more relaxed Xinyi shopping, leisure, and arrival-friendly day.
-- Elephant Mountain and Taipei 101 moved to a later shared day so the full group can join.
-- May 15 positioned as the final full day together for all 10 travelers.
-- May 16 updated for the Seoul departure group and the remaining 2 travelers.
-- May 17 added as the final departure morning for the remaining 2 travelers.
-- Added **ISLAND Buffet Taipei Hi-Lai Branch** to the restaurant guide.
-- Added **Yao Yue Teahouse** to Snacks, Tea & Sweets.
-- Updated character-shopping links to avoid broken pages or 404 errors by using official links or search-safe fallbacks.
+The detailed day-by-day itinerary includes a live editing interface.
 
-## File Structure
+### What you can do
 
-```text
-.
-├── index.html      # Main single-file Taipei travel guide web app
-└── README.md       # Project summary and GitHub Pages instructions
-```
+- Reorder itinerary events by dragging and dropping them.
+- Click an itinerary card to select/highlight it.
+- Edit activity times, titles, and descriptions directly in the card.
+- Move events earlier or later with buttons.
+- Duplicate events.
+- Remove events.
+- Add custom activities manually.
+- Reset a day back to the original itinerary.
+- Rebalance times automatically.
 
-## How to Deploy on GitHub Pages
+### Activity side panel
 
-1. Create a new GitHub repository.
+The itinerary editor includes a categorized activity library side panel with places, restaurants, snacks, markets, and activities.
+
+Categories include:
+
+- Iconic sights
+- Food & restaurants
+- Night markets & snacks
+- Shopping & leisure
+- Day trips & scenic activities
+
+### Insert-between behavior
+
+The newest interaction update allows activities to be inserted between existing itinerary items.
+
+- Drop lines appear before, between, and after itinerary items while dragging.
+- Drag a side-panel place, restaurant, snack, market, or activity onto a line to insert it at that exact position.
+- Drag an existing itinerary card onto a line to move it to that exact position.
+- Drag a side-panel item onto an existing card to replace that activity while preserving the card's start time.
+- Dragging over an insertion line highlights where the new event will be placed.
+- Dragging over an existing itinerary card highlights the replacement target.
+
+### Automatic time reflow
+
+The itinerary automatically updates event timing after changes.
+
+- Reordering events recalculates later times.
+- Inserting a new event recalculates following events.
+- Replacing an activity preserves the replaced slot's start time, then reflows later events.
+- Manual time edits become the new anchor point for following events.
+- Duplicate/delete/move actions keep the schedule chronologically organized.
+- Time spacing uses activity-duration assumptions plus practical between-stop transfer estimates.
+
+## Google Maps routing export
+
+The app intentionally uses a secure Google Maps export model rather than embedding a client-side Google Maps API key.
+
+Each detailed itinerary day includes:
+
+- **Open full Google Maps** route button
+- Individual **Map stop** links for activities
+- Route order based on the current draggable itinerary sequence
+- Built-in between-stop travel estimate cards
+- Recommended travel methods such as walking, MRT, taxi, private van, or airport transfer
+
+Because the app does not embed a Google Maps API key, live routing and traffic calculations happen after opening the route in Google Maps.
+
+## Restaurant guide organization
+
+Food and restaurant items are sorted into the existing restaurant guide categories, including:
+
+- Must-eat iconic
+- Michelin / Bib-style local food
+- Hot pot & groups
+- Splurge & farewell
+- Night market dishes
+- Snacks, tea & sweets
+- Taiwanese bars and drinks
+
+Recent additions include items such as **ISLAND Buffet Taipei Hi-Lai Branch**, **Yao Yue Teahouse**, Wang's Broth, A Cheng Goose, Liu Shandong Beef Noodles, Lao Shan Dong, Yongkang Beef Noodles, Tian Jin Scallion Flaky Pancakes, Smoothie House, Xing Fu Tang, Fuzhou Black Pepper Bun, 50 Lan, Bai-Shui Douhua, and other Taipei food stops.
+
+## Mobile optimization
+
+The app includes responsive behavior for smaller screens:
+
+- Activity library stacks above the itinerary on mobile.
+- Larger touch targets for itinerary controls, tabs, and buttons.
+- Improved card spacing for editable itinerary items.
+- Better mobile behavior for transfer cards and route links.
+- Scroll-friendly navigation and tab rows.
+
+## GitHub Pages deployment
+
+1. Create a GitHub repository.
 2. Upload `index.html` and `README.md` to the root of the repository.
-3. Go to the repository's **Settings** tab.
-4. Select **Pages** from the left-side menu.
-5. Under **Build and deployment**, choose:
+3. Go to **Settings → Pages**.
+4. Under **Build and deployment**, choose:
    - Source: `Deploy from a branch`
    - Branch: `main`
    - Folder: `/root`
-6. Save the settings.
-7. GitHub will generate a public GitHub Pages URL after deployment.
+5. Save and wait for GitHub Pages to publish the site.
 
-## Local Preview
+## Local use
 
-You can preview the guide locally by opening `index.html` directly in a browser.
+Open `index.html` directly in any modern browser.
 
-For a local server preview, run:
+Itinerary edits are saved locally in that browser through `localStorage`. To make permanent changes for everyone, edit the source `index.html`, commit it to GitHub, and redeploy through GitHub Pages.
 
-```bash
-python3 -m http.server 8000
-```
+## Security note
 
-Then open:
-
-```text
-http://localhost:8000
-```
-
-## Notes for Future Updates
-
-When updating the guide:
-
-- Keep `index.html` at the root of the repository.
-- Avoid adding broken direct links for shops or character-goods stores; use official websites, Google Maps search links, or Google Search fallbacks when a reliable page is unavailable.
-- For itinerary changes, update both the day summary and detailed day-by-day sections so the app remains consistent.
-- For restaurant additions, place each recommendation in the most relevant tab based on dining type, price point, or occasion.
-
-## Intended Use
-
-This app is meant to be shared with family members before and during the trip. It works especially well on mobile devices and can be uploaded to GitHub Pages, Netlify, Vercel, or any static website host.
+This version does **not** expose a Google Maps API key in the HTML file. Routing is handled through outbound Google Maps links and built-in practical estimates, which makes the project safer for public GitHub Pages hosting.
