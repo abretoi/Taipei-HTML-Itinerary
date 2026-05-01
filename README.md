@@ -139,3 +139,10 @@ Itinerary edits are saved locally in that browser through `localStorage`. To mak
 ## Security note
 
 This version does **not** expose a Google Maps API key in the HTML file. Routing is handled through outbound Google Maps links and built-in practical estimates, which makes the project safer for public GitHub Pages hosting.
+
+
+## Latest Restaurant Guide Update
+
+The Restaurant Guide’s **Taiwanese Bars** tab now includes an expanded Taipei cocktail-bar shortlist, including A Train Leads The Way To Jazz, B Line by A Train, Fake Sober Taipei, HANKO 60 / Bar Hanko 60, To Infinity and Beyond, Chikan Pharmacy Bar, Nonsense Bar / Nonsense Cafe & Bar, Yong-Fu Mansion, Geography Bar, Closet Taipei, and Bar Mood Taipei.
+
+The header hosting note has also been removed from the app interface for a cleaner family-facing experience.
