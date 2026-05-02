@@ -630,9 +630,29 @@ function makeTabSystem(tabsId, panelsId, cats, idPrefix, tabColors) {
 
 
 
+const PARK_TAIPEI_HOTEL_ADDRESS = 'Park Taipei Hotel, No. 317, Section 1, Fuxing S Rd, Da’an District, Taipei City, Taiwan 106';
+const PARK_TAIPEI_HOTEL_ADDRESS_ZH = '台北美侖大飯店 — 台北市大安區復興南路一段317號';
+const PARK_TAIPEI_HOTEL_MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Park%20Taipei%20Hotel%2C%20No.%20317%2C%20Section%201%2C%20Fuxing%20S%20Rd%2C%20Da%E2%80%99an%20District%2C%20Taipei%20City%2C%20Taiwan%20106';
+function isParkTaipeiHotelLabel(label){
+  const t = String(label||'').toLowerCase();
+  return /park taipei|台北美侖|台北美仑|復興南路一段\s*317|fuxing s rd|fuxing south road/.test(t)
+    || /check.?in|check.?out|checkout|hotel rest|hotel breakfast|leave the hotel|luggage help/.test(t) && /hotel|airport-arrival|park taipei/.test(t);
+}
+function routeStopForBlock(block){
+  const title = String(block?.title || '');
+  const desc = String(block?.desc || '');
+  const combined = title + ' ' + desc;
+  if(isParkTaipeiHotelLabel(combined)) return PARK_TAIPEI_HOTEL_ADDRESS;
+  if(/taoyuan|tpe airport|taiwan taoyuan international airport/i.test(combined)) return 'Taiwan Taoyuan International Airport';
+  return baseName(title) + ' Taipei Taiwan';
+}
+
 const SPECIAL_LINKS = {
+  'Park Taipei Hotel':'https://www.google.com/maps/search/?api=1&query=Park%20Taipei%20Hotel%2C%20No.%20317%2C%20Section%201%2C%20Fuxing%20S%20Rd%2C%20Da%E2%80%99an%20District%2C%20Taipei%20City%2C%20Taiwan%20106',
+  'Check into Park Taipei Hotel':'https://www.google.com/maps/search/?api=1&query=Park%20Taipei%20Hotel%2C%20No.%20317%2C%20Section%201%2C%20Fuxing%20S%20Rd%2C%20Da%E2%80%99an%20District%2C%20Taipei%20City%2C%20Taiwan%20106',
+  'Checkout at Park Taipei Hotel':'https://www.google.com/maps/search/?api=1&query=Park%20Taipei%20Hotel%2C%20No.%20317%2C%20Section%201%2C%20Fuxing%20S%20Rd%2C%20Da%E2%80%99an%20District%2C%20Taipei%20City%2C%20Taiwan%20106',
   'Taipei 101':'https://www.taipei-101.com.tw/en/',
-  'Elephant Mountain':'https://www.travel.taipei/en/attraction/details/1120',
+  'Elephant Mountain':'https://www.google.com/maps/search/?api=1&query=Xiangshan%20Trail%20Elephant%20Mountain%20Taipei%20Taiwan',
   'Chiang Kai-shek Memorial Hall':'https://www.cksmh.gov.tw/en/',
   'National Palace Museum':'https://www.npm.gov.tw/?l=2',
   'Huashan 1914 Creative Park':'https://www.huashan1914.com/w/huashan1914_en/index',
@@ -750,7 +770,7 @@ const SPECIAL_LINKS = {
 };
 function stripHtml(v){ return String(v||'').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').trim(); }
 function baseName(v){ return stripHtml(v).replace(/^\d+\.\s*/,'').replace(/\s+[—-].*$/,'').replace(/\s*\([^)]*\)\s*/g,' ').replace(/\s+/g,' ').trim(); }
-function mapSearchUrl(label){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(baseName(label) + ' Taipei Taiwan'); }
+function mapSearchUrl(label){ if(isParkTaipeiHotelLabel(label)) return PARK_TAIPEI_HOTEL_MAP_URL; return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(baseName(label) + ' Taipei Taiwan'); }
 function webSearchUrl(label){ return 'https://www.google.com/search?q=' + encodeURIComponent(baseName(label) + ' Taipei Taiwan'); }
 function getLink(label, fallback='map'){
   const raw = stripHtml(label); const base = baseName(raw);
@@ -765,6 +785,55 @@ function openLink(label, text='Open map'){
 }
 function openWebLink(label, text='Open link'){
   return `<div class="link-row"><a class="open-link" href="${getLink(label,'web')}" target="_blank" rel="noopener noreferrer">↗ ${text}</a></div>`;
+}
+
+/* Explore tab: use Google Maps-first links to avoid stale official pages / 404s. */
+const EXPLORE_MAP_QUERIES = {
+  'Ximending':'Ximending Walking District, Taipei, Taiwan',
+  'Dihua Street':'Dihua Street, Datong District, Taipei, Taiwan',
+  'Yongkang Street':'Yongkang Street, Da’an District, Taipei, Taiwan',
+  'Zhongshan':'Zhongshan District, Taipei, Taiwan',
+  'Xinyi':'Xinyi District, Taipei, Taiwan',
+  'Da’an':'Da’an District, Taipei, Taiwan',
+  'Elephant Mountain':'Xiangshan Trail / Elephant Mountain, Xinyi District, Taipei, Taiwan',
+  'Taipei 101':'Taipei 101, Xinyi District, Taipei, Taiwan',
+  'Chiang Kai-shek Memorial Hall':'National Chiang Kai-shek Memorial Hall, Taipei, Taiwan',
+  '228 Peace Memorial Park':'228 Peace Memorial Park, Taipei, Taiwan',
+  'National Palace Museum':'National Palace Museum, Taipei, Taiwan',
+  'Huashan 1914 Creative Park':'Huashan 1914 Creative Park, Taipei, Taiwan',
+  'Longshan Temple':'Lungshan Temple, Wanhua District, Taipei, Taiwan',
+  'Traditional teahouse':'Traditional teahouse, Taipei, Taiwan',
+  'Themed 7-Elevens':'Themed 7-Eleven, Taipei, Taiwan',
+  'Taipei souvenir stamps':'Taipei souvenir stamps, Taipei, Taiwan',
+  'Themed metro card':'Wan Nian Building, No. 70 Xining Road, Wanhua District, Taipei, Taiwan',
+  'Shrimp fishing':'Shrimp fishing, Taipei, Taiwan',
+  'Maokong Gondola':'Maokong Gondola, Taipei, Taiwan',
+  'Taiwan fortune teller':'Fortune telling street, Taipei, Taiwan',
+  'Yongle Fabric Market':'Yongle Fabric Market, Datong District, Taipei, Taiwan',
+  'Tamsui sunset':'Tamsui Old Street waterfront, New Taipei City, Taiwan',
+  '1. Jiufen Old Street':'Jiufen Old Street, Ruifang District, New Taipei City, Taiwan',
+  '2. Shifen Waterfall + Sky Lanterns':'Shifen Waterfall, Pingxi District, New Taipei City, Taiwan',
+  '3. Beitou Hot Spring Village':'Beitou Hot Spring Museum, Taipei, Taiwan',
+  '4. Keelung Miaokou Night Market':'Keelung Miaokou Night Market, Keelung, Taiwan',
+  '5. Houtong Cat Village':'Houtong Cat Village, Ruifang District, New Taipei City, Taiwan',
+  '6. Shenkeng Stinky Tofu Village':'Shenkeng Old Street, New Taipei City, Taiwan',
+  '7. Northern Hills temples':'Wuji Tianyuan Temple, New Taipei City, Taiwan',
+  'Cash is still important':'Taipei night market, Taiwan',
+  'Carry pocket tissues':'convenience store, Taipei, Taiwan',
+  'Use small NT bills':'Taipei night market, Taiwan',
+  'Bring a stamp book':'Taipei Main Station souvenir, Taipei, Taiwan'
+};
+function exploreMapUrl(label){
+  const raw = stripHtml(label);
+  const query = EXPLORE_MAP_QUERIES[raw] || EXPLORE_MAP_QUERIES[baseName(raw)] || `${baseName(raw)} Taipei Taiwan`;
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query);
+}
+function exploreLinkify(label, cls='place-link'){
+  const safe = stripHtml(label);
+  return `<a class="${cls}" href="${exploreMapUrl(safe)}" target="_blank" rel="noopener noreferrer">${safe}</a>`;
+}
+function openExploreMap(label, text='Open map'){
+  return `<div class="link-row"><a class="open-link" href="${exploreMapUrl(label)}" target="_blank" rel="noopener noreferrer">↗ ${text}</a></div>`;
 }
 const APP_STORE_LINKS = {
   'Google Maps':'https://apps.apple.com/us/app/google-maps/id585027354',
@@ -871,7 +940,7 @@ const exploreCats = [
       {name:'Bring a stamp book',tag:'Souvenir trail',desc:'Souvenir stamps are a fun low-cost way to turn each attraction into a collectible family trail.'}
     ]}
 ];
-const exploreCatsMapped = exploreCats.map(cat=>({ label:cat.label, color:cat.color, html:`<div class="section-note">${cat.note}</div><div class="item-grid">${cat.items.map(item=>`<div class="item-card"><div class="item-top"><div class="item-name">${linkify(item.name,'name-link')}</div><span class="price-tag p-mid">${item.tag}</span></div><div class="item-desc">${item.desc}</div>${openLink(item.name)}</div>`).join('')}</div>` }));
+const exploreCatsMapped = exploreCats.map(cat=>({ label:cat.label, color:cat.color, html:`<div class="section-note">${cat.note}</div><div class="item-grid">${cat.items.map(item=>`<div class="item-card"><div class="item-top"><div class="item-name">${exploreLinkify(item.name,'name-link')}</div><span class="price-tag p-mid">${item.tag}</span></div><div class="item-desc">${item.desc}</div>${openExploreMap(item.name)}</div>`).join('')}</div>` }));
 makeTabSystem('explore-tabs','explore-panels',exploreCatsMapped,'ep',exploreCats.map(c=>c.color));
 
 /* ════════════════════════════════════════════════
@@ -1485,7 +1554,7 @@ function minutesToTime(total){
   return `${hh}:${String(m).padStart(2,'0')} ${ap}`;
 }
 function mapsDirectionsUrl(dayIndex){
-  const stops = itinDays[dayIndex].blocks.map(b => baseName(b.title)).filter(Boolean).map(s => s + ' Taipei Taiwan');
+  const stops = itinDays[dayIndex].blocks.map(routeStopForBlock).filter(Boolean);
   if(stops.length < 2) return mapSearchUrl(stops[0] || 'Taipei Taiwan');
   const origin = stops[0], destination = stops[stops.length-1];
   const waypoints = stops.slice(1,-1).slice(0,8).join('|');
@@ -1494,13 +1563,13 @@ function mapsDirectionsUrl(dayIndex){
   return url;
 }
 function getDayRouteStops(dayIndex){
-  return itinDays[dayIndex].blocks.map(b => baseName(b.title)).filter(Boolean).map(s => s + ' Taipei Taiwan');
+  return itinDays[dayIndex].blocks.map(routeStopForBlock).filter(Boolean);
 }
 function transferId(dayIndex, legIndex){ return `transfer-${dayIndex}-${legIndex}`; }
 function mapId(dayIndex){ return `google-map-${dayIndex}`; }
 function mapStatusId(dayIndex){ return `google-map-status-${dayIndex}`; }
 function mapsEmbedUrl(dayIndex){
-  const stops = itinDays[dayIndex].blocks.map(b => baseName(b.title)).filter(Boolean).map(s => s + ' Taipei Taiwan');
+  const stops = itinDays[dayIndex].blocks.map(routeStopForBlock).filter(Boolean);
   if(!stops.length) return 'https://www.google.com/maps?q=Taipei%20Taiwan&output=embed';
   if(stops.length === 1) return 'https://www.google.com/maps?q=' + encodeURIComponent(stops[0]) + '&output=embed';
   return 'https://www.google.com/maps/dir/' + stops.map(encodeURIComponent).join('/') + '/?output=embed';
@@ -1766,7 +1835,7 @@ function renderDetailed(){
       const isLast = bi===d.blocks.length-1;
       const tags = (b.tags||[]).map(t=>`<span class="btag btag-${t}">${tagLabel[t]||t}</span>`).join('');
       const selected = selectedSlot && selectedSlot.day===i && selectedSlot.index===bi;
-      bHtml += `<div class="block draggable-block ${selected?'slot-selected':''}" draggable="true" data-day="${i}" data-index="${bi}" onclick="selectSlotFromClick(event,${i},${bi})"><div class="drag-handle" title="Drag to reorder">⋮⋮</div><div class="time-col"><input class="time-input" value="${escapeAttr(b.time)}" onchange="updateBlockField(${i},${bi},'time',this.value)"></div><div class="dot-line"><div class="dot"></div>${isLast?'':`<div class="vline"></div>`}</div><div class="block-content"><div class="block-title editable-title" contenteditable="true" onblur="updateBlockField(${i},${bi},'title',this.textContent)">${stripHtml(b.title)}</div><div class="block-desc editable-desc" contenteditable="true" onblur="updateBlockField(${i},${bi},'desc',this.textContent)">${stripHtml(b.desc)}</div><div class="block-tags">${tags}</div><div class="block-actions"><button class="mini-btn" onclick="selectSlot(${i},${bi})">${selected?'✓ Slot selected':'Select slot'}</button><button class="mini-btn" onclick="moveBlock(${i},${bi},-1)">↑ Earlier</button><button class="mini-btn" onclick="moveBlock(${i},${bi},1)">↓ Later</button><button class="mini-btn" onclick="duplicateBlock(${i},${bi})">Duplicate</button><button class="mini-btn" onclick="deleteBlock(${i},${bi})">Remove</button><a class="mini-btn" href="${mapSearchUrl(b.title)}" target="_blank" rel="noopener noreferrer">Map stop</a></div></div></div>`;
+      bHtml += `<div class="block draggable-block ${selected?'slot-selected':''}" draggable="true" data-day="${i}" data-index="${bi}" onclick="selectSlotFromClick(event,${i},${bi})"><div class="drag-handle" title="Drag to reorder">⋮⋮</div><div class="time-col"><input class="time-input" value="${escapeAttr(b.time)}" onchange="updateBlockField(${i},${bi},'time',this.value)"></div><div class="dot-line"><div class="dot"></div>${isLast?'':`<div class="vline"></div>`}</div><div class="block-content"><div class="block-title editable-title" contenteditable="true" onblur="updateBlockField(${i},${bi},'title',this.textContent)">${stripHtml(b.title)}</div><div class="block-desc editable-desc" contenteditable="true" onblur="updateBlockField(${i},${bi},'desc',this.textContent)">${stripHtml(b.desc)}</div><div class="block-tags">${tags}</div><div class="block-actions"><button class="mini-btn" onclick="selectSlot(${i},${bi})">${selected?'✓ Slot selected':'Select slot'}</button><button class="mini-btn" onclick="moveBlock(${i},${bi},-1)">↑ Earlier</button><button class="mini-btn" onclick="moveBlock(${i},${bi},1)">↓ Later</button><button class="mini-btn" onclick="duplicateBlock(${i},${bi})">Duplicate</button><button class="mini-btn" onclick="deleteBlock(${i},${bi})">Remove</button><a class="mini-btn" href="${mapSearchUrl(routeStopForBlock(b))}" target="_blank" rel="noopener noreferrer">Map stop</a></div></div></div>`;
       if(!isLast) bHtml += renderTransfer(b, d.blocks[bi+1], i, bi);
       bHtml += renderInsertDropLine(i, bi + 1);
     });
@@ -3196,7 +3265,7 @@ const prepCats = [
       {name:'Book Beitou hot spring experience',detail:'For luxury, book a private room at a Beitou hot spring resort. Public baths (Millennium Hot Springs) are walk-in.',tag:'before'},
       {name:'Reserve Orange Shabu Shabu for group hot pot night',detail:'Book ahead to secure a table for 10.',tag:'before'},
       {name:'Add travel insurance for all 10 travelers',detail:'Covers medical, trip cancellation, and lost luggage. Strongly recommended for a mixed-age group.',tag:'before'},
-      {name:'Save Park Taipei Hotel address in Chinese',detail:'有巢氏旅館台北本館 — Save for showing taxi drivers and for the TWAC accommodation field.',tag:'before'},
+      {name:'Save Park Taipei Hotel address in Chinese',detail:'台北美侖大飯店 — 台北市大安區復興南路一段317號. Save for showing taxi drivers and for the TWAC accommodation field.',tag:'before'},
       {name:'Mother\'s Day heads up — May 10 is arrival day',detail:'Mother\'s Day 2026 falls on arrival Sunday. Restaurants fully booked that evening. Ningxia Night Market for arrival night — no reservation needed.',tag:'before'}
     ]
   },
@@ -3225,7 +3294,7 @@ const prepCats = [
       {name:'Activate Holafly eSIM',detail:'Switch to Taiwan eSIM before landing so you have data as soon as you touch down.',tag:'day'},
       {name:'Get NTD cash at Taoyuan Airport',detail:'Reliable ATMs and exchange desks in arrivals. NT$5,000–10,000 per person in mixed bills.',tag:'day'},
       {name:'Confirm transfer to Park Taipei Hotel',detail:'Airport MRT to Taipei Main Station (~35 min, NT$160/person) then taxi. Or book a private group transfer on Klook.',tag:'day'},
-      {name:'Screenshot hotel address in Chinese for taxi',detail:'有巢氏旅館台北本館',tag:'day'}
+      {name:'Screenshot hotel address in Chinese for taxi',detail:'台北美侖大飯店 — 台北市大安區復興南路一段317號',tag:'day'}
     ]
   },
   { label:'🧴 Health & money tips', color:'#712B13',
